@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from "react";
 import AppRouter from "components/Router";
 import { auth } from "mybase";
-import Navgiation from "components/Navigation";
 
 function App() {
 	const [init, setInit] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(auth.currentUser);
 	const [userObj, setUserObj] = useState(null);
 
+	const refreshUser = () => {
+		const user = auth.currentUser;
+		setUserObj({
+			displayName: user.displayName,
+			uid: user.uid,
+			updateProfile: (args) => user.updateProfile(args),
+		});
+	};
+
 	useEffect(() => {
 		auth.onAuthStateChanged((user) => {
 			if (user) {
 				setIsLoggedIn(true);
-				setUserObj(user);
+				setUserObj({
+					displayName: user.displayName,
+					uid: user.uid,
+				});
 			} else {
 				setIsLoggedIn(false);
 			}
@@ -23,11 +34,14 @@ function App() {
 	return (
 		<>
 			{init ? (
-				<AppRouter isLoggedIn={isLoggedIn} userObj={userObj} />
+				<AppRouter
+					refreshUser={refreshUser}
+					isLoggedIn={isLoggedIn}
+					userObj={userObj}
+				/>
 			) : (
 				"Initializing..."
 			)}
-			<footer>&copy; {new Date().getFullYear()} Jwitter</footer>
 		</>
 	);
 }

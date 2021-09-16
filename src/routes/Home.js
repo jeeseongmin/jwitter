@@ -1,49 +1,85 @@
 import React, { useEffect, useState } from "react";
-import { dbService } from "mybase";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { db, storage } from "mybase";
+import {
+	addDoc,
+	collection,
+	getDocs,
+	onSnapshot,
+	doc,
+	query,
+	orderBy,
+	getFirestore,
+} from "firebase/firestore";
+import Jweet from "components/Jweet";
+import { uploadString, getDownloadURL, ref } from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
 
 const Home = (props) => {
 	const userObj = props.userObj;
 	const [jweet, setJweet] = useState("");
 	const [jweets, setJweets] = useState([]);
-	const getJweets = async () => {
-		const _jweets = await getDocs(collection(dbService, "jweets"));
-		_jweets.forEach((document) => {
-			const jweetObject = {
-				...document.data(),
-				id: document.id,
-			};
-			setJweets((prev) => [jweetObject, ...prev]);
-		});
-	};
-	useEffect(() => {
-		// getJweets();
+	const [attachment, setAttachment] = useState("");
 
-		dbService.collection("jweets").onSnapshot((snapshot) => {
-			const _jweets = snapshot.getDocs.map((doc) => ({
-				id: doc.id,
-				...doc.data(),
-			}));
-			setJweets(_jweets);
-		});
+	useEffect(() => {
+		onSnapshot(
+			query(collection(db, "jweets"), orderBy("createdAt", "desc")),
+			(snapshot) => {
+				const nweetArray = snapshot.docs.map((doc) => ({
+					id: doc.id,
+					...doc.data(),
+				}));
+				setJweets(nweetArray);
+			}
+		);
 	}, []);
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		try {
-			await addDoc(collection(dbService, "jweets"), {
-				text: jweet,
+		let attachmentUrl = "";
+
+		const text = jweet;
+		if (text === "") {
+			alert("글자를 입력해주세요");
+		} else {
+			if (attachment !== "") {
+				const attachmentRef = ref(storage, `${userObj.uid}/${uuidv4()}`);
+				const response = await uploadString(
+					attachmentRef,
+					attachment,
+					"data_url"
+				);
+				attachmentUrl = await getDownloadURL(response.ref);
+			}
+			const _jweet = {
+				text: text,
 				createdAt: Date.now(),
 				creatorId: userObj.uid,
-			});
-		} catch (error) {
-			console.log(error);
-		}
+				attachmentUrl,
+			};
+			setJweet("");
+			setAttachment("");
 
-		setJweet("");
+			try {
+				await addDoc(collection(db, "jweets"), _jweet);
+			} catch (error) {
+				console.log(error);
+			}
+		}
 	};
 	const onChange = (e) => {
 		setJweet(e.target.value);
+	};
+
+	const onFileChange = (e) => {
+		const theFile = e.target.files[0];
+		const reader = new FileReader();
+		reader.onloadend = (finishedEvent) => {
+			setAttachment(finishedEvent.currentTarget.result);
+		};
+		reader.readAsDataURL(theFile);
+	};
+	const clearAttachment = () => {
+		setAttachment(null);
 	};
 
 	return (
@@ -56,13 +92,22 @@ const Home = (props) => {
 					placeholder="What's on your mind?"
 					maxLength={120}
 				/>
+				<input type="file" accept="image/*" onChange={onFileChange} />
 				<input type="submit" value="Jweet" />
+				{attachment && (
+					<div>
+						<img src={attachment} width="50px" height="50px" alt="preview" />
+						<button onClick={clearAttachment}>Clear</button>
+					</div>
+				)}
 			</form>
 			<div>
 				{jweets.map((jweet) => (
-					<div key={jweet.id}>
-						<h4>{jweet.jweet}</h4>
-					</div>
+					<Jweet
+						key={jweet.id}
+						jweetObj={jweet}
+						isOwner={jweet.creatorId === userObj.uid}
+					/>
 				))}
 			</div>
 		</div>

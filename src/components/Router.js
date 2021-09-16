@@ -14,10 +14,11 @@ import Navigation from "components/Navigation";
 const AppRouter = (props) => {
 	const isLoggedIn = props.isLoggedIn;
 	const userObj = props.userObj;
+	const refreshUser = props.refreshUser;
 
 	return (
 		<Router>
-			{isLoggedIn && <Navigation />}
+			{isLoggedIn && <Navigation userObj={userObj} />}
 			<Switch>
 				{isLoggedIn ? (
 					<>
@@ -25,7 +26,7 @@ const AppRouter = (props) => {
 							<Home userObj={userObj} />
 						</Route>
 						<Route exact path="/profile">
-							<Profile />
+							<Profile refreshUser={refreshUser} userObj={userObj} />
 						</Route>
 						<Redirect from="*" to="/" />
 					</>
