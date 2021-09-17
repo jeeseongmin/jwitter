@@ -59,7 +59,9 @@ const Jweet = ({ jweetObj, isOwner }) => {
 					)}
 					{isOwner && (
 						<>
-							<button onClick={onDeleteClick}>Delete Jweet</button>
+							<button onClick={onDeleteClick} class="border border-black">
+								Delete Jweet
+							</button>
 							<button onClick={toggleEditing}>Edit Jweet</button>
 						</>
 					)}

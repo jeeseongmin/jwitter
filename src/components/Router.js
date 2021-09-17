@@ -9,6 +9,7 @@ import Auth from "routes/Auth";
 import Home from "routes/Home";
 import Profile from "routes/Profile";
 import Navigation from "components/Navigation";
+import Login from "routes/Login";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 const AppRouter = (props) => {
@@ -33,7 +34,8 @@ const AppRouter = (props) => {
 				) : (
 					<>
 						<Route exact path="/">
-							<Auth />
+							<Login />
+							{/* <Auth /> */}
 						</Route>
 						<Redirect from="*" to="/" />
 					</>
