@@ -16,7 +16,6 @@ const Auth = () => {
 		const name = e.target.name;
 		let provider;
 		let user;
-		console.log(name);
 		if (name === "google") {
 			provider = new GoogleAuthProvider();
 			// provider = new Github.

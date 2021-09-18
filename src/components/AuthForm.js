@@ -19,9 +19,11 @@ const AuthForm = ({ isLogin }) => {
 		const cp = { ...info };
 		cp[type] = e.target.value;
 		setInfo(cp);
+		setError("");
 	};
 	const onSubmit = async (e) => {
 		e.preventDefault();
+		console.log("haha");
 		try {
 			let data;
 			if (isLogin) {
@@ -74,6 +76,7 @@ const AuthForm = ({ isLogin }) => {
 					type="submit"
 					value={isLogin ? "Log In" : "Create Account"}
 				/>
+				{error ? "올바른 이메일과 패스워드를 입력해주세요." : ""}
 			</form>
 		</>
 	);
