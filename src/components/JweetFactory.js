@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 const JweetFactory = ({ userObj }) => {
 	const [jweet, setJweet] = useState("");
 	const [attachment, setAttachment] = useState("");
+	console.log("home", userObj);
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
@@ -58,23 +59,34 @@ const JweetFactory = ({ userObj }) => {
 	};
 
 	return (
-		<form onSubmit={onSubmit}>
-			<input
-				type="text"
-				value={jweet}
-				onChange={onChange}
-				placeholder="What's on your mind?"
-				maxLength={120}
-			/>
-			<input type="file" accept="image/*" onChange={onFileChange} />
-			<input type="submit" value="Jweet" />
-			{attachment && (
-				<div>
-					<img src={attachment} width="50px" height="50px" alt="preview" />
-					<button onClick={clearAttachment}>Clear</button>
+		<div class="flex flex-row px-2 border border-black">
+			<div class="flex flex-col">
+				<div class="h-16 p-2">
+					<img
+						src={userObj.photoURL}
+						class="h-full object-cover rounded-full"
+						alt="img"
+					/>
 				</div>
-			)}
-		</form>
+			</div>
+			<form onSubmit={onSubmit} class="w-full flex flex-col pl-2">
+				<textarea
+					type="text"
+					value={jweet}
+					onChange={onChange}
+					placeholder="What's on your mind?"
+					class="py-3 border border-black resize-none h-auto outline-none text-xl text-purple-300 focus:text-purple-500"
+				/>
+				<input type="file" accept="image/*" onChange={onFileChange} />
+				<input type="submit" value="Jweet" />
+				{attachment && (
+					<div>
+						<img src={attachment} width="50px" height="50px" alt="preview" />
+						<button onClick={clearAttachment}>Clear</button>
+					</div>
+				)}
+			</form>
+		</div>
 	);
 };
 

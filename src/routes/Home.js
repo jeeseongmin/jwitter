@@ -3,6 +3,7 @@ import JweetFactory from "components/JweetFactory";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "mybase";
 import React, { useEffect, useState } from "react";
+import { MdSettings } from "react-icons/md";
 
 const Home = ({ userObj }) => {
 	const [jweets, setJweets] = useState([]);
@@ -21,7 +22,11 @@ const Home = ({ userObj }) => {
 	}, []);
 
 	return (
-		<div>
+		<div class="flex-1 flex flex-col">
+			<div class="px-4 py-3 font-bold text-xl flex justify-between border-b border-gray-200">
+				<h1>Home</h1>
+				<MdSettings zie={28} />
+			</div>
 			<JweetFactory userObj={userObj} />
 			<div>
 				{jweets.map((jweet) => (

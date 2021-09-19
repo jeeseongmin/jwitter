@@ -10,7 +10,10 @@ function App() {
 	const refreshUser = () => {
 		const user = auth.currentUser;
 		setUserObj({
-			displayName: user.displayName,
+			photoURL: user.photoURL,
+			displayName: user.displayName
+				? user.displayName
+				: user.email.split("@")[0],
 			uid: user.uid,
 			updateProfile: (args) => user.updateProfile(args),
 		});
@@ -20,8 +23,14 @@ function App() {
 		auth.onAuthStateChanged((user) => {
 			if (user) {
 				setIsLoggedIn(true);
+				console.log(user);
+
 				setUserObj({
-					displayName: user.displayName,
+					photoURL: user.photoURL,
+					displayName: user.displayName
+						? user.displayName
+						: user.email.split("@")[0],
+
 					uid: user.uid,
 				});
 			} else {

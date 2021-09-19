@@ -6,10 +6,12 @@ import {
 	Redirect,
 } from "react-router-dom";
 import Auth from "routes/Auth";
-import Home from "routes/Home";
+import Main from "routes/Home";
 import Profile from "routes/Profile";
 import Navigation from "components/Navigation";
 import Login from "routes/Login";
+import Leftbar from "routes/Leftbar";
+import Rightbar from "routes/Rightbar";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 const AppRouter = (props) => {
@@ -19,28 +21,36 @@ const AppRouter = (props) => {
 
 	return (
 		<Router>
-			{isLoggedIn && <Navigation userObj={userObj} />}
-			<Switch>
-				{isLoggedIn ? (
-					<>
-						<Route exact path="/">
-							<Home userObj={userObj} />
-						</Route>
-						<Route exact path="/profile">
-							<Profile refreshUser={refreshUser} userObj={userObj} />
-						</Route>
-						<Redirect from="*" to="/" />
-					</>
-				) : (
-					<>
-						<Route exact path="/">
-							<Login />
-							{/* <Auth /> */}
-						</Route>
-						<Redirect from="*" to="/" />
-					</>
-				)}
-			</Switch>
+			{/* {isLoggedIn && <Navigation userObj={userObj} />} */}
+			<div
+				class={
+					"w-full h-full " + (isLoggedIn ? "flex flex-row px-0 lg:px-36" : "")
+				}
+			>
+				{isLoggedIn && <Leftbar refreshUser={refreshUser} userObj={userObj} />}
+				<Switch>
+					{isLoggedIn ? (
+						<>
+							<Route exact path="/">
+								<Main userObj={userObj} />
+							</Route>
+							<Route exact path="/profile">
+								<Profile refreshUser={refreshUser} userObj={userObj} />
+							</Route>
+							<Redirect from="*" to="/" />
+						</>
+					) : (
+						<>
+							<Route exact path="/">
+								<Login />
+								{/* <Auth /> */}
+							</Route>
+							<Redirect from="*" to="/" />
+						</>
+					)}
+				</Switch>
+				{isLoggedIn && <Rightbar />}
+			</div>
 		</Router>
 	);
 };

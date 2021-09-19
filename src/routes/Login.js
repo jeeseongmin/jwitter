@@ -156,7 +156,7 @@ const Login = () => {
 				aria-labelledby="modal-modal-title"
 				aria-describedby="modal-modal-description"
 			>
-				<div class="absolute border border-white p-4 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 origin-center w-96 h-auto bg-white rounded-lg flex flex-col justify-start items-start">
+				<div class="outline-none absolute border border-white p-4 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 origin-center w-96 h-auto bg-white rounded-lg flex flex-col justify-start items-start">
 					{login && (
 						<h1 class="text-2xl font-bold mb-4">일반 이메일로 로그인</h1>
 					)}

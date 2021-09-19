@@ -5,6 +5,7 @@ import {
 	GoogleAuthProvider,
 	GithubAuthProvider,
 	signInWithPopup,
+	updateProfile,
 } from "firebase/auth";
 import { app, auth } from "mybase";
 
@@ -27,21 +28,51 @@ const AuthForm = ({ isLogin }) => {
 		try {
 			let data;
 			if (isLogin) {
-				// create account
-				data = await createUserWithEmailAndPassword(
-					auth,
-					info.email,
-					info.password
-				);
-			} else {
+				alert("로그인합니다!");
+				console.log(auth, info.email, info.password);
 				// Log In
 				data = await signInWithEmailAndPassword(
 					auth,
 					info.email,
 					info.password
-				);
+				).then(() => {
+					console.log("currentUser", auth.currentUser);
+					if (auth.currentUser.displayName === null) {
+						let displayName = auth.currentUser.email.split("@");
+						console.log("displayName", displayName);
+
+						updateProfile(auth.currentUser, {
+							displayName: displayName[0],
+							photoURL:
+								"https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
+						})
+							.then(() => {})
+							.catch((error) => {});
+					}
+				});
+			} else {
+				alert("회원가입합니다!");
+				// create account
+				data = await createUserWithEmailAndPassword(
+					auth,
+					info.email,
+					info.password
+				).then(() => {
+					console.log("currentUser", auth.currentUser);
+					if (auth.currentUser.displayName === null) {
+						let displayName = auth.currentUser.email.split("@");
+						console.log("displayName", displayName);
+
+						updateProfile(auth.currentUser, {
+							displayName: displayName[0],
+							photoURL:
+								"https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
+						})
+							.then(() => {})
+							.catch((error) => {});
+					}
+				});
 			}
-			console.log(data);
 		} catch (error) {
 			console.log(error.message);
 			setError(error.message);
