@@ -1,7 +1,7 @@
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { db, storage } from "mybase";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const JweetFactory = ({ userObj }) => {
@@ -57,6 +57,14 @@ const JweetFactory = ({ userObj }) => {
 	const clearAttachment = () => {
 		setAttachment(null);
 	};
+
+	const handleResizeHeight = useCallback(() => {
+		if (ref === null || ref.current === null) {
+			return;
+		}
+		ref.current.style.height = "12rem";
+		ref.current.style.height = ref.current.scrollheight + "px";
+	});
 
 	return (
 		<div class="flex flex-row px-2 border border-black">
