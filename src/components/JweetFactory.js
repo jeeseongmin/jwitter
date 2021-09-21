@@ -1,12 +1,13 @@
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { db, storage } from "mybase";
-import React, { useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const JweetFactory = ({ userObj }) => {
 	const [jweet, setJweet] = useState("");
 	const [attachment, setAttachment] = useState("");
+	const ref = useRef();
 	console.log("home", userObj);
 
 	const onSubmit = async (e) => {
@@ -58,12 +59,20 @@ const JweetFactory = ({ userObj }) => {
 		setAttachment(null);
 	};
 
+	useEffect(() => {
+		if (ref === null || ref.current === null) {
+			return;
+		}
+		ref.current.style.height = "40px";
+		ref.current.style.height = ref.current.scrollHeight + "px";
+	}, []);
+
 	const handleResizeHeight = useCallback(() => {
 		if (ref === null || ref.current === null) {
 			return;
 		}
-		ref.current.style.height = "12rem";
-		ref.current.style.height = ref.current.scrollheight + "px";
+		ref.current.style.height = "40px";
+		ref.current.style.height = ref.current.scrollHeight + "px";
 	});
 
 	return (
@@ -78,15 +87,30 @@ const JweetFactory = ({ userObj }) => {
 				</div>
 			</div>
 			<form onSubmit={onSubmit} class="w-full flex flex-col pl-2">
-				<textarea
-					type="text"
-					value={jweet}
-					onChange={onChange}
-					placeholder="What's on your mind?"
-					class="py-3 border border-black resize-none h-auto outline-none text-xl text-purple-300 focus:text-purple-500"
-				/>
+				<div class="w-full border-b border-gray-200 mb-4">
+					<textarea
+						type="text"
+						value={jweet}
+						ref={ref}
+						onChange={onChange}
+						placeholder="What's on your mind?"
+						onInput={handleResizeHeight}
+						class="py-3 resize-none h-10 overflow-hidden scroll leading-7 outline-none text-lg text-purple-300 focus:text-purple-500"
+					/>
+				</div>
+				<div class="flex flex-row justify-between">
+					{/* 좌측 아이콘 */}
+					<div></div>
+					{/* 우측 submit */}
+					<div>
+						<input
+							type="submit"
+							class="text-sm w-full rounded-full text-white font-bold bg-purple-400 flex justify-center px-4 py-1 hover:bg-purple-600 transition delay-50 duration-300 cursor-pointer"
+							value="Jweet"
+						/>
+					</div>
+				</div>
 				<input type="file" accept="image/*" onChange={onFileChange} />
-				<input type="submit" value="Jweet" />
 				{attachment && (
 					<div>
 						<img src={attachment} width="50px" height="50px" alt="preview" />
