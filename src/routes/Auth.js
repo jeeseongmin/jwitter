@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { app, auth } from "mybase";
+import { db, app, auth } from "mybase";
 import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
@@ -8,10 +8,14 @@ import {
 	signInWithPopup,
 } from "firebase/auth";
 import AuthForm from "components/AuthForm";
+import { useHistory } from "react-router-dom";
 import background from "image/background.jpg";
 import logo from "image/logo.png";
+import { addDoc, collection } from "firebase/firestore";
+import { set, ref, onValue, getDatabase, get, child } from "firebase/database";
 
 const Auth = () => {
+	const history = useHistory();
 	const onSocialClick = async (e) => {
 		const name = e.target.name;
 		let provider;
@@ -24,6 +28,32 @@ const Auth = () => {
 					const credential = GoogleAuthProvider.credentialFromResult(result);
 					const token = credential.accessToken;
 					user = result.user;
+					console.log(user);
+					const _user = {
+						uid: user.uid,
+						profileURL: user.profileURL,
+						email: user.email,
+						name: user.displayName,
+					};
+					// addDoc(collection(db, "user"), _user).then(() => {
+					// 	history.push("/home");
+					// });
+
+					const dbRef = ref(db);
+					get(child(dbRef, "users/" + user.uid))
+						.then((snapshot) => {
+							if (snapshot.exists()) {
+								console.log("data existed");
+								console.log(snapshot.val());
+							} else {
+								console.log("No data available");
+								// set(ref(db, "users/" + user.uid), _user);
+							}
+						})
+						.catch((error) => {
+							console.error(error);
+							console.log("haha2");
+						});
 				})
 				.catch((error) => {
 					console.log(error);
@@ -35,6 +65,7 @@ const Auth = () => {
 					const credential = GithubAuthProvider.credentialFromResult(result);
 					const token = credential.accessToken;
 					user = result.user;
+					history.push("/home");
 				})
 				.catch((error) => {
 					console.log(error);

@@ -7,9 +7,13 @@ import {
 	signInWithPopup,
 	updateProfile,
 } from "firebase/auth";
-import { app, auth } from "mybase";
+import { db, app, auth } from "mybase";
+import { doc, getDoc, addDoc, collection, setDoc } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser, setLoginToken } from "reducers/user";
 
 const AuthForm = ({ isLogin }) => {
+	const dispatch = useDispatch();
 	const [info, setInfo] = useState({
 		email: "",
 		password: "",
@@ -24,11 +28,9 @@ const AuthForm = ({ isLogin }) => {
 	};
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		console.log("haha");
 		try {
 			let data;
 			if (isLogin) {
-				alert("로그인합니다!");
 				console.log(auth, info.email, info.password);
 				// Log In
 				data = await signInWithEmailAndPassword(
@@ -36,40 +38,48 @@ const AuthForm = ({ isLogin }) => {
 					info.email,
 					info.password
 				).then(() => {
-					console.log("currentUser", auth.currentUser);
-					if (auth.currentUser.displayName === null) {
-						let displayName = auth.currentUser.email.split("@");
-						console.log("displayName", displayName);
-
-						updateProfile(auth.currentUser, {
-							displayName: displayName[0],
-							photoURL:
-								"https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
-						})
-							.then(() => {})
-							.catch((error) => {});
-					}
+					const docRef = doc(db, "users", auth.currentUser.uid);
+					getDoc(docRef).then(async (snap) => {
+						if (snap.exists()) {
+							console.log("Document data:", snap.data());
+							await dispatch(setLoginToken("login"));
+							await dispatch(
+								setCurrentUser({
+									...snap.data(),
+									uid: auth.currentUser.uid,
+								})
+							);
+						} else {
+							console.log("error");
+						}
+					});
 				});
 			} else {
-				alert("회원가입합니다!");
 				// create account
 				data = await createUserWithEmailAndPassword(
 					auth,
 					info.email,
 					info.password
-				).then(() => {
-					console.log("currentUser", auth.currentUser);
+				).then(async () => {
 					if (auth.currentUser.displayName === null) {
 						let displayName = auth.currentUser.email.split("@");
-						console.log("displayName", displayName);
-
-						updateProfile(auth.currentUser, {
-							displayName: displayName[0],
+						const usersRef = await collection(db, "users");
+						dispatch(setLoginToken("login"));
+						await dispatch(
+							setCurrentUser({
+								uid: auth.currentUser.uid,
+								photoURL:
+									"https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
+								email: auth.currentUser.email,
+								displayName: displayName[0],
+							})
+						);
+						await setDoc(doc(usersRef, auth.currentUser.uid), {
 							photoURL:
 								"https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
-						})
-							.then(() => {})
-							.catch((error) => {});
+							email: auth.currentUser.email,
+							displayName: displayName[0],
+						});
 					}
 				});
 			}

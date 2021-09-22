@@ -2,48 +2,75 @@ import React, { useState, useEffect } from "react";
 import { auth, db } from "mybase";
 import { useHistory } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
-import { getDocs, query, collection, where } from "firebase/firestore";
+import {
+	getDocs,
+	query,
+	collection,
+	where,
+	doc,
+	getDoc,
+} from "firebase/firestore";
 
-const Profile = ({ userObj, refreshUser }) => {
+const Profile = ({ match }) => {
+	const uid = match.params.id;
+	const [loading, setLoading] = useState(false);
 	const history = useHistory();
-	const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
+	const [info, setInfo] = useState({});
+	const [myJweets, setMyJweets] = useState([]);
 
-	const onLogOutClick = () => {
-		auth.signOut();
-		history.push("/");
-	};
-	const onChange = (e) => {
-		setNewDisplayName(e.target.value);
-	};
-	const onSubmit = async (e) => {
-		e.preventDefault();
-		if (userObj.displayName !== newDisplayName) {
-			console.log(userObj.updateProfile);
+	// const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
 
-			await updateProfile(await auth.currentUser, {
-				displayName: newDisplayName,
-			});
-			refreshUser();
-		}
-	};
+	// const onLogOutClick = () => {
+	// 	auth.signOut();
+	// 	history.push("/");
+	// };
+	// const onChange = (e) => {
+	// 	setNewDisplayName(e.target.value);
+	// };
+	// const onSubmit = async (e) => {
+	// 	e.preventDefault();
+	// 	if (userObj.displayName !== newDisplayName) {
+	// 		console.log(userObj.updateProfile);
+
+	// 		await updateProfile(await auth.currentUser, {
+	// 			displayName: newDisplayName,
+	// 		});
+	// 		refreshUser();
+	// 	}
+	// };
 
 	const getMyJweets = async () => {
-		const q = query(
-			collection(db, "jweets"),
-			where("creatorId", "==", userObj.uid)
-		);
+		const q = query(collection(db, "jweets"), where("creatorId", "==", uid));
 		const querySnapshot = await getDocs(q);
 		querySnapshot.forEach((doc) => {
-			console.log(doc.id, " => ", doc.data());
+			const cp = myJweets;
+			cp.push(doc.data());
+			setMyJweets(cp);
+		});
+	};
+
+	const getMyInfo = async () => {
+		const docRef = doc(db, "users", uid);
+		getDoc(docRef).then((snap) => {
+			if (snap.exists()) {
+				setInfo(snap.data());
+				setLoading(true);
+			} else {
+				// doc.data() will be undefined in this case
+				console.log("No such document!");
+			}
 		});
 	};
 	useEffect(() => {
 		getMyJweets();
+		getMyInfo();
+		console.log(myJweets);
+		console.log(info);
 	}, []);
 
 	return (
 		<>
-			<form onSubmit={onSubmit}>
+			{/* <form onSubmit={onSubmit}>
 				<input
 					type="text"
 					value={newDisplayName}
@@ -52,7 +79,8 @@ const Profile = ({ userObj, refreshUser }) => {
 				/>
 				<input type="submit" value="Update Profile" />
 			</form>
-			<button onClick={onLogOutClick}>Log Out</button>
+			<button onClick={onLogOutClick}>Log Out</button> */}
+			<div></div>
 		</>
 	);
 };

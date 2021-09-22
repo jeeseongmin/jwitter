@@ -1,56 +1,52 @@
 import React, { useEffect, useState } from "react";
 import AppRouter from "components/Router";
-import { auth } from "mybase";
+import { db, auth } from "mybase";
+import { doc, getDoc, addDoc, collection, setDoc } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser } from "reducers/user";
 
 function App() {
+	const dispatch = useDispatch();
+	const currentUser = useSelector((state) => state.user.currentUser);
+
 	const [init, setInit] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(auth.currentUser);
 	const [userObj, setUserObj] = useState(null);
 
-	const refreshUser = () => {
-		const user = auth.currentUser;
-		setUserObj({
-			photoURL: user.photoURL,
-			displayName: user.displayName
-				? user.displayName
-				: user.email.split("@")[0],
-			uid: user.uid,
-			updateProfile: (args) => user.updateProfile(args),
-		});
-	};
+	// useEffect(() => {
+	// 	auth.onAuthStateChanged(async (user) => {
+	// 		console.log("user", user);
+	// 		if (user) {
+	// 			setIsLoggedIn(true);
+	// 			console.log(user);
+	// 			const docRef = doc(db, "users", user.uid);
 
-	useEffect(() => {
-		auth.onAuthStateChanged((user) => {
-			if (user) {
-				setIsLoggedIn(true);
-				console.log(user);
-
-				setUserObj({
-					photoURL: user.photoURL,
-					displayName: user.displayName
-						? user.displayName
-						: user.email.split("@")[0],
-
-					uid: user.uid,
-				});
-			} else {
-				setIsLoggedIn(false);
-			}
-			setInit(true);
-		});
-	}, []);
+	// 			await getDoc(docRef).then((snap) => {
+	// 				if (snap.exists()) {
+	// 					console.log("Document data:", snap.data());
+	// 					dispatch(
+	// 						setCurrentUser({
+	// 							photoURL: snap.data().photoURL,
+	// 							displayName: snap.data().displayName,
+	// 							uid: user.uid,
+	// 						})
+	// 					);
+	// 				} else {
+	// 					console.log("No such document!");
+	// 				}
+	// 			});
+	// 		} else {
+	// 			setUserObj({});
+	// 			setIsLoggedIn(false);
+	// 		}
+	// 		setInit(true);
+	// 	});
+	// }, []);
 
 	return (
 		<>
-			{init ? (
-				<AppRouter
-					refreshUser={refreshUser}
-					isLoggedIn={isLoggedIn}
-					userObj={userObj}
-				/>
-			) : (
-				"Initializing..."
-			)}
+			{" "}
+			<AppRouter />{" "}
 		</>
 	);
 }

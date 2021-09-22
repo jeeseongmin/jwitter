@@ -5,38 +5,38 @@ import {
 	Switch,
 	Redirect,
 } from "react-router-dom";
-import Auth from "routes/Auth";
-import Main from "routes/Home";
+import Home from "routes/Home";
 import Profile from "routes/Profile";
 import Navigation from "components/Navigation";
 import Login from "routes/Login";
 import Leftbar from "routes/Leftbar";
 import Rightbar from "routes/Rightbar";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser } from "reducers/user";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 const AppRouter = (props) => {
 	const isLoggedIn = props.isLoggedIn;
-	const userObj = props.userObj;
-	const refreshUser = props.refreshUser;
+	const loginToken = useSelector((state) => state.user.loginToken);
 
 	return (
 		<Router>
 			{/* {isLoggedIn && <Navigation userObj={userObj} />} */}
 			<div
 				class={
-					"w-full h-full " + (isLoggedIn ? "flex flex-row px-0 lg:px-36" : "")
+					"w-full h-full " +
+					(loginToken === "login" ? "flex flex-row px-0 lg:px-36" : "")
 				}
 			>
-				{isLoggedIn && <Leftbar refreshUser={refreshUser} userObj={userObj} />}
+				{loginToken === "login" && <Leftbar />}
 				<Switch>
-					{isLoggedIn ? (
+					{loginToken === "login" ? (
 						<>
 							<Route exact path="/">
-								<Main userObj={userObj} />
+								<Home />
 							</Route>
-							<Route exact path="/profile">
-								<Profile refreshUser={refreshUser} userObj={userObj} />
-							</Route>
+							<Route path="/profile/:id" component={Profile} />
+
 							<Redirect from="*" to="/" />
 						</>
 					) : (
@@ -49,7 +49,7 @@ const AppRouter = (props) => {
 						</>
 					)}
 				</Switch>
-				{isLoggedIn && <Rightbar />}
+				{loginToken === "login" && <Rightbar />}
 			</div>
 		</Router>
 	);

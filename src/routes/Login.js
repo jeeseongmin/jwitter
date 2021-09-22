@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { app, auth } from "mybase";
+import { db, app, auth } from "mybase";
 import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
@@ -8,14 +8,20 @@ import {
 	signInWithPopup,
 } from "firebase/auth";
 import Modal from "@mui/material/Modal";
-
+import { useHistory } from "react-router-dom";
 import AuthForm from "components/AuthForm";
 import background from "image/background.jpg";
 import logo from "image/logo.png";
 import github from "image/github.jpg";
 import google from "image/google.png";
+import { set, ref, onValue, getDatabase, get, child } from "firebase/database";
+import { doc, getDoc, addDoc, collection, setDoc } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser, setLoginToken } from "reducers/user";
 
 const Login = () => {
+	const dispatch = useDispatch();
+	const history = useHistory();
 	const [login, setLogin] = useState(true);
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
@@ -26,15 +32,45 @@ const Login = () => {
 		const name = e.target.name;
 		let provider;
 		let user;
-		console.log(name);
 		if (name === "google") {
 			provider = new GoogleAuthProvider();
 			// provider = new Github.
-			signInWithPopup(auth, provider)
+			await signInWithPopup(auth, provider)
 				.then((result) => {
 					const credential = GoogleAuthProvider.credentialFromResult(result);
 					const token = credential.accessToken;
 					user = result.user;
+
+					const docRef = doc(db, "users", user.uid);
+					getDoc(docRef).then(async (snap) => {
+						if (snap.exists()) {
+							console.log("Document data:", snap.data());
+							await dispatch(setLoginToken("login"));
+							await dispatch(
+								setCurrentUser({
+									...snap.data(),
+									uid: user.uid,
+								})
+							);
+						} else {
+							dispatch(setLoginToken("login"));
+							await dispatch(
+								setCurrentUser({
+									uid: user.uid,
+									photoURL: user.photoURL,
+									email: user.email,
+									displayName: user.displayName,
+								})
+							);
+							console.log("No such document!");
+							const usersRef = await collection(db, "users");
+							await setDoc(doc(usersRef, user.uid), {
+								photoURL: user.photoURL,
+								email: user.email,
+								displayName: user.displayName,
+							});
+						}
+					});
 				})
 				.catch((error) => {
 					console.log(error);
@@ -46,6 +82,22 @@ const Login = () => {
 					const credential = GithubAuthProvider.credentialFromResult(result);
 					const token = credential.accessToken;
 					user = result.user;
+					console.log(user);
+
+					const docRef = doc(db, "users", user.uid);
+					getDoc(docRef).then((snap) => {
+						if (snap.exists()) {
+							// console.log("Document data:", snap.data());
+						} else {
+							console.log("No such document!");
+							const usersRef = collection(db, "users");
+							setDoc(doc(usersRef, user.uid), {
+								profileURL: user.photoURL ? user.photoURL : "",
+								email: user.email,
+								displayName: user.displayName,
+							});
+						}
+					});
 				})
 				.catch((error) => {
 					console.log(error);

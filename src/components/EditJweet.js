@@ -1,20 +1,18 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
-import { addDoc, collection } from "firebase/firestore";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { db, storage } from "mybase";
-import { v4 as uuidv4 } from "uuid";
-import { IoImageOutline } from "react-icons/io5";
 import Picker from "emoji-picker-react";
-import { GrEmoji } from "react-icons/gr";
-import { MdCancel } from "react-icons/md";
+import { doc, updateDoc } from "firebase/firestore";
 import defaultImg from "image/defaultImg.jpg";
-import { useDispatch, useSelector } from "react-redux";
+import { db } from "mybase";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { GrEmoji } from "react-icons/gr";
+import { IoImageOutline } from "react-icons/io5";
+import { MdCancel } from "react-icons/md";
+import { useSelector } from "react-redux";
 
-const JweetFactory = ({ isModal, handleJweetClose }) => {
+const EditJweet = ({ _jweet, handleJweetClose }) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
 
-	const [jweet, setJweet] = useState("");
-	const [attachment, setAttachment] = useState("");
+	const [jweet, setJweet] = useState(_jweet.text);
+	const [attachment, setAttachment] = useState(_jweet.attachmentUrl);
 	const textareaRef = useRef();
 	const fileRef = useRef();
 	const emojiRef = useRef();
@@ -30,38 +28,11 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		let attachmentUrl = "";
-
-		const text = jweet;
-		if (text === "") {
-			alert("글자를 입력해주세요");
-		} else {
-			if (attachment !== "") {
-				const attachmentRef = ref(storage, `${currentUser.uid}/${uuidv4()}`);
-				const response = await uploadString(
-					attachmentRef,
-					attachment,
-					"data_url"
-				);
-				attachmentUrl = await getDownloadURL(response.ref);
-			}
-			const _jweet = {
-				text: text,
-				createdAt: Date.now(),
-				creatorId: currentUser.uid,
-				attachmentUrl,
-			};
-			setJweet("");
-			setAttachment("");
-			if (isModal) {
-				handleJweetClose();
-			}
-			try {
-				await addDoc(collection(db, "jweets"), _jweet);
-			} catch (error) {
-				console.log(error);
-			}
-		}
+		handleJweetClose();
+		await updateDoc(doc(db, "jweets", _jweet.id), {
+			text: jweet,
+			attachmentUrl: attachment === null ? "" : attachment,
+		});
 	};
 	const onChange = (e) => {
 		setJweet(e.target.value);
@@ -189,4 +160,4 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 	);
 };
 
-export default JweetFactory;
+export default EditJweet;

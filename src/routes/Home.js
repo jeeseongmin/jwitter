@@ -4,8 +4,14 @@ import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "mybase";
 import React, { useEffect, useState } from "react";
 import { MdSettings } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser } from "reducers/user";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-const Home = ({ userObj }) => {
+const Home = () => {
+	const [loading, setLoading] = useState(false);
+	const currentUser = useSelector((state) => state.user.currentUser);
+
 	const [jweets, setJweets] = useState([]);
 
 	useEffect(() => {
@@ -17,6 +23,7 @@ const Home = ({ userObj }) => {
 					...doc.data(),
 				}));
 				setJweets(nweetArray);
+				setLoading(true);
 			}
 		);
 	}, []);
@@ -24,18 +31,30 @@ const Home = ({ userObj }) => {
 	return (
 		<div class="flex-1 flex flex-col">
 			<div class="px-4 py-3 font-bold text-xl flex justify-between border-b border-gray-200">
-				<h1>Home</h1>
-				<MdSettings zie={28} />
+				<h1 class="cursor-pointer">Home</h1>
+				<MdSettings size={28} class="cursor-pointer" />
 			</div>
-			<JweetFactory userObj={userObj} />
+			<JweetFactory isModal={false} />
 			<div>
-				{jweets.map((jweet) => (
-					<Jweet
-						key={jweet.id}
-						jweetObj={jweet}
-						isOwner={jweet.creatorId === userObj.uid}
-					/>
-				))}
+				{jweets.length !== 0 ? (
+					jweets.map((jweet) => {
+						return (
+							<Jweet
+								key={jweet.id}
+								jweet={jweet}
+								isOwner={jweet.creatorId === currentUser.uid}
+							/>
+						);
+					})
+				) : loading ? (
+					<div class="w-full flex justify-center items-center mt-8">
+						등록된 내용이 없습니다.
+					</div>
+				) : (
+					<div class="py-4 w-full flex justify-center">
+						<CircularProgress />
+					</div>
+				)}
 			</div>
 		</div>
 	);
