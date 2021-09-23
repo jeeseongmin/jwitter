@@ -84,11 +84,12 @@ const Leftbar = () => {
 	};
 	return (
 		<>
-			<div class="w-64 pt-4 pr-8 h-full flex flex-col border-r border-gray-200 justify-between">
+			<div class="w-64 pt-4 pr-4 h-full flex flex-col border-r border-gray-200 justify-between fixed">
 				<div class="flex flex-col">
 					<div class="h-16 mb-4">
 						<img
 							src={logo}
+							onClick={() => history.push("/")}
 							class="h-full px-4 py-3 object-cover hover:bg-purple-200 rounded-full cursor-pointer transition delay-50 duration-300 "
 							alt="logo"
 						/>

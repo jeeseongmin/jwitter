@@ -14,6 +14,7 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
 
 	const [jweet, setJweet] = useState("");
+	const [over, setOver] = useState(false);
 	const [attachment, setAttachment] = useState("");
 	const textareaRef = useRef();
 	const fileRef = useRef();
@@ -105,12 +106,30 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 		if (textareaRef === null || textareaRef.current === null) {
 			return;
 		}
-		textareaRef.current.style.height = "40px";
-		textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+		if (
+			textareaRef.current.style.height.substring(
+				0,
+				textareaRef.current.style.height.length - 2
+			) *
+				1 >
+			window.innerHeight - 200
+		) {
+			setOver(true);
+			if (jweet === "") textareaRef.current.style.height = "40px";
+		} else {
+			setOver(false);
+			textareaRef.current.style.height = "40px";
+			textareaRef.current.style.height =
+				textareaRef.current.scrollHeight + "px";
+		}
 	});
 
 	return (
-		<div class="flex flex-row px-2 pt-2 border-b border-gray-200">
+		<div
+			class={
+				"flex flex-row px-2 pt-2 " + (isModal ? "" : "border-b border-gray-200")
+			}
+		>
 			<div class="flex flex-col">
 				<div class="h-16 w-16 p-2">
 					<img
@@ -129,7 +148,10 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 						onChange={onChange}
 						placeholder="What's happening?"
 						onInput={handleResizeHeight}
-						class="w-full py-3 resize-none h-10 overflow-hidden scroll leading-7 outline-none text-lg text-purple-300 focus:text-purple-500"
+						class={
+							"w-full py-3 resize-none h-10 scroll leading-7 outline-none text-lg text-purple-300 focus:text-purple-500 " +
+							(over ? "overflow-y-scroll" : "overflow-hidden")
+						}
 					/>
 					{attachment && (
 						<div class="w-full h-96 relative">

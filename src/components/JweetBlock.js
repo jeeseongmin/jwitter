@@ -4,6 +4,7 @@ import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { db, storage } from "mybase";
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
 // import firebase from "firebase/compat/app";
@@ -11,8 +12,15 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { RiEdit2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { BsChat } from "react-icons/bs";
+import {
+	AiOutlineRetweet,
+	AiOutlineHeart,
+	AiTwotoneHeart,
+} from "react-icons/ai";
+import { FcLikePlaceholder, FcLike } from "react-icons/fc";
 
-const Jweet = ({ jweet, ownerID, isOwner }) => {
+const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 	const [loading, setLoading] = useState(false);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const funcRef = useRef();
@@ -70,18 +78,18 @@ const Jweet = ({ jweet, ownerID, isOwner }) => {
 	}, []);
 
 	return (
-		<div class="z-30 hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4 border-r border-l border-b border-gray-200">
+		<div class="z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4 border-r border-l border-b border-gray-200">
 			<>
 				{loading ? (
 					<>
 						<div class="flex flex-col">
-							<div class="h-16 w-16 p-2">
+							<Link to={"/profile/" + jweet.creatorId} class="h-16 w-16 p-2">
 								<img
 									src={creatorInfo.photoURL}
 									class="h-full object-cover rounded-full cursor-pointer hover:opacity-60"
 									alt="img"
 								/>
-							</div>
+							</Link>
 						</div>
 						<div class="w-full flex flex-col pl-2">
 							<div class="w-full flex flex-row mr-2 justify-between items-center">
@@ -93,24 +101,34 @@ const Jweet = ({ jweet, ownerID, isOwner }) => {
 										@{creatorInfo.email ? creatorInfo.email.split("@")[0] : ""}
 									</p>
 								</div>
-								{jweet.creatorId === currentUser.uid && (
+								{
 									<div
 										ref={funcRef}
-										class="cursor-pointer rounded-full p-2 hover:bg-purple-100 relative"
+										class={
+											"cursor-pointer transition delay-50 duration-300 rounded-full p-2 relative " +
+											(jweet.creatorId === currentUser.uid
+												? "hover:bg-purple-100"
+												: "")
+										}
 									>
-										<HiOutlineDotsHorizontal onClick={toggleFunc} size={28} />
+										<HiOutlineDotsHorizontal
+											onClick={
+												jweet.creatorId === currentUser.uid ? toggleFunc : ""
+											}
+											size={28}
+										/>
 										{func && (
 											<div class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl">
 												<div
 													onClick={handleJweetOpen}
-													class="flex flex-row items-center py-3 hover:bg-gray-100 rounded-t-md"
+													class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-t-md"
 												>
 													<RiEdit2Line class="w-12" size={20} />
 													<div class="flex-1">Edit Jweet</div>
 												</div>
 												<div
 													onClick={handleCheckOpen}
-													class="flex flex-row items-center py-3 hover:bg-gray-100 rounded-b-md"
+													class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-b-md"
 												>
 													<AiTwotoneDelete class="w-12" size={20} />
 													<div class="flex-1">Delete Jweet</div>
@@ -118,7 +136,7 @@ const Jweet = ({ jweet, ownerID, isOwner }) => {
 											</div>
 										)}
 									</div>
-								)}
+								}
 							</div>
 							<div class="w-full h-auto ">{jweet.text}</div>
 							{jweet.attachmentUrl !== "" && (
@@ -130,6 +148,28 @@ const Jweet = ({ jweet, ownerID, isOwner }) => {
 									/>
 								</div>
 							)}
+							<div class="w-full flex flex-row items-center mt-4 ">
+								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 hover:text-purple-500">
+									<div class="rounded-full transition delay-50 duration-300 hover:bg-purple-100 mt-1 mr-1 p-2">
+										<BsChat size={16} />
+									</div>
+									<p class="text-sm flex flex-row items-center">0</p>
+								</div>
+								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 hover:text-green-500">
+									<div class="rounded-full transition delay-50 duration-300 hover:bg-green-100 mt-1 mr-1 p-2">
+										<AiOutlineRetweet size={16} />
+									</div>
+									<p class="text-sm flex flex-row items-center">0</p>
+								</div>
+								{/* AiOutlineHeart,
+	AiTwotoneHeart, */}
+								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 hover:text-red-500">
+									<div class="rounded-full transition delay-50 duration-300 hover:bg-red-100 mt-1 mr-1 p-2">
+										<AiOutlineHeart size={16} />
+									</div>
+									<p class="text-sm flex flex-row items-center">0</p>
+								</div>
+							</div>
 						</div>
 					</>
 				) : (
@@ -217,4 +257,4 @@ const Jweet = ({ jweet, ownerID, isOwner }) => {
 	);
 };
 
-export default Jweet;
+export default JweetBlock;

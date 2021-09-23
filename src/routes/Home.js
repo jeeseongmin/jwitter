@@ -1,4 +1,4 @@
-import Jweet from "components/Jweet";
+import JweetBlock from "components/JweetBlock";
 import JweetFactory from "components/JweetFactory";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "mybase";
@@ -29,8 +29,8 @@ const Home = () => {
 	}, []);
 
 	return (
-		<div class="flex-1 flex flex-col">
-			<div class="px-4 py-3 font-bold text-xl flex justify-between border-b border-gray-200">
+		<div class="flex-1 flex flex-col pl-64">
+			<div class="h-14 px-4 py-3 font-bold text-xl flex justify-between border-b border-gray-200">
 				<h1 class="cursor-pointer">Home</h1>
 				<MdSettings size={28} class="cursor-pointer" />
 			</div>
@@ -39,7 +39,7 @@ const Home = () => {
 				{jweets.length !== 0 ? (
 					jweets.map((jweet) => {
 						return (
-							<Jweet
+							<JweetBlock
 								key={jweet.id}
 								jweet={jweet}
 								isOwner={jweet.creatorId === currentUser.uid}
