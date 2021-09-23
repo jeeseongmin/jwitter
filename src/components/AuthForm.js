@@ -72,6 +72,8 @@ const AuthForm = ({ isLogin }) => {
 									"https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
 								email: auth.currentUser.email,
 								displayName: displayName[0],
+								bookmark: [],
+								description: "",
 							})
 						);
 						await setDoc(doc(usersRef, auth.currentUser.uid), {
@@ -79,6 +81,8 @@ const AuthForm = ({ isLogin }) => {
 								"https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
 							email: auth.currentUser.email,
 							displayName: displayName[0],
+							bookmark: [],
+							description: "",
 						});
 					}
 				});

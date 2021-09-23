@@ -91,7 +91,11 @@ const Profile = ({ match }) => {
 						<div class="w-full flex flex-col pl-4 mb-4">
 							<h1 class="font-bold text-xl">{info.displayName}</h1>
 							<p class="text-gray-400 mb-2">@{info.email.split("@")[0]}</p>
-							<p class="text-sm">{info.email}</p>
+							<p class="py-8 px-4 text-sm text-gray-500 border-t border-b border-gray-200">
+								{info.description === ""
+									? "소개글이 없습니다."
+									: info.description}
+							</p>
 						</div>
 						<div class="w-full flex flex-row ">
 							<div
@@ -137,7 +141,7 @@ const Profile = ({ match }) => {
 									})
 								) : loading ? (
 									<div class="w-full flex justify-center items-center mt-8">
-										등록된 내용이 없습니다.
+										등록된 Jweet이 없습니다.
 									</div>
 								) : (
 									<div class="py-4 w-full flex justify-center">

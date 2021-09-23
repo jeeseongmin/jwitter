@@ -16,7 +16,6 @@ const EditJweet = ({ _jweet, handleJweetClose }) => {
 	const textareaRef = useRef();
 	const fileRef = useRef();
 	const emojiRef = useRef();
-	const [chosenEmoji, setChosenEmoji] = useState(null);
 	const [emojiClick, setEmojiClick] = useState(false);
 	const toggleEmoji = () => setEmojiClick(!emojiClick);
 

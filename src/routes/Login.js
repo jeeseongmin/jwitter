@@ -60,6 +60,8 @@ const Login = () => {
 									photoURL: user.photoURL,
 									email: user.email,
 									displayName: user.displayName,
+									bookmark: [],
+									description: "",
 								})
 							);
 							console.log("No such document!");
@@ -68,6 +70,8 @@ const Login = () => {
 								photoURL: user.photoURL,
 								email: user.email,
 								displayName: user.displayName,
+								bookmark: [],
+								description: "",
 							});
 						}
 					});
@@ -82,19 +86,43 @@ const Login = () => {
 					const credential = GithubAuthProvider.credentialFromResult(result);
 					const token = credential.accessToken;
 					user = result.user;
-					console.log(user);
 
 					const docRef = doc(db, "users", user.uid);
-					getDoc(docRef).then((snap) => {
+					getDoc(docRef).then(async (snap) => {
 						if (snap.exists()) {
 							// console.log("Document data:", snap.data());
+							console.log("Document data:", snap.data());
+							await dispatch(setLoginToken("login"));
+							await dispatch(
+								setCurrentUser({
+									...snap.data(),
+									uid: user.uid,
+								})
+							);
 						} else {
 							console.log("No such document!");
+							dispatch(setLoginToken("login"));
+							await dispatch(
+								setCurrentUser({
+									uid: user.uid,
+									photoURL: user.photoURL
+										? user.photoURL
+										: "https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
+									email: user.email,
+									displayName: user.displayName,
+									bookmark: [],
+									description: "",
+								})
+							);
 							const usersRef = collection(db, "users");
 							setDoc(doc(usersRef, user.uid), {
-								profileURL: user.photoURL ? user.photoURL : "",
+								profileURL: user.photoURL
+									? user.photoURL
+									: "https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
 								email: user.email,
 								displayName: user.displayName,
+								bookmark: [],
+								description: "",
 							});
 						}
 					});

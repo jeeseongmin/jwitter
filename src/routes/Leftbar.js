@@ -18,6 +18,7 @@ import { setCurrentUser, setLoginToken } from "reducers/user";
 
 const Leftbar = () => {
 	const dispatch = useDispatch();
+	const [selected, setSelected] = useState(1);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const history = useHistory();
 	// 프로필 모달
@@ -66,8 +67,9 @@ const Leftbar = () => {
 	}, [profile]);
 
 	useEffect(() => {
-		console.log("leftbar", currentUser);
-	}, []);
+		console.log(window.location);
+		console.log(window.location.pathname);
+	}, [selected]);
 
 	const onLogOutClick = () => {
 		auth.signOut();
@@ -84,7 +86,7 @@ const Leftbar = () => {
 	};
 	return (
 		<>
-			<div class="w-64 pt-4 pr-4 h-full flex flex-col border-r border-gray-200 justify-between fixed">
+			<div class="select-none w-64 pt-4 pr-4 h-full flex flex-col border-r border-gray-200 justify-between fixed">
 				<div class="flex flex-col">
 					<div class="h-16 mb-4">
 						<img
@@ -99,34 +101,72 @@ const Leftbar = () => {
 						<div class="w-auto flex flex-row items-center">
 							<Link
 								to="/"
+								onClick={() => setSelected(1)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
-								<AiOutlineHome size={32} class="mr-4" /> Home
+								{selected === 1 ? (
+									<>
+										{" "}
+										<AiFillHome size={32} class="mr-4" /> <b>Home</b>
+									</>
+								) : (
+									<>
+										<AiOutlineHome size={32} class="mr-4" /> Home
+									</>
+								)}
 							</Link>
 						</div>
 						<div class="w-auto flex flex-row items-center">
 							<Link
 								to="/notification"
+								onClick={() => setSelected(2)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
-								<IoNotificationsOutline size={32} class="mr-4" />
-								Notifications
+								{selected === 2 ? (
+									<>
+										<IoNotificationsSharp size={32} class="mr-4" />{" "}
+										<b>Notifications</b>
+									</>
+								) : (
+									<>
+										<IoNotificationsOutline size={32} class="mr-4" />
+										Notifications
+									</>
+								)}
 							</Link>
 						</div>
 						<div class="w-auto flex flex-row items-center">
 							<Link
 								to="/bookmark"
+								onClick={() => setSelected(3)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
-								<MdBookmarkBorder size={32} class="mr-4" /> Bookmarks
+								{selected === 3 ? (
+									<>
+										<MdBookmark size={32} class="mr-4" /> <b>Bookmarks</b>
+									</>
+								) : (
+									<>
+										<MdBookmarkBorder size={32} class="mr-4" /> Bookmarks
+									</>
+								)}
 							</Link>
 						</div>
 						<div class="w-auto flex flex-row items-center">
 							<Link
 								to={"/profile/" + currentUser.uid}
+								onClick={() => setSelected(4)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-4 hover:bg-gray-200 transition delay-50 duration-300"
 							>
-								<BsPerson size={32} class="mr-4" /> Profile
+								{selected === 4 ? (
+									<>
+										<BsPersonFill size={32} class="mr-4" /> <b>Profile</b>
+									</>
+								) : (
+									<>
+										<BsPerson size={32} class="mr-4" /> Profile
+									</>
+								)}
 							</Link>
 						</div>
 						<div
@@ -155,7 +195,14 @@ const Leftbar = () => {
 												alt="default"
 											/>
 										</div>
-										<div class="font-bold">{currentUser.displayName}</div>
+										<div class="flex flex-col justify-center">
+											<div>
+												<b>{currentUser.displayName}</b>
+											</div>
+											<div class="text-xs text-gray-400">
+												@{currentUser.email.split("@")[0]}
+											</div>
+										</div>
 									</div>
 									<div>
 										<BiCheck class="text-purple-500" size={20} />
@@ -182,7 +229,14 @@ const Leftbar = () => {
 									alt="default"
 								/>
 							</div>
-							<div class="font-bold">{currentUser.displayName}</div>
+							<div class="flex flex-col justify-center">
+								<div>
+									<b>{currentUser.displayName}</b>
+								</div>
+								<div class="text-xs text-gray-400">
+									@{currentUser.email.split("@")[0]}
+								</div>
+							</div>
 						</div>
 						<div>
 							<HiOutlineDotsHorizontal size={20} />

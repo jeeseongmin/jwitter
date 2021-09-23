@@ -1,34 +1,47 @@
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Modal from "@mui/material/Modal";
 import EditJweet from "components/EditJweet";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { db, storage } from "mybase";
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { AiTwotoneDelete } from "react-icons/ai";
-import { GrClose } from "react-icons/gr";
-// import firebase from "firebase/compat/app";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { RiEdit2Line } from "react-icons/ri";
-import { useSelector } from "react-redux";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { BsChat } from "react-icons/bs";
 import {
-	AiOutlineRetweet,
 	AiOutlineHeart,
+	AiOutlineRetweet,
+	AiTwotoneDelete,
 	AiTwotoneHeart,
 } from "react-icons/ai";
-import { FcLikePlaceholder, FcLike } from "react-icons/fc";
+import { BsChat } from "react-icons/bs";
+import { GrClose } from "react-icons/gr";
+// import firebase from "firebase/compat/app";
+import { useDispatch, useSelector } from "react-redux";
 
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { RiEdit2Line } from "react-icons/ri";
+import { Link } from "react-router-dom";
+import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
+import { setCurrentUser } from "reducers/user";
+
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import MuiAlert from "@mui/material/Alert";
+import ImageModal from "components/ImageModal";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 const JweetBlock = ({ jweet, ownerID, isOwner }) => {
+	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(false);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const funcRef = useRef();
 	const [func, setFunc] = useState(false);
+	const [like, setLike] = useState(false);
+	const [bookmark, setBookmark] = useState(false);
 
 	const [creatorInfo, setCreatorInfo] = useState({});
-	const [editing, setEditing] = useState(false);
-	const [newJweet, setNewJweet] = useState(jweet.text);
 	const toggleFunc = () => setFunc(!func);
 
 	// jweet 모달
@@ -42,6 +55,27 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 	const handleCheckOpen = () => setCheckOpen(true);
 	const handleCheckClose = () => {
 		setCheckOpen(false);
+	};
+
+	// Snack bar
+	const [bookmarkSnack, setBookmarkSnack] = useState();
+	const bookmarkClick = () => setBookmarkSnack(true);
+	const bookmarkClose = (e, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setBookmarkSnack(false);
+	};
+
+	const [likeSnack, setLikeSnack] = useState();
+	const likeClick = () => setLikeSnack(true);
+	const likeClose = (e, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setLikeSnack(false);
 	};
 
 	const onDeleteClick = async () => {
@@ -65,6 +99,8 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 	}, [func]);
 
 	useEffect(() => {
+		setLike(jweet.like.includes(currentUser.uid));
+		setBookmark(currentUser.bookmark.includes(jweet.id));
 		const docRef = doc(db, "users", jweet.creatorId);
 		getDoc(docRef).then((snap) => {
 			if (snap.exists()) {
@@ -77,8 +113,64 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 		});
 	}, []);
 
+	const toggleBookmark = async () => {
+		bookmarkClick();
+		if (currentUser.bookmark.includes(jweet.id)) {
+			setBookmark(false);
+			const cp = [...currentUser.bookmark];
+			cp.splice(currentUser.bookmark.indexOf(jweet.id), 1);
+			await updateDoc(doc(db, "users", currentUser.uid), {
+				bookmark: cp,
+			});
+			dispatch(
+				setCurrentUser({
+					...currentUser,
+					bookmark: cp,
+				})
+			);
+		} else {
+			setBookmark(true);
+			const cp = [...currentUser.bookmark];
+			cp.push(jweet.id);
+			await updateDoc(doc(db, "users", currentUser.uid), {
+				bookmark: cp,
+			});
+			dispatch(
+				setCurrentUser({
+					...currentUser,
+					bookmark: cp,
+				})
+			);
+		}
+	};
+
+	const toggleLike = async () => {
+		likeClick();
+		if (jweet.like.includes(currentUser.uid)) {
+			setLike(false);
+			const cp = [...jweet.like];
+			cp.splice(jweet.like.indexOf(currentUser.uid), 1);
+			await updateDoc(doc(db, "jweets", jweet.id), {
+				like: cp,
+			});
+		} else {
+			setLike(true);
+			const cp = [...jweet.like];
+			cp.push(currentUser.uid);
+			await updateDoc(doc(db, "jweets", jweet.id), {
+				like: cp,
+			});
+		}
+	};
+
+	const [photoOpen, setPhotoOpen] = useState(false);
+	const handlePhotoOpen = () => setPhotoOpen(true);
+	const handlePhotoClose = () => {
+		setPhotoOpen(false);
+	};
+
 	return (
-		<div class="z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4 border-r border-l border-b border-gray-200">
+		<div class="select-none z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4 border-r border-l border-b border-gray-200">
 			<>
 				{loading ? (
 					<>
@@ -142,6 +234,7 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 							{jweet.attachmentUrl !== "" && (
 								<div class="w-full mt-4 mb-2 pr-4 ">
 									<img
+										onClick={handlePhotoOpen}
 										src={jweet.attachmentUrl}
 										class="w-full object-cover rounded-xl border border-gray-200 shadow-lg"
 										alt="attachment"
@@ -149,13 +242,13 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 								</div>
 							)}
 							<div class="w-full flex flex-row items-center mt-4 ">
-								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 hover:text-purple-500">
+								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-purple-500">
 									<div class="rounded-full transition delay-50 duration-300 hover:bg-purple-100 mt-1 mr-1 p-2">
 										<BsChat size={16} />
 									</div>
 									<p class="text-sm flex flex-row items-center">0</p>
 								</div>
-								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 hover:text-green-500">
+								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-green-500">
 									<div class="rounded-full transition delay-50 duration-300 hover:bg-green-100 mt-1 mr-1 p-2">
 										<AiOutlineRetweet size={16} />
 									</div>
@@ -163,11 +256,32 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 								</div>
 								{/* AiOutlineHeart,
 	AiTwotoneHeart, */}
-								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 hover:text-red-500">
+								<div
+									onClick={toggleLike}
+									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-red-500"
+								>
 									<div class="rounded-full transition delay-50 duration-300 hover:bg-red-100 mt-1 mr-1 p-2">
-										<AiOutlineHeart size={16} />
+										{like ? (
+											<AiTwotoneHeart size={16} class="text-red-500" />
+										) : (
+											<AiOutlineHeart size={16} />
+										)}
 									</div>
-									<p class="text-sm flex flex-row items-center">0</p>
+									<p class="text-sm flex flex-row items-center">
+										{jweet.like.length}
+									</p>
+								</div>
+								<div
+									onClick={toggleBookmark}
+									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-blue-500"
+								>
+									<div class="rounded-full transition delay-50 duration-300 hover:bg-blue-100 mt-1 mr-1 p-2">
+										{bookmark ? (
+											<MdBookmark size={16} class="text-blue-500" />
+										) : (
+											<MdBookmarkBorder size={16} />
+										)}
+									</div>
 								</div>
 							</div>
 						</div>
@@ -202,25 +316,6 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 								handleJweetClose={handleJweetClose}
 							/>
 						</div>
-						{/* <div class="flex flex-col px-4">
-						<h1 class="text-xl font-bold mb-2">Log out of Jwitter?</h1>
-						<p class="text-left pb-8">
-							You can always log back in at any time. If you just want to switch
-							accounts, you can do that by adding an existing account.{" "}
-						</p>
-						<div
-							onClick={onLogOutClick}
-							class="cursor-pointer w-full flex py-3 justify-center items-center rounded-full bg-purple-300 text-white font-bold mb-4"
-						>
-							Log out
-						</div>
-						<div
-							onClick={handleProfileClose}
-							class="cursor-pointer w-full flex py-3 justify-center items-center rounded-full border border-purple-300 text-purple-500 font-bold"
-						>
-							Cancel
-						</div>
-					</div> */}
 					</div>
 				</Modal>
 				<Modal
@@ -252,6 +347,36 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 						</div>
 					</div>
 				</Modal>
+				<Snackbar
+					open={bookmarkSnack}
+					autoHideDuration={2000}
+					onClose={bookmarkClose}
+				>
+					<Alert
+						onClose={bookmarkClose}
+						severity="success"
+						sx={{ width: "100%" }}
+					>
+						{bookmark ? "북마크 저장" : "북마크 취소"}
+					</Alert>
+				</Snackbar>
+				<Snackbar open={likeSnack} autoHideDuration={2000} onClose={likeClose}>
+					<Alert
+						onClose={likeClose}
+						severity="success"
+						color="error"
+						variant="filled"
+						sx={{ width: "100%" }}
+					>
+						{like ? "좋아요!" : "좋아요 취소!"}
+					</Alert>
+				</Snackbar>
+				<ImageModal
+					photoURL={jweet.attachmentUrl}
+					photoOpen={photoOpen}
+					handlePhotoOpen={handlePhotoOpen}
+					handlePhotoClose={handlePhotoClose}
+				/>
 			</>
 		</div>
 	);

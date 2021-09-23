@@ -47,8 +47,8 @@ const Home = () => {
 						);
 					})
 				) : loading ? (
-					<div class="w-full flex justify-center items-center mt-8">
-						등록된 내용이 없습니다.
+					<div class="w-full flex-1 flex justify-center items-center mt-8">
+						등록된 Jweet이 없습니다.
 					</div>
 				) : (
 					<div class="py-4 w-full flex justify-center">

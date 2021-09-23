@@ -50,6 +50,7 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 				text: text,
 				createdAt: Date.now(),
 				creatorId: currentUser.uid,
+				like: [],
 				attachmentUrl,
 			};
 			setJweet("");
@@ -171,7 +172,7 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 				</div>
 				<div class="flex flex-row justify-between items-center pr-2">
 					{/* 좌측 아이콘 */}
-					<div class="flex flex-row items-center text-purple-300 relative">
+					<div class="flex flex-row items-center text-purple-500 relative">
 						<div
 							onClick={() => fileRef.current.click()}
 							class="p-2 transition delay-50 duration-300 hover:bg-purple-100 rounded-full blur-md cursor-pointer"
