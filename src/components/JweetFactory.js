@@ -55,6 +55,7 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 			};
 			setJweet("");
 			setAttachment("");
+			textareaRef.current.style.height = "40px";
 			if (isModal) {
 				handleJweetClose();
 			}

@@ -1,10 +1,10 @@
+import React, { useEffect, useRef, useState } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Modal from "@mui/material/Modal";
 import EditJweet from "components/EditJweet";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { db, storage } from "mybase";
-import React, { useEffect, useRef, useState } from "react";
 import {
 	AiOutlineHeart,
 	AiOutlineRetweet,
@@ -32,7 +32,10 @@ import ImageModal from "components/ImageModal";
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
-const JweetBlock = ({ jweet, ownerID, isOwner }) => {
+const JweetBlock = (props) => {
+	const jweet = props.jweet;
+	const ownerID = props.ownerID;
+	const isOwner = props.isOwner;
 	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(false);
 	const currentUser = useSelector((state) => state.user.currentUser);
@@ -169,14 +172,51 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 		setPhotoOpen(false);
 	};
 
+	const exceptRef = useRef();
+	const modalRef = useRef();
+	const dotRef = useRef();
+	const profileRef = useRef();
+	const replyRef = useRef();
+	const reJweetRef = useRef();
+	const likeRef = useRef();
+	const bookmarkRef = useRef();
+
+	const goJweet = (e) => {
+		if (
+			e.target !== exceptRef.current &&
+			e.target !== profileRef.current &&
+			e.target !== replyRef.current &&
+			e.target !== reJweetRef.current &&
+			e.target !== likeRef.current &&
+			e.target !== bookmarkRef.current &&
+			e.target.tagName !== "svg" &&
+			e.target.tagName !== "path" &&
+			e.target.id !== "except" &&
+			e.target.innerText !== "Edit Jweet" &&
+			e.target.innerText !== "Delete Jweet" &&
+			!photoOpen &&
+			!jweetOpen &&
+			!checkOpen
+		) {
+			alert("goJweet");
+		}
+	};
+
 	return (
-		<div class="select-none z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4 border-r border-l border-b border-gray-200">
+		<div
+			onClick={(e) => goJweet(e)}
+			class="w-full select-none z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4 border-r border-l border-b border-gray-200"
+		>
 			<>
 				{loading ? (
 					<>
 						<div class="flex flex-col">
-							<Link to={"/profile/" + jweet.creatorId} class="h-16 w-16 p-2">
+							<Link
+								to={"/profile/jweet/" + jweet.creatorId}
+								class="h-16 w-16 p-2"
+							>
 								<img
+									ref={profileRef}
 									src={creatorInfo.photoURL}
 									class="h-full object-cover rounded-full cursor-pointer hover:opacity-60"
 									alt="img"
@@ -196,6 +236,7 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 								{
 									<div
 										ref={funcRef}
+										id="except"
 										class={
 											"cursor-pointer transition delay-50 duration-300 rounded-full p-2 relative " +
 											(jweet.creatorId === currentUser.uid
@@ -204,13 +245,18 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 										}
 									>
 										<HiOutlineDotsHorizontal
+											id="except"
 											onClick={
 												jweet.creatorId === currentUser.uid ? toggleFunc : ""
 											}
 											size={28}
 										/>
 										{func && (
-											<div class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl">
+											<div
+												ref={dotRef}
+												id="except"
+												class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl"
+											>
 												<div
 													onClick={handleJweetOpen}
 													class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-t-md"
@@ -230,52 +276,86 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 									</div>
 								}
 							</div>
-							<div class="w-full h-auto ">{jweet.text}</div>
+							{/* <div class="w-full h-auto ">{jweet.text}</div> */}
+							<div class="w-full h-auto">
+								<div class="w-full h-auto resize-none outline-none cursor-pointer bg-transparent whitespace-pre	">
+									{jweet.text}
+								</div>
+							</div>
 							{jweet.attachmentUrl !== "" && (
 								<div class="w-full mt-4 mb-2 pr-4 ">
 									<img
 										onClick={handlePhotoOpen}
+										ref={exceptRef}
 										src={jweet.attachmentUrl}
 										class="w-full object-cover rounded-xl border border-gray-200 shadow-lg"
 										alt="attachment"
 									/>
 								</div>
 							)}
-							<div class="w-full flex flex-row items-center mt-4 ">
-								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-purple-500">
-									<div class="rounded-full transition delay-50 duration-300 hover:bg-purple-100 mt-1 mr-1 p-2">
+							<div id="except" class="w-full flex flex-row items-center mt-4 ">
+								<div
+									ref={replyRef}
+									id="except"
+									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-purple-500"
+								>
+									<div
+										id="except"
+										class="rounded-full transition delay-50 duration-300 hover:bg-purple-100 mt-1 mr-1 p-2"
+									>
 										<BsChat size={16} />
 									</div>
-									<p class="text-sm flex flex-row items-center">0</p>
+									<p id="except" class="text-sm flex flex-row items-center">
+										0
+									</p>
 								</div>
-								<div class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-green-500">
-									<div class="rounded-full transition delay-50 duration-300 hover:bg-green-100 mt-1 mr-1 p-2">
+								<div
+									ref={reJweetRef}
+									id="except"
+									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-green-500"
+								>
+									<div
+										id="except"
+										class="rounded-full transition delay-50 duration-300 hover:bg-green-100 mt-1 mr-1 p-2"
+									>
 										<AiOutlineRetweet size={16} />
 									</div>
-									<p class="text-sm flex flex-row items-center">0</p>
+									<p id="except" class="text-sm flex flex-row items-center">
+										0
+									</p>
 								</div>
 								{/* AiOutlineHeart,
 	AiTwotoneHeart, */}
 								<div
 									onClick={toggleLike}
+									ref={likeRef}
+									id="except"
 									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-red-500"
 								>
-									<div class="rounded-full transition delay-50 duration-300 hover:bg-red-100 mt-1 mr-1 p-2">
+									<div
+										id="except"
+										class="rounded-full transition delay-50 duration-300 hover:bg-red-100 mt-1 mr-1 p-2"
+									>
 										{like ? (
 											<AiTwotoneHeart size={16} class="text-red-500" />
 										) : (
 											<AiOutlineHeart size={16} />
 										)}
 									</div>
-									<p class="text-sm flex flex-row items-center">
+									<p id="except" class="text-sm flex flex-row items-center">
 										{jweet.like.length}
 									</p>
 								</div>
 								<div
 									onClick={toggleBookmark}
+									ref={bookmarkRef}
+									id="except"
 									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-blue-500"
 								>
-									<div class="rounded-full transition delay-50 duration-300 hover:bg-blue-100 mt-1 mr-1 p-2">
+									<div
+										id="except"
+										class="rounded-full transition delay-50 duration-300 hover:bg-blue-100 mt-1 mr-1 p-2"
+									>
 										{bookmark ? (
 											<MdBookmark size={16} class="text-blue-500" />
 										) : (
@@ -293,6 +373,7 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 				)}
 				<Modal
 					open={jweetOpen}
+					ref={modalRef}
 					onClose={handleJweetClose}
 					aria-labelledby="modal-modal-title"
 					aria-describedby="modal-modal-description"
@@ -372,6 +453,7 @@ const JweetBlock = ({ jweet, ownerID, isOwner }) => {
 					</Alert>
 				</Snackbar>
 				<ImageModal
+					modalRef={modalRef}
 					photoURL={jweet.attachmentUrl}
 					photoOpen={photoOpen}
 					handlePhotoOpen={handlePhotoOpen}

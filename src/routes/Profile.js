@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "mybase";
-import { useHistory } from "react-router-dom";
+import { useHistory, Switch, Route, Link } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
 import {
 	getDocs,
@@ -8,12 +8,17 @@ import {
 	collection,
 	where,
 	doc,
+	orderBy,
+	limit,
+	onSnapshot,
 	getDoc,
 } from "firebase/firestore";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import JweetBlock from "components/JweetBlock";
+import LikeJweets from "components/LikeJweets";
+import MyJweets from "components/MyJweets";
 
 const Profile = ({ match }) => {
 	const uid = match.params.id;
@@ -21,22 +26,14 @@ const Profile = ({ match }) => {
 	const history = useHistory();
 	const [info, setInfo] = useState({});
 	const [myJweets, setMyJweets] = useState([]);
+	const [allJweets, setAllJweets] = useState([]);
+	const [likeJweets, setLikeJweets] = useState([]);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const [selected, setSelected] = useState(1);
 
-	const getMyJweets = async () => {
-		const q = query(collection(db, "jweets"), where("creatorId", "==", uid));
-		const querySnapshot = await getDocs(q);
-		querySnapshot.forEach((doc) => {
-			const cp = myJweets;
-			cp.push(doc.data());
-			setMyJweets(cp);
-		});
-	};
-
 	const getMyInfo = async () => {
-		const docRef = doc(db, "users", uid);
-		getDoc(docRef).then((snap) => {
+		const docRef = await doc(db, "users", uid);
+		await getDoc(docRef).then((snap) => {
 			if (snap.exists()) {
 				setInfo(snap.data());
 				setLoading(true);
@@ -46,9 +43,9 @@ const Profile = ({ match }) => {
 			}
 		});
 	};
+
 	useEffect(() => {
-		setMyJweets([]);
-		getMyJweets();
+		setSelected(1);
 		getMyInfo();
 	}, [uid]);
 
@@ -59,7 +56,7 @@ const Profile = ({ match }) => {
 					<div class="flex-1 flex flex-col pl-64">
 						<div class="w-full px-2 py-2 flex flex-row items-center border-b border-gray-200">
 							<div
-								onClick={() => history.push("/")}
+								onClick={() => history.push("/home")}
 								class="mr-4 cursor-pointer p-2 rounded-full hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								<IoArrowBackOutline size={24} />
@@ -98,59 +95,41 @@ const Profile = ({ match }) => {
 							</p>
 						</div>
 						<div class="w-full flex flex-row ">
-							<div
-								onClick={() => setSelected(1)}
+							<Link
+								to={"/profile/jweet/" + uid}
 								class="w-1/2 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								<span
 									class={
 										"py-3 " +
-										(selected === 1 ? "border-b-4 border-purple-500" : "")
+										(window.location.href.includes("jweet")
+											? "border-b-4 border-purple-500"
+											: "")
 									}
 								>
 									Jweets
 								</span>
-							</div>
-							<div
-								onClick={() => setSelected(2)}
+							</Link>
+							<Link
+								to={"/profile/like/" + uid}
 								class="w-1/2 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								<span
 									class={
 										"py-3 " +
-										(selected === 2 ? "border-b-4 border-purple-500" : "")
+										(window.location.href.includes("like")
+											? "border-b-4 border-purple-500"
+											: "")
 									}
 								>
 									Likes
 								</span>
-							</div>
+							</Link>
 						</div>
-						{selected === 1 && (
-							<div>
-								{myJweets.length !== 0 ? (
-									myJweets.map((jweet) => {
-										if (jweet.creatorId === uid) {
-											return (
-												<JweetBlock
-													key={jweet.id}
-													jweet={jweet}
-													isOwner={jweet.creatorId === currentUser.uid}
-												/>
-											);
-										}
-									})
-								) : loading ? (
-									<div class="w-full flex justify-center items-center mt-8">
-										등록된 Jweet이 없습니다.
-									</div>
-								) : (
-									<div class="py-4 w-full flex justify-center">
-										<CircularProgress />
-									</div>
-								)}
-							</div>
-						)}
-						{selected === 2 && <div></div>}
+						<Switch>
+							<Route path="/profile/jweet/:id" component={MyJweets} />
+							<Route path="/profile/like/:id" component={LikeJweets} />
+						</Switch>
 					</div>
 				</>
 			) : (

@@ -15,6 +15,10 @@ const Home = () => {
 	const [jweets, setJweets] = useState([]);
 
 	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
+
+	useEffect(() => {
 		onSnapshot(
 			query(collection(db, "jweets"), orderBy("createdAt", "desc")),
 			(snapshot) => {

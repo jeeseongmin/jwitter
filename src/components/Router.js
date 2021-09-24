@@ -11,6 +11,7 @@ import Navigation from "components/Navigation";
 import Login from "routes/Login";
 import Leftbar from "routes/Leftbar";
 import Rightbar from "routes/Rightbar";
+import Bookmark from "routes/Bookmark";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "reducers/user";
 
@@ -35,8 +36,13 @@ const AppRouter = (props) => {
 							<Route exact path="/">
 								<Home />
 							</Route>
-							<Route path="/profile/:id" component={Profile} />
-
+							<Route exact path="/bookmark">
+								<Bookmark />
+							</Route>
+							<Route exact path="/home">
+								<Home />
+							</Route>
+							<Route path="/profile/:type/:id" component={Profile} />
 							<Redirect from="*" to="/" />
 						</>
 					) : (

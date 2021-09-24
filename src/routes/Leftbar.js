@@ -67,9 +67,16 @@ const Leftbar = () => {
 	}, [profile]);
 
 	useEffect(() => {
-		console.log(window.location);
-		console.log(window.location.pathname);
-	}, [selected]);
+		if (window.location.href.includes("notification")) {
+			setSelected(2);
+		} else if (window.location.href.includes("bookmark")) {
+			setSelected(3);
+		} else if (window.location.href.includes("profile")) {
+			setSelected(4);
+		} else {
+			setSelected(1);
+		}
+	}, [window.location.href]);
 
 	const onLogOutClick = () => {
 		auth.signOut();
@@ -154,7 +161,7 @@ const Leftbar = () => {
 						</div>
 						<div class="w-auto flex flex-row items-center">
 							<Link
-								to={"/profile/" + currentUser.uid}
+								to={"/profile/jweet/" + currentUser.uid}
 								onClick={() => setSelected(4)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-4 hover:bg-gray-200 transition delay-50 duration-300"
 							>
