@@ -14,7 +14,7 @@ import Rightbar from "routes/Rightbar";
 import Bookmark from "routes/Bookmark";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "reducers/user";
-
+import JweetDetail from "routes/JweetDetail";
 // eslint-disable-next-line import/no-anonymous-default-export
 const AppRouter = (props) => {
 	const isLoggedIn = props.isLoggedIn;
@@ -42,6 +42,7 @@ const AppRouter = (props) => {
 							<Route exact path="/home">
 								<Home />
 							</Route>
+							<Route exact path="/jweet/:id" component={JweetDetail} />
 							<Route path="/profile/:type/:id" component={Profile} />
 							<Redirect from="*" to="/" />
 						</>

@@ -51,6 +51,7 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 				createdAt: Date.now(),
 				creatorId: currentUser.uid,
 				like: [],
+				reply: [],
 				attachmentUrl,
 			};
 			setJweet("");
