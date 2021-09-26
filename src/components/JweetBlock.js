@@ -208,194 +208,192 @@ const JweetBlock = (props) => {
 			class="w-full select-none z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4  border-b border-gray-200"
 		>
 			<>
-				<>
-					<div class="flex flex-col">
-						{loading ? (
-							<div class="h-16 w-16 p-2 pt-4">
-								<Avatar
-									src={creatorInfo.photoURL}
-									sx={{ width: 48, height: 48 }}
-								/>
+				<div class="flex flex-col">
+					{loading ? (
+						<div class="h-16 w-16 p-2 pt-4">
+							<Avatar
+								src={creatorInfo.photoURL}
+								sx={{ width: 48, height: 48 }}
+							/>
 
-								{/* <img
+							{/* <img
 									
 									class="h-full object-cover rounded-full cursor-pointer hover:opacity-60"
 									alt="img"
 								/> */}
+						</div>
+					) : (
+						<div class="h-16 w-16 p-2">
+							<Skeleton variant="circular">
+								<Avatar sx={{ width: 48, height: 48 }} />
+							</Skeleton>
+						</div>
+					)}
+				</div>
+				<div class="w-full flex flex-col pl-2">
+					{loading ? (
+						<div class="w-full flex flex-row mr-2 justify-between items-center">
+							<div class="flex flex-row">
+								<h1 class="text-base font-bold mr-4">
+									{creatorInfo.displayName}
+								</h1>
+								<p class="text-gray-500">
+									@{creatorInfo.email ? creatorInfo.email.split("@")[0] : ""}
+								</p>
 							</div>
-						) : (
-							<div class="h-16 w-16 p-2">
-								<Skeleton variant="circular">
-									<Avatar sx={{ width: 48, height: 48 }} />
-								</Skeleton>
-							</div>
-						)}
-					</div>
-					<div class="w-full flex flex-col pl-2">
-						{loading ? (
-							<div class="w-full flex flex-row mr-2 justify-between items-center">
-								<div class="flex flex-row">
-									<h1 class="text-base font-bold mr-4">
-										{creatorInfo.displayName}
-									</h1>
-									<p class="text-gray-500">
-										@{creatorInfo.email ? creatorInfo.email.split("@")[0] : ""}
-									</p>
-								</div>
-								{props.type !== "explore" ? (
-									<div
-										ref={funcRef}
+							{props.type !== "explore" ? (
+								<div
+									ref={funcRef}
+									id="except"
+									class={
+										"cursor-pointer transition delay-50 duration-300 rounded-full p-2 relative " +
+										(jweet.creatorId === currentUser.uid
+											? "hover:bg-purple-100"
+											: "")
+									}
+								>
+									<HiOutlineDotsHorizontal
 										id="except"
-										class={
-											"cursor-pointer transition delay-50 duration-300 rounded-full p-2 relative " +
-											(jweet.creatorId === currentUser.uid
-												? "hover:bg-purple-100"
-												: "")
-										}
-									>
-										<HiOutlineDotsHorizontal
+										onClick={toggleFunc}
+										size={28}
+									/>
+									{func && (
+										<div
+											ref={dotRef}
 											id="except"
-											onClick={toggleFunc}
-											size={28}
-										/>
-										{func && (
+											class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl"
+										>
 											<div
-												ref={dotRef}
-												id="except"
-												class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl"
+												onClick={handleJweetOpen}
+												class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-t-md"
 											>
-												<div
-													onClick={handleJweetOpen}
-													class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-t-md"
-												>
-													<RiEdit2Line class="w-12" size={20} />
-													<div class="flex-1">Edit Jweet</div>
-												</div>
-												<div
-													onClick={handleCheckOpen}
-													class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-b-md"
-												>
-													<AiTwotoneDelete class="w-12" size={20} />
-													<div class="flex-1">Delete Jweet</div>
-												</div>
+												<RiEdit2Line class="w-12" size={20} />
+												<div class="flex-1">Edit Jweet</div>
 											</div>
-										)}
-									</div>
-								) : (
-									""
-								)}
-							</div>
-						) : (
-							<Skeleton width="100%">
-								<div class="h-8"></div>
-							</Skeleton>
-						)}
-						{/* <div class="w-full h-auto ">{jweet.text}</div> */}
-						{loading ? (
-							<>
-								<div class="w-full h-auto">
-									<div class="w-full h-auto resize-none outline-none cursor-pointer bg-transparent whitespace-pre	">
-										{jweet.text}
-									</div>
+											<div
+												onClick={handleCheckOpen}
+												class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-b-md"
+											>
+												<AiTwotoneDelete class="w-12" size={20} />
+												<div class="flex-1">Delete Jweet</div>
+											</div>
+										</div>
+									)}
 								</div>
-								{jweet.attachmentUrl !== "" && (
-									<div class="w-full mt-4 mb-2 pr-4 ">
-										<img
-											onClick={handlePhotoOpen}
-											ref={exceptRef}
-											src={jweet.attachmentUrl}
-											class="max-h-60 object-cover rounded-xl border border-gray-200 shadow-lg"
-											alt="attachment"
-										/>
-									</div>
-								)}
-							</>
-						) : (
-							<Skeleton width="100%">
-								<div class="w-full h-24  resize-none outline-none cursor-pointer bg-transparent whitespace-pre	"></div>
-							</Skeleton>
-						)}
+							) : (
+								""
+							)}
+						</div>
+					) : (
+						<Skeleton width="100%">
+							<div class="h-8"></div>
+						</Skeleton>
+					)}
+					{/* <div class="w-full h-auto ">{jweet.text}</div> */}
+					{loading ? (
+						<>
+							<div class="break-all w-full h-auto">
+								<p class="w-full h-auto resize-none outline-none cursor-pointer bg-transparent whitespace-pre-wrap break-words">
+									{jweet.text}
+								</p>
+							</div>
+							{jweet.attachmentUrl !== "" && (
+								<div class="w-full mt-4 mb-2 pr-4 ">
+									<img
+										onClick={handlePhotoOpen}
+										ref={exceptRef}
+										src={jweet.attachmentUrl}
+										class="max-h-80 w-full object-cover rounded-xl border border-gray-200 shadow-lg"
+										alt="attachment"
+									/>
+								</div>
+							)}
+						</>
+					) : (
+						<Skeleton width="100%">
+							<div class="w-full h-24  resize-none outline-none cursor-pointer bg-transparent whitespace-pre	"></div>
+						</Skeleton>
+					)}
 
-						{loading && props.type !== "explore" ? (
-							<div id="except" class="w-full flex flex-row items-center mt-4 ">
+					{loading && props.type !== "explore" ? (
+						<div id="except" class="w-full flex flex-row items-center mt-4 ">
+							<div
+								onClick={handleReplyOpen}
+								ref={replyRef}
+								id="except"
+								class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-purple-500"
+							>
 								<div
-									onClick={handleReplyOpen}
-									ref={replyRef}
 									id="except"
-									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-purple-500"
+									class="rounded-full transition delay-50 duration-300 hover:bg-purple-100 mt-1 mr-1 p-2"
 								>
-									<div
-										id="except"
-										class="rounded-full transition delay-50 duration-300 hover:bg-purple-100 mt-1 mr-1 p-2"
-									>
-										<BsChat size={16} />
-									</div>
-									<p id="except" class="text-sm flex flex-row items-center">
-										{jweet.reply.length}
-									</p>
+									<BsChat size={16} />
 								</div>
+								<p id="except" class="text-sm flex flex-row items-center">
+									{jweet.reply.length}
+								</p>
+							</div>
+							<div
+								ref={reJweetRef}
+								id="except"
+								class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-green-500"
+							>
 								<div
-									ref={reJweetRef}
 									id="except"
-									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-green-500"
+									class="rounded-full transition delay-50 duration-300 hover:bg-green-100 mt-1 mr-1 p-2"
 								>
-									<div
-										id="except"
-										class="rounded-full transition delay-50 duration-300 hover:bg-green-100 mt-1 mr-1 p-2"
-									>
-										<AiOutlineRetweet size={16} />
-									</div>
-									<p id="except" class="text-sm flex flex-row items-center">
-										0
-									</p>
+									<AiOutlineRetweet size={16} />
 								</div>
+								<p id="except" class="text-sm flex flex-row items-center">
+									0
+								</p>
+							</div>
+							<div
+								onClick={toggleLike}
+								ref={likeRef}
+								id="except"
+								class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-red-500"
+							>
 								<div
-									onClick={toggleLike}
-									ref={likeRef}
 									id="except"
-									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-red-500"
+									class="rounded-full transition delay-50 duration-300 hover:bg-red-100 mt-1 mr-1 p-2"
 								>
-									<div
-										id="except"
-										class="rounded-full transition delay-50 duration-300 hover:bg-red-100 mt-1 mr-1 p-2"
-									>
-										{like ? (
-											<AiTwotoneHeart size={16} class="text-red-500" />
-										) : (
-											<AiOutlineHeart size={16} />
-										)}
-									</div>
-									<p id="except" class="text-sm flex flex-row items-center">
-										{jweet.like.length}
-									</p>
+									{like ? (
+										<AiTwotoneHeart size={16} class="text-red-500" />
+									) : (
+										<AiOutlineHeart size={16} />
+									)}
 								</div>
+								<p id="except" class="text-sm flex flex-row items-center">
+									{jweet.like.length}
+								</p>
+							</div>
+							<div
+								onClick={toggleBookmark}
+								ref={bookmarkRef}
+								id="except"
+								class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-blue-500"
+							>
 								<div
-									onClick={toggleBookmark}
-									ref={bookmarkRef}
 									id="except"
-									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-blue-500"
+									class="rounded-full transition delay-50 duration-300 hover:bg-blue-100 mt-1 mr-1 p-2"
 								>
-									<div
-										id="except"
-										class="rounded-full transition delay-50 duration-300 hover:bg-blue-100 mt-1 mr-1 p-2"
-									>
-										{bookmark ? (
-											<MdBookmark size={16} class="text-blue-500" />
-										) : (
-											<MdBookmarkBorder size={16} />
-										)}
-									</div>
+									{bookmark ? (
+										<MdBookmark size={16} class="text-blue-500" />
+									) : (
+										<MdBookmarkBorder size={16} />
+									)}
 								</div>
 							</div>
-						) : props.type !== "explore" ? (
-							<Skeleton width="100%">
-								<div class="w-full h-12  resize-none outline-none cursor-pointer bg-transparent whitespace-pre	"></div>
-							</Skeleton>
-						) : (
-							""
-						)}
-					</div>
-				</>
+						</div>
+					) : props.type !== "explore" ? (
+						<Skeleton width="100%">
+							<div class="w-full h-12  resize-none outline-none cursor-pointer bg-transparent whitespace-pre	"></div>
+						</Skeleton>
+					) : (
+						""
+					)}
+				</div>
 				<Modal
 					open={replyOpen}
 					ref={modalRef}

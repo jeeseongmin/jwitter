@@ -57,7 +57,7 @@ const RecommendBlock = () => {
 			window.scrollTo(0, 0);
 
 			if (type === "like") history.push("/popular");
-			else history.push("/explore");
+			else history.push("/explore/jweets");
 			setShow(5);
 		}
 	};
@@ -90,7 +90,7 @@ const RecommendBlock = () => {
 				setLoading(true);
 			}
 		);
-	}, [type]);
+	}, [type, show]);
 
 	const getLikeList = async () => {
 		await sortedJweets.sort(function (a, b) {
@@ -168,18 +168,20 @@ const RecommendBlock = () => {
 								})}
 							</div>
 						)}
-						<div class="w-full my-2">
-							{show === 5 || show === 10 ? (
-								<p
-									onClick={showMore}
-									class="px-4 text-sm font-bold cursor-pointer text-blue-500"
-								>
-									show more...
-								</p>
-							) : (
-								""
-							)}
-						</div>
+						{sortedJweets.length >= 5 && (
+							<div class="w-full my-2">
+								{show === 5 || show === 10 ? (
+									<p
+										onClick={showMore}
+										class="px-4 text-sm font-bold cursor-pointer text-blue-500"
+									>
+										show more...
+									</p>
+								) : (
+									""
+								)}
+							</div>
+						)}
 					</>
 				) : (
 					<div class="h-full py-4 flex-1 flex flex-row justify-center items-center">

@@ -48,15 +48,16 @@ const RecommendUserBlock = () => {
 	const toggleRefresh = () => setRefresh(!refresh);
 
 	const showMore = () => {
-		if (show === 5) setShow(10);
-		else if (show === 10) {
-			window.scrollTo(0, 0);
+		history.push("/explore/users");
+		// if (show === 5) setShow(10);
+		// else if (show === 10) {
+		// 	window.scrollTo(0, 0);
 
-			if (type === "like") history.push("/popular");
-			// else if(type === "user") history.push("/profile/jweet/"+)
-			else history.push("/explore");
-			setShow(5);
-		}
+		// 	if (type === "like") history.push("/popular");
+		// 	// else if(type === "user") history.push("/profile/jweet/"+)
+		// 	else history.push("/explore");
+		// 	setShow(5);
+		// }
 	};
 
 	useEffect(() => {
@@ -105,18 +106,14 @@ const RecommendUserBlock = () => {
 								}
 							})}
 						</div>
-						{/* <div class="w-full my-2">
-							{users.length * 1 >= 5 && (show === 5 || show === 10) ? (
-								<p
-									onClick={showMore}
-									class="px-4 text-sm font-bold cursor-pointer text-blue-500"
-								>
-									show more...
-								</p>
-							) : (
-								""
-							)}
-						</div> */}
+						<div class="w-full my-2">
+							<p
+								onClick={showMore}
+								class="px-4 text-sm font-bold cursor-pointer text-blue-500"
+							>
+								show more...
+							</p>
+						</div>
 					</>
 				) : (
 					<div class="h-full py-4 flex-1 flex flex-row justify-center items-center">

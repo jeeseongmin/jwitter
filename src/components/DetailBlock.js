@@ -226,10 +226,10 @@ const DetailBlock = (props) => {
 						</div>
 						<div class="w-full flex flex-col pl-2">
 							{/* <div class="w-full h-auto ">{jweet.text}</div> */}
-							<div class="w-full h-auto">
-								<div class="w-full h-auto resize-none outline-none bg-transparent whitespace-pre">
+							<div class="break-all w-full h-auto">
+								<p class=" w-full h-auto resize-none outline-none bg-transparent whitespace-pre-wrap break-words">
 									{jweet.text}
-								</div>
+								</p>
 							</div>
 							{jweet.attachmentUrl !== "" && (
 								<div class="w-full mt-4 mb-2 pr-4 ">

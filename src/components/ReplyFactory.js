@@ -199,17 +199,22 @@ const ReplyFactory = ({ id, isModal, handleReplyClose }) => {
 							>
 								<IoImageOutline size={20} />
 							</div>
-							<div
-								onClick={toggleEmoji}
-								class="p-2 transition delay-50 duration-300 hover:bg-purple-100 rounded-full blur-md cursor-pointer"
-							>
-								<GrEmoji size={20} />
-							</div>
-							{emojiClick && (
-								<div ref={emojiRef} class="absolute top-10">
+							<div ref={emojiRef}>
+								<div
+									onClick={toggleEmoji}
+									class="p-2 transition delay-50 duration-300 hover:bg-purple-100 rounded-full blur-md cursor-pointer"
+								>
+									<GrEmoji size={20} />
+								</div>
+								<div
+									class={
+										"absolute top-10 select-none " +
+										(emojiClick ? "block" : "hidden")
+									}
+								>
 									<Picker onEmojiClick={onEmojiClick} />
 								</div>
-							)}
+							</div>
 						</div>
 					)}
 					<div>

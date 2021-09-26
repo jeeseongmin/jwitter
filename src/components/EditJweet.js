@@ -109,7 +109,7 @@ const EditJweet = ({ _jweet, handleJweetClose }) => {
 						/>
 					</div>
 				</div>
-				<form onSubmit={onSubmit} class="w-full flex flex-col pl-2 pb-2">
+				<form onSubmit={onSubmit} class="w-full flex flex-col px-4 pb-2">
 					<div class="w-full border-b border-gray-200 mb-2">
 						<textarea
 							type="text"
@@ -122,11 +122,7 @@ const EditJweet = ({ _jweet, handleJweetClose }) => {
 						/>
 						{attachment && (
 							<div class="w-full h-96 relative">
-								<img
-									src={attachment}
-									class="w-full h-full object-cover"
-									alt="preview"
-								/>
+								<img src={attachment} class="h-60 object-cover" alt="preview" />
 								<div
 									class="absolute left-0 top-0 w-auto h-auto opacity-70 cursor-pointer"
 									onClick={clearAttachment}

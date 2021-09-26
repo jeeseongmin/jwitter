@@ -50,7 +50,7 @@ const Home = () => {
 
 	return (
 		<div class="flex-1 flex flex-col pl-64">
-			<div class="max-16 px-4 py-2 font-bold text-xl flex justify-between items-center border-b border-gray-200">
+			<div class="px-4 py-2 font-bold text-xl flex justify-between items-center border-b border-gray-200">
 				<h1 class="cursor-pointer">Home</h1>
 				<div class="hover:bg-gray-200 transition delay-50 duration-300 rounded-full p-2">
 					<MdSettings size={24} class="cursor-pointer" />

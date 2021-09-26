@@ -97,6 +97,11 @@ const Popular = () => {
 		return () => setLoading(false); // cleanup function을 이용
 	}, []);
 
+	useEffect(() => {
+		if (window.location.href.includes("jweets")) setSelected(1);
+		else setSelected(2);
+	}, [window.location.href]);
+
 	const onSelected = (num) => {
 		window.scrollTo(0, 0);
 		setSelected(num);
@@ -110,10 +115,10 @@ const Popular = () => {
 						<div class="font-bold text-xl flex flex-row items-center">
 							<HiHashtag class="text-purple-700 mr-1" /> Explore
 						</div>
-						{selected === 1 && (
+						{(selected === 1 || window.location.href.includes("jweets")) && (
 							<div class="text-xs">Jweets are randomly selected</div>
 						)}
-						{selected === 2 && (
+						{(selected === 2 || window.location.href.includes("users")) && (
 							<div class="text-xs">Users are randomly selected</div>
 						)}
 					</div>

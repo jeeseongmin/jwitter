@@ -11,16 +11,16 @@ const SearchUserBlock = ({ user, setFocus }) => {
 			<div class="h-full p-2">
 				<img
 					src={user.photoURL}
-					class="h-full rounded-full object-cover mr-2"
+					class="w-12 rounded-full object-cover mr-2"
 					alt="photourl"
 				/>
 			</div>
-			<div class="flex flex-col justify-center">
+			<div class="w-full flex flex-col justify-center">
 				<p>
 					<b>{user.displayName}</b>
 				</p>
 				<p class="text-sm text-gray-500">@{user.email.split("@")[0]}</p>
-				<p class="text-xs text-gray-500">
+				<p class="text-xs text-gray-500 overflow-ellipsis overflow-hidden leading-5">
 					{user.description !== "" ? user.description : ""}
 				</p>
 			</div>

@@ -74,7 +74,7 @@ const UserBlock = (props) => {
 								<p class="text-gray-500">
 									@{user.email ? user.email.split("@")[0] : ""}
 								</p>
-								<div class="max-w-lg md:max-w-sm xl:max-w-xl text-lg">
+								<div class="max-w-lg md:max-w-sm xl:max-w-xl text-md">
 									<p class="w-full truncate">{user.description}</p>
 								</div>
 							</div>
