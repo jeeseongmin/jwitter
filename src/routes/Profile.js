@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { auth, db } from "mybase";
 import { useHistory, Switch, Route, Link } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
@@ -19,6 +19,11 @@ import { useDispatch, useSelector } from "react-redux";
 import JweetBlock from "components/JweetBlock";
 import LikeJweets from "components/LikeJweets";
 import MyJweets from "components/MyJweets";
+import Modal from "@mui/material/Modal";
+import { GrClose } from "react-icons/gr";
+import { MdCameraEnhance } from "react-icons/md";
+import EditProfile from "components/EditProfile";
+import bgimg from "image/bgimg.jpg";
 
 const Profile = ({ match }) => {
 	const uid = match.params.id;
@@ -26,32 +31,33 @@ const Profile = ({ match }) => {
 	const history = useHistory();
 	const [info, setInfo] = useState({});
 	const [myJweets, setMyJweets] = useState([]);
-	const [allJweets, setAllJweets] = useState([]);
-	const [likeJweets, setLikeJweets] = useState([]);
+	const [editState, setEditState] = useState(false);
+	const toggleEditState = () => setEditState(!editState);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const [selected, setSelected] = useState(1);
+	const fileRef = useRef();
+	const [attachment, setAttachment] = useState(currentUser.photoURL);
+
+	const [editModal, setEditModal] = useState(false);
+	const editModalOpen = () => setEditModal(true);
+	const editModalClose = () => {
+		setEditModal(false);
+	};
 
 	const getMyInfo = async () => {
-		const docRef = await doc(db, "users", uid);
-		await getDoc(docRef).then((snap) => {
-			if (snap.exists()) {
-				setInfo(snap.data());
-				setLoading(true);
-			} else {
-				// doc.data() will be undefined in this case
-				console.log("No such document!");
-			}
+		await onSnapshot(doc(db, "users", uid), (doc) => {
+			setInfo(doc.data());
+			setLoading(true);
 		});
 	};
 
 	const getJweets = async () => {
 		const q = query(collection(db, "jweets"), where("creatorId", "==", uid));
-
-		const querySnapshot = await getDocs(q);
-		querySnapshot.forEach((doc) => {
-			// doc.data() is never undefined for query doc snapshots
-			const cp = myJweets;
-			cp.push(doc.data());
+		onSnapshot(q, (querySnapshot) => {
+			const cp = [];
+			querySnapshot.forEach((doc) => {
+				cp.push(doc.data());
+			});
 			setMyJweets(cp);
 		});
 	};
@@ -60,7 +66,7 @@ const Profile = ({ match }) => {
 		setSelected(1);
 		getMyInfo();
 		getJweets();
-	}, [uid]);
+	}, [uid, editState]);
 
 	return (
 		<>
@@ -80,19 +86,32 @@ const Profile = ({ match }) => {
 							</div>
 						</div>
 						<div class="w-full flex flex-col relative">
-							<div class="h-48 w-full bg-purple-100"></div>
-							{uid === currentUser.uid && (
-								<div class="h-16 w-full flex flex-row-reverse items-center pr-4">
+							<div class="h-48 w-full ">
+								<img
+									src={bgimg}
+									alt="bgimg"
+									class="w-full h-full object-cover"
+								/>
+							</div>
+							{uid === currentUser.uid ? (
+								<div
+									onClick={editModalOpen}
+									class="h-16 w-full flex flex-row-reverse items-center pr-4"
+								>
 									<div class="cursor-pointer font-bold text-base border transition delay-50 duration-300 border-gray-300 text-gray-600 rounded-full flex justify-center items-center px-4 py-2 hover:bg-gray-200">
 										Edit Profile
 									</div>
 								</div>
+							) : (
+								<div class="h-16 w-full flex flex-row-reverse items-center pr-4">
+									<div class="cursor-pointer font-bold text-base rounded-full flex justify-center items-center px-4 py-2 "></div>
+								</div>
 							)}
-							<div class="absolute w-36 h-36 left-4 bottom-2">
+							<div class="absolute w-32 h-32 left-4 bottom-2">
 								<div class="border-4 border-white rounded-full">
 									<img
 										src={info.photoURL}
-										class="w-full h-full object-cover rounded-full"
+										class="w-full h-32 object-cover rounded-full"
 										alt="img"
 									/>
 								</div>
@@ -150,6 +169,12 @@ const Profile = ({ match }) => {
 					<CircularProgress />
 				</div>
 			)}
+			<EditProfile
+				editModal={editModal}
+				editModalOpen={editModalOpen}
+				editModalClose={editModalClose}
+				toggleEditState={toggleEditState}
+			/>
 		</>
 	);
 };

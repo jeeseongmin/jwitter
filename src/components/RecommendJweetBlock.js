@@ -32,11 +32,11 @@ const RecommendBlock = () => {
 	const [loading, setLoading] = useState(false);
 	const [show, setShow] = useState(5);
 	// reply 모달
-	const [modalOpen, setModalOpen] = useState(false);
 	const [sortedJweets, setSortedJweets] = useState([]);
 	const [jweets, setJweets] = useState([]);
 	const [users, setUsers] = useState([]);
 	const [randomIndex, setRandomIndex] = useState([]);
+	const [modalOpen, setModalOpen] = useState(false);
 	const handleModalOpen = () => setModalOpen(true);
 	const handleModalClose = () => {
 		setModalOpen(false);
@@ -46,6 +46,7 @@ const RecommendBlock = () => {
 	const [type, setType] = useState("");
 
 	const toggleType = () => {
+		setShow(5);
 		if (type === "like") setType("random");
 		else setType("like");
 	};
@@ -57,6 +58,7 @@ const RecommendBlock = () => {
 
 			if (type === "like") history.push("/popular");
 			else history.push("/explore");
+			setShow(5);
 		}
 	};
 
@@ -121,10 +123,10 @@ const RecommendBlock = () => {
 
 	return (
 		<>
-			<div class="py-3 border border-gray-100 bg-gray-100 w-full h-auto mt-2 rounded-xl">
+			<div class="select-none py-3 border border-gray-100 bg-gray-100 w-full h-auto mt-2 rounded-xl">
 				<div class="px-4 flex flex-row justify-between items-center">
 					<p class="text-lg mb-2">
-						{type === "like" && <b>Popular Jweets</b>}
+						{(type === "" || type === "like") && <b>Popular Jweets</b>}
 						{type === "random" && <b>Random Jweets</b>}
 					</p>
 					<div
@@ -141,7 +143,13 @@ const RecommendBlock = () => {
 							<div class="flex-col">
 								{likeList.map((element, index) => {
 									if (index < show) {
-										return <RecommendJweet jweet={element} users={users} />;
+										return (
+											<RecommendJweet
+												key={element.id}
+												jweet={element}
+												users={users}
+											/>
+										);
 									}
 								})}
 							</div>
@@ -149,7 +157,13 @@ const RecommendBlock = () => {
 							<div class="flex-col">
 								{randomList.map((element, index) => {
 									if (index < show) {
-										return <RecommendJweet jweet={element} users={users} />;
+										return (
+											<RecommendJweet
+												key={element.id}
+												jweet={element}
+												users={users}
+											/>
+										);
 									}
 								})}
 							</div>

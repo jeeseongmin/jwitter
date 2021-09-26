@@ -18,9 +18,13 @@ const RecommendJweet = ({ jweet, users }) => {
 		setFilteredUser(_filteredUser);
 	}, []);
 
+	const goPage = () => {
+		history.push("/jweet/" + jweet.id);
+		window.scrollTo(0, 0);
+	};
 	return (
 		<div
-			onClick={() => history.push("/jweet/" + jweet.id)}
+			onClick={goPage}
 			class="pl-2 pr-4 py-1 select-none cursor-pointer flex flex-col  hover:bg-gray-200"
 		>
 			<div class="flex flex-row h-12 items-center">

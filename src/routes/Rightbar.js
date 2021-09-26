@@ -17,7 +17,8 @@ import {
 import { auth, db } from "mybase";
 import SearchUserBlock from "components/SearchUserBlock";
 import SearchJweetBlock from "components/SearchJweetBlock";
-import RecommendBlock from "components/RecommendBlock";
+import RecommendJweetBlock from "components/RecommendJweetBlock";
+import RecommendUserBlock from "components/RecommendUserBlock";
 
 const Rightbar = () => {
 	const [loading, setLoading] = useState(false);
@@ -191,7 +192,9 @@ const Rightbar = () => {
 					</div>
 				)}
 			</div>
-			<RecommendBlock jweets={jweets} users={users} />
+			<RecommendUserBlock jweets={jweets} users={users} />
+			<div class="w-full mb-2"></div>
+			<RecommendJweetBlock jweets={jweets} users={users} />
 		</div>
 	);
 };

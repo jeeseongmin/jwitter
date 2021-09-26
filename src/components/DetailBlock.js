@@ -4,7 +4,7 @@ import Modal from "@mui/material/Modal";
 import Snackbar from "@mui/material/Snackbar";
 import EditJweet from "components/EditJweet";
 import ImageModal from "components/ImageModal";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { db, storage } from "mybase";
 import React, { useEffect, useRef, useState } from "react";
@@ -36,11 +36,13 @@ const DetailBlock = (props) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const funcRef = useRef();
 	const [func, setFunc] = useState(false);
-	const [like, setLike] = useState(jweet.like.includes(currentUser.uid));
+	const [like, setLike] = useState(false);
 	const [bookmark, setBookmark] = useState(false);
 
 	const [creatorInfo, setCreatorInfo] = useState({});
-	const toggleFunc = () => setFunc(!func);
+	const toggleFunc = () => {
+		if (jweet.creatorId === currentUser.uid) setFunc(!func);
+	};
 
 	// jweet 모달
 	const [jweetOpen, setJweetOpen] = useState(false);
@@ -97,16 +99,11 @@ const DetailBlock = (props) => {
 	}, [func]);
 
 	useEffect(() => {
-		const docRef = doc(db, "users", jweet.creatorId);
-		getDoc(docRef).then((snap) => {
-			if (snap.exists()) {
-				setCreatorInfo(snap.data());
-				setLoading(true);
-			} else {
-				console.log("No such document!");
-			}
+		onSnapshot(doc(db, "users", jweet.creatorId), (doc) => {
+			setCreatorInfo(doc.data());
+			setLoading(true);
 		});
-	}, []);
+	}, [uid]);
 
 	const toggleBookmark = async () => {
 		bookmarkClick();
@@ -204,12 +201,7 @@ const DetailBlock = (props) => {
 												: "")
 										}
 									>
-										<HiOutlineDotsHorizontal
-											onClick={
-												jweet.creatorId === currentUser.uid ? toggleFunc : ""
-											}
-											size={28}
-										/>
+										<HiOutlineDotsHorizontal onClick={toggleFunc} size={28} />
 										{func && (
 											<div class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl">
 												<div

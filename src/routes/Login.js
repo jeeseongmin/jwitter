@@ -1,22 +1,19 @@
-import React, { useState } from "react";
-import { db, app, auth } from "mybase";
+import Modal from "@mui/material/Modal";
+import AuthForm from "components/AuthForm";
 import {
-	createUserWithEmailAndPassword,
-	signInWithEmailAndPassword,
-	GoogleAuthProvider,
 	GithubAuthProvider,
+	GoogleAuthProvider,
 	signInWithPopup,
 } from "firebase/auth";
-import Modal from "@mui/material/Modal";
-import { useHistory } from "react-router-dom";
-import AuthForm from "components/AuthForm";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import background from "image/background.jpg";
-import logo from "image/logo.png";
 import github from "image/github.jpg";
 import google from "image/google.png";
-import { set, ref, onValue, getDatabase, get, child } from "firebase/database";
-import { doc, getDoc, addDoc, collection, setDoc } from "firebase/firestore";
-import { useDispatch, useSelector } from "react-redux";
+import logo from "image/logo.png";
+import { auth, db } from "mybase";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { setCurrentUser, setLoginToken } from "reducers/user";
 
 const Login = () => {
@@ -27,7 +24,20 @@ const Login = () => {
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 	const toggleLogin = () => setLogin(!login);
+	const [modalOpen, setModalOpen] = useState(false);
+	const handleModalOpen = () => setModalOpen(true);
+	const handleModalClose = () => {
+		setModalOpen(false);
+	};
 
+	const [editState, setEditState] = useState(false);
+	const toggleEditState = () => setEditState(!editState);
+
+	const [editModal, setEditModal] = useState(false);
+	const editModalOpen = () => setEditModal(true);
+	const editModalClose = () => {
+		setEditModal(false);
+	};
 	const onSocialClick = async (e) => {
 		const name = e.target.name;
 		let provider;
@@ -246,6 +256,25 @@ const Login = () => {
 					<AuthForm isLogin={login} />
 				</div>
 			</Modal>
+			{/* <Modal
+				open={modalOpen}
+				onClose={handleModalClose}
+				aria-labelledby="modal-modal-title"
+				aria-describedby="modal-modal-description"
+			>
+				<div class="outline-none absolute border border-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 origin-center w-96 h-auto py-4 bg-white rounded-2xl flex flex-col justify-start items-start">
+					<div class="w-full flex flex-col">
+						<h1 class="px-8 text-xl font-bold mb-2">Profile 설정</h1>
+						<p></p>
+					</div>
+				</div>
+			</Modal>
+			<SettingProfile
+				editModal={editModal}
+				editModalOpen={editModalOpen}
+				editModalClose={editModalClose}
+				toggleEditState={toggleEditState}
+			/> */}
 		</div>
 	);
 };

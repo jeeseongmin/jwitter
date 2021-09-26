@@ -1,4 +1,5 @@
 import CircularProgress from "@material-ui/core/CircularProgress";
+import JweetBlock from "components/JweetBlock";
 import {
 	collection,
 	doc,
@@ -6,21 +7,16 @@ import {
 	onSnapshot,
 	orderBy,
 	query,
-	where,
 } from "firebase/firestore";
-import { db, firebase } from "mybase";
+import { db } from "mybase";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import JweetBlock from "components/JweetBlock";
 
 const Bookmark = () => {
 	const [loading, setLoading] = useState(false);
 	const [info, setInfo] = useState({});
 	const [filteredJweets, setFilteredJweets] = useState([]);
 	const currentUser = useSelector((state) => state.user.currentUser);
-	const [bookmarkList, setBookmarkList] = useState([]);
-	// const uid = match.params.id;
-	const [selected, setSelected] = useState(1);
 
 	const getMyInfo = async () => {
 		const docRef = await doc(db, "users", currentUser.uid);
@@ -29,7 +25,6 @@ const Bookmark = () => {
 				setInfo(snap.data());
 				setLoading(true);
 			} else {
-				// doc.data() will be undefined in this case
 				console.log("No such document!");
 			}
 		});
@@ -50,7 +45,6 @@ const Bookmark = () => {
 				setLoading(true);
 			}
 		);
-		console.log(filteredJweets);
 	}, [currentUser.bookmark]);
 
 	useEffect(() => {

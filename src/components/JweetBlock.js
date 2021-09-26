@@ -1,10 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import MuiAlert from "@mui/material/Alert";
+import Avatar from "@mui/material/Avatar";
 import Modal from "@mui/material/Modal";
+import Skeleton from "@mui/material/Skeleton";
+import Snackbar from "@mui/material/Snackbar";
 import EditJweet from "components/EditJweet";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import ImageModal from "components/ImageModal";
+import ReplyFactory from "components/ReplyFactory";
+import { deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { db, storage } from "mybase";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	AiOutlineHeart,
 	AiOutlineRetweet,
@@ -13,22 +18,13 @@ import {
 } from "react-icons/ai";
 import { BsChat } from "react-icons/bs";
 import { GrClose } from "react-icons/gr";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { MdBookmark, MdBookmarkBorder } from "react-icons/md";
+import { RiEdit2Line } from "react-icons/ri";
 // import firebase from "firebase/compat/app";
 import { useDispatch, useSelector } from "react-redux";
-
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { RiEdit2Line } from "react-icons/ri";
-import { Link, useHistory } from "react-router-dom";
-import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
+import { useHistory } from "react-router-dom";
 import { setCurrentUser } from "reducers/user";
-
-import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import MuiAlert from "@mui/material/Alert";
-import ImageModal from "components/ImageModal";
-import ReplyFactory from "components/ReplyFactory";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -45,7 +41,9 @@ const JweetBlock = (props) => {
 	const [bookmark, setBookmark] = useState(false);
 
 	const [creatorInfo, setCreatorInfo] = useState({});
-	const toggleFunc = () => setFunc(!func);
+	const toggleFunc = () => {
+		if (jweet.creatorId === currentUser.uid) setFunc(!func);
+	};
 
 	// jweet 모달
 	const [jweetOpen, setJweetOpen] = useState(false);
@@ -111,15 +109,9 @@ const JweetBlock = (props) => {
 	useEffect(() => {
 		setLike(jweet.like.includes(currentUser.uid));
 		setBookmark(currentUser.bookmark.includes(jweet.id));
-		const docRef = doc(db, "users", jweet.creatorId);
-		getDoc(docRef).then((snap) => {
-			if (snap.exists()) {
-				setCreatorInfo(snap.data());
-				setLoading(true);
-			} else {
-				// doc.data() will be undefined in this case
-				console.log("No such document!");
-			}
+		onSnapshot(doc(db, "users", jweet.creatorId), (doc) => {
+			setCreatorInfo(doc.data());
+			setLoading(true);
 		});
 	}, []);
 
@@ -216,22 +208,31 @@ const JweetBlock = (props) => {
 			class="w-full select-none z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4  border-b border-gray-200"
 		>
 			<>
-				{loading ? (
-					<>
-						<div class="flex flex-col">
-							<Link
-								to={"/profile/jweet/" + jweet.creatorId}
-								class="h-16 w-16 p-2"
-							>
-								<img
-									ref={profileRef}
+				<>
+					<div class="flex flex-col">
+						{loading ? (
+							<div class="h-16 w-16 p-2 pt-4">
+								<Avatar
 									src={creatorInfo.photoURL}
+									sx={{ width: 48, height: 48 }}
+								/>
+
+								{/* <img
+									
 									class="h-full object-cover rounded-full cursor-pointer hover:opacity-60"
 									alt="img"
-								/>
-							</Link>
-						</div>
-						<div class="w-full flex flex-col pl-2">
+								/> */}
+							</div>
+						) : (
+							<div class="h-16 w-16 p-2">
+								<Skeleton variant="circular">
+									<Avatar sx={{ width: 48, height: 48 }} />
+								</Skeleton>
+							</div>
+						)}
+					</div>
+					<div class="w-full flex flex-col pl-2">
+						{loading ? (
 							<div class="w-full flex flex-row mr-2 justify-between items-center">
 								<div class="flex flex-row">
 									<h1 class="text-base font-bold mr-4">
@@ -254,9 +255,7 @@ const JweetBlock = (props) => {
 									>
 										<HiOutlineDotsHorizontal
 											id="except"
-											onClick={
-												jweet.creatorId === currentUser.uid ? toggleFunc : ""
-											}
+											onClick={toggleFunc}
 											size={28}
 										/>
 										{func && (
@@ -284,23 +283,38 @@ const JweetBlock = (props) => {
 									</div>
 								}
 							</div>
-							{/* <div class="w-full h-auto ">{jweet.text}</div> */}
-							<div class="w-full h-auto">
-								<div class="w-full h-auto resize-none outline-none cursor-pointer bg-transparent whitespace-pre	">
-									{jweet.text}
+						) : (
+							<Skeleton width="100%">
+								<div class="h-8"></div>
+							</Skeleton>
+						)}
+						{/* <div class="w-full h-auto ">{jweet.text}</div> */}
+						{loading ? (
+							<>
+								<div class="w-full h-auto">
+									<div class="w-full h-auto resize-none outline-none cursor-pointer bg-transparent whitespace-pre	">
+										{jweet.text}
+									</div>
 								</div>
-							</div>
-							{jweet.attachmentUrl !== "" && (
-								<div class="w-full mt-4 mb-2 pr-4 ">
-									<img
-										onClick={handlePhotoOpen}
-										ref={exceptRef}
-										src={jweet.attachmentUrl}
-										class="w-full object-cover rounded-xl border border-gray-200 shadow-lg"
-										alt="attachment"
-									/>
-								</div>
-							)}
+								{jweet.attachmentUrl !== "" && (
+									<div class="w-full mt-4 mb-2 pr-4 ">
+										<img
+											onClick={handlePhotoOpen}
+											ref={exceptRef}
+											src={jweet.attachmentUrl}
+											class="w-full object-cover rounded-xl border border-gray-200 shadow-lg"
+											alt="attachment"
+										/>
+									</div>
+								)}
+							</>
+						) : (
+							<Skeleton width="100%">
+								<div class="w-full h-24  resize-none outline-none cursor-pointer bg-transparent whitespace-pre	"></div>
+							</Skeleton>
+						)}
+
+						{loading ? (
 							<div id="except" class="w-full flex flex-row items-center mt-4 ">
 								<div
 									onClick={handleReplyOpen}
@@ -371,13 +385,13 @@ const JweetBlock = (props) => {
 									</div>
 								</div>
 							</div>
-						</div>
-					</>
-				) : (
-					<div class="py-4 w-full flex justify-center">
-						<CircularProgress />
+						) : (
+							<Skeleton width="100%">
+								<div class="w-full h-12  resize-none outline-none cursor-pointer bg-transparent whitespace-pre	"></div>
+							</Skeleton>
+						)}
 					</div>
-				)}
+				</>
 				<Modal
 					open={replyOpen}
 					ref={modalRef}

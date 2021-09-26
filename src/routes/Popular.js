@@ -48,7 +48,6 @@ const Popular = () => {
 				setLoading(true);
 			}
 		);
-		console.log(filteredJweets);
 	}, []);
 
 	useEffect(() => {

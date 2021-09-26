@@ -22,9 +22,10 @@ import {
 import { GrClose } from "react-icons/gr";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { RiEdit2Line } from "react-icons/ri";
-// import firebase from "firebase/compat/app";
+import Avatar from "@mui/material/Avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
+import Skeleton from "@mui/material/Skeleton";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -135,116 +136,139 @@ const ReplyBlock = (props) => {
 	return (
 		<div class="w-full select-none z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4 border-r border-l border-b border-gray-200">
 			<>
-				{loading ? (
-					<>
-						<div class="flex flex-col">
-							<Link
-								to={"/profile/reply/" + reply.creatorId}
-								class="h-16 w-16 p-2"
-							>
-								<img
-									src={creatorInfo.photoURL}
+				<div class="flex flex-col">
+					{loading ? (
+						<Link
+							to={"/profile/reply/" + reply.creatorId}
+							class="h-16 w-16 p-2"
+						>
+							<Avatar
+								src={creatorInfo.photoURL}
+								sx={{ width: 48, height: 48 }}
+							/>
+
+							{/* <img
+									
 									class="h-full object-cover rounded-full cursor-pointer hover:opacity-60"
 									alt="img"
-								/>
-							</Link>
+								/> */}
+						</Link>
+					) : (
+						<div class="h-16 w-16 p-2">
+							<Skeleton variant="circular">
+								<Avatar sx={{ width: 48, height: 48 }} />
+							</Skeleton>
 						</div>
-						<div class="w-full flex flex-col pl-2">
-							<div class="w-full flex flex-row mr-2 justify-between items-center">
-								<div class="flex flex-row">
-									<h1 class="text-base font-bold mr-4">
-										{creatorInfo.displayName}
-									</h1>
-									<p class="text-gray-500">
-										@{creatorInfo.email ? creatorInfo.email.split("@")[0] : ""}
-									</p>
-								</div>
-								{
-									<div
-										ref={funcRef}
-										id="except"
-										class={
-											"cursor-pointer transition delay-50 duration-300 rounded-full p-2 relative " +
-											(reply.creatorId === currentUser.uid
-												? "hover:bg-purple-100"
-												: "")
-										}
-									>
-										<HiOutlineDotsHorizontal
-											id="except"
-											onClick={
-												reply.creatorId === currentUser.uid ? toggleFunc : ""
-											}
-											size={28}
-										/>
-										{func && (
-											<div
-												id="except"
-												class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl"
-											>
-												<div
-													onClick={handleReplyOpen}
-													class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-t-md"
-												>
-													<RiEdit2Line class="w-12" size={20} />
-													<div class="flex-1">Edit Reply</div>
-												</div>
-												<div
-													onClick={handleCheckOpen}
-													class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-b-md"
-												>
-													<AiTwotoneDelete class="w-12" size={20} />
-													<div class="flex-1">Delete Reply</div>
-												</div>
-											</div>
-										)}
-									</div>
-								}
+					)}
+				</div>
+				<div class="w-full flex flex-col pl-2">
+					{loading ? (
+						<div class="w-full flex flex-row mr-2 justify-between items-center">
+							<div class="flex flex-row">
+								<h1 class="text-base font-bold mr-4">
+									{creatorInfo.displayName}
+								</h1>
+								<p class="text-gray-500">
+									@{creatorInfo.email ? creatorInfo.email.split("@")[0] : ""}
+								</p>
 							</div>
-							{/* <div class="w-full h-auto ">{reply.text}</div> */}
-							<div class="w-full h-auto">
-								<div class="w-full h-auto resize-none outline-none cursor-pointer bg-transparent whitespace-pre	">
-									{reply.text}
-								</div>
-							</div>
-							{reply.attachmentUrl !== "" && (
-								<div class="w-full mt-4 mb-2 pr-4 ">
-									<img
-										onClick={handlePhotoOpen}
-										src={reply.attachmentUrl}
-										class="w-full object-cover rounded-xl border border-gray-200 shadow-lg"
-										alt="attachment"
-									/>
-								</div>
-							)}
-							<div id="except" class="w-full flex flex-row items-center mt-4 ">
+							{
 								<div
-									onClick={toggleLike}
+									ref={funcRef}
 									id="except"
-									class="w-1/2 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-red-500"
+									class={
+										"cursor-pointer transition delay-50 duration-300 rounded-full p-2 relative " +
+										(reply.creatorId === currentUser.uid
+											? "hover:bg-purple-100"
+											: "")
+									}
 								>
-									<div
+									<HiOutlineDotsHorizontal
 										id="except"
-										class="rounded-full transition delay-50 duration-300 hover:bg-red-100 mt-1 mr-1 p-2"
-									>
-										{reply.like.includes(currentUser.uid) ? (
-											<AiTwotoneHeart size={16} class="text-red-500" />
-										) : (
-											<AiOutlineHeart size={16} />
-										)}
-									</div>
-									<p id="except" class="text-sm flex flex-row items-center">
-										{reply.like.length}
-									</p>
+										onClick={
+											reply.creatorId === currentUser.uid ? toggleFunc : ""
+										}
+										size={28}
+									/>
+									{func && (
+										<div
+											id="except"
+											class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl"
+										>
+											<div
+												onClick={handleReplyOpen}
+												class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-t-md"
+											>
+												<RiEdit2Line class="w-12" size={20} />
+												<div class="flex-1">Edit Reply</div>
+											</div>
+											<div
+												onClick={handleCheckOpen}
+												class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-b-md"
+											>
+												<AiTwotoneDelete class="w-12" size={20} />
+												<div class="flex-1">Delete Reply</div>
+											</div>
+										</div>
+									)}
 								</div>
+							}
+						</div>
+					) : (
+						<Skeleton width="100%">
+							<div class="h-8"></div>
+						</Skeleton>
+					)}
+					{/* <div class="w-full h-auto ">{reply.text}</div> */}
+					{loading ? (
+						<div class="w-full h-auto">
+							<div class="w-full h-auto resize-none outline-none cursor-pointer bg-transparent whitespace-pre	">
+								{reply.text}
 							</div>
 						</div>
-					</>
-				) : (
-					<div class="py-4 w-full flex justify-center">
-						<CircularProgress />
-					</div>
-				)}
+					) : (
+						<Skeleton width="100%">
+							<div class="w-full h-24  resize-none outline-none cursor-pointer bg-transparent whitespace-pre	"></div>
+						</Skeleton>
+					)}
+					{reply.attachmentUrl !== "" && (
+						<div class="w-full mt-4 mb-2 pr-4 ">
+							<img
+								onClick={handlePhotoOpen}
+								src={reply.attachmentUrl}
+								class="w-full object-cover rounded-xl border border-gray-200 shadow-lg"
+								alt="attachment"
+							/>
+						</div>
+					)}
+					{loading ? (
+						<div id="except" class="w-full flex flex-row items-center mt-4 ">
+							<div
+								onClick={toggleLike}
+								id="except"
+								class="w-1/2 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-red-500"
+							>
+								<div
+									id="except"
+									class="rounded-full transition delay-50 duration-300 hover:bg-red-100 mt-1 mr-1 p-2"
+								>
+									{reply.like.includes(currentUser.uid) ? (
+										<AiTwotoneHeart size={16} class="text-red-500" />
+									) : (
+										<AiOutlineHeart size={16} />
+									)}
+								</div>
+								<p id="except" class="text-sm flex flex-row items-center">
+									{reply.like.length}
+								</p>
+							</div>
+						</div>
+					) : (
+						<Skeleton width="100%">
+							<div class="w-full h-8 resize-none outline-none cursor-pointer bg-transparent whitespace-pre	"></div>
+						</Skeleton>
+					)}
+				</div>
 				<Modal
 					open={replyOpen}
 					onClose={handleReplyClose}

@@ -37,21 +37,36 @@ const MyJweets = ({ match }) => {
 	// }, []);
 
 	useEffect(() => {
-		onSnapshot(
-			query(
-				collection(db, "jweets"),
-				orderBy("createdAt", "desc"),
-				where("creatorId", "==", uid)
-			),
-			(snapshot) => {
-				const _myJweet = snapshot.docs.map((doc) => ({
+		// onSnapshot(
+		// 	query(
+		// 		collection(db, "jweets"),
+		// 		orderBy("createdAt", "desc"),
+		// 		where("creatorId", "==", uid)
+		// 	),
+		// 	(snapshot) => {
+		// 		const _myJweet = snapshot.docs.map((doc) => ({
+		// 			id: doc.id,
+		// 			...doc.data(),
+		// 		}));
+		// 		setMyJweets(_myJweet);
+		// 		setLoading(true);
+		// 	}
+		// );
+		const q = query(
+			collection(db, "jweets"),
+			orderBy("createdAt", "desc"),
+			where("creatorId", "==", uid)
+		);
+		onSnapshot(q, (querySnapshot) => {
+			const cp = [];
+			querySnapshot.forEach((doc) => {
+				cp.push({
 					id: doc.id,
 					...doc.data(),
-				}));
-				setMyJweets(_myJweet);
-				setLoading(true);
-			}
-		);
+				});
+			});
+			setMyJweets(cp);
+		});
 	}, [uid]);
 
 	return (

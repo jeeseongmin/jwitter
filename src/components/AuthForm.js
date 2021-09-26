@@ -121,7 +121,13 @@ const AuthForm = ({ isLogin }) => {
 					type="submit"
 					value={isLogin ? "Log In" : "Create Account"}
 				/>
-				{error ? "올바른 이메일과 패스워드를 입력해주세요." : ""}
+				{error ? (
+					<p class="text-xs font-bold mt-1">
+						올바른 이메일과 패스워드를 입력해주세요.
+					</p>
+				) : (
+					""
+				)}
 			</form>
 		</>
 	);

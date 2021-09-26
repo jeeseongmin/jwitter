@@ -14,11 +14,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import MuiAlert from "@mui/material/Alert";
 import ImageModal from "components/ImageModal";
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 const EditJweet = ({ _jweet, handleJweetClose }) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
-	const Alert = React.forwardRef(function Alert(props, ref) {
-		return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-	});
 	const [jweet, setJweet] = useState(_jweet.text);
 	const [attachment, setAttachment] = useState(_jweet.attachmentUrl);
 	const textareaRef = useRef();

@@ -20,9 +20,7 @@ const Home = () => {
 
 	const [jweets, setJweets] = useState([]);
 
-	useEffect(() => {
-		return () => setLoading(false); // cleanup function을 이용
-	}, []);
+	useEffect(() => {}, []);
 
 	useEffect(() => {
 		onSnapshot(
@@ -36,6 +34,18 @@ const Home = () => {
 				setLoading(true);
 			}
 		);
+
+		// const q = query(collection(db, "jweets"), orderBy("createdAt", "desc"));
+		// onSnapshot(q, (querySnapshot) => {
+		// 	const cp = [];
+		// 	querySnapshot.forEach((doc) => {
+		// 		cp.push({
+		// 			id: doc.id,
+		// 			...doc.data(),
+		// 		});
+		// 	});
+		// 	setJweets(cp);
+		// });
 	}, []);
 
 	return (
@@ -49,8 +59,8 @@ const Home = () => {
 			<JweetFactory isModal={false} />
 			<div>
 				{jweets.length !== 0 ? (
-					jweets.map((jweet) => {
-						return <JweetBlock key={jweet.id} jweet={jweet} />;
+					jweets.map((jweet, index) => {
+						return <JweetBlock key={jweet.id} jweet={jweet} id={jweet.id} />;
 					})
 				) : loading ? (
 					<div class="w-full flex-1 flex justify-center items-center mt-8">

@@ -70,7 +70,6 @@ const Leftbar = () => {
 	}, [profile]);
 
 	useEffect(() => {
-		console.log("변했다!");
 		if (window.location.href.includes("explore")) {
 			setSelected(2);
 		} else if (window.location.href.includes("bookmark")) {
@@ -102,14 +101,14 @@ const Leftbar = () => {
 		<>
 			<div class="select-none w-64 pt-4 pr-4 h-full flex flex-col border-r border-gray-200 justify-between fixed">
 				<div class="flex flex-col">
-					<div class="h-16 mb-4">
+					<Link class="h-16 mb-4" to="/" onClick={() => setSelected(1)}>
 						<img
 							src={logo}
-							onClick={() => history.push("/")}
+							// onClick={() => history.push("/home")}
 							class="h-full px-4 py-3 object-cover hover:bg-purple-200 rounded-full cursor-pointer transition delay-50 duration-300 "
 							alt="logo"
 						/>
-					</div>
+					</Link>
 					<div class="flex flex-col w-full ">
 						{/* 기본 트윗 홈 */}
 						<div class="w-auto flex flex-row items-center">
@@ -234,7 +233,7 @@ const Leftbar = () => {
 								(profile ? "block" : "hidden")
 							}
 						>
-							<div class="absolute w-64 py-2 -right-4 bottom-2 border border-gray-300 shadow-lg rounded-3xl">
+							<div class="bg-white absolute w-64 py-2 -right-4 bottom-2 border border-gray-300 shadow-lg rounded-3xl">
 								<div class="border-b px-4 border-gray-300 h-16 w-full py-3 flex flex-row justify-between items-center">
 									<div class="h-full flex flex-row items-center ">
 										<div class="h-full ">

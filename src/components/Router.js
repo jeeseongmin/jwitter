@@ -21,6 +21,7 @@ import JweetDetail from "routes/JweetDetail";
 const AppRouter = (props) => {
 	const isLoggedIn = props.isLoggedIn;
 	const loginToken = useSelector((state) => state.user.loginToken);
+	const currentUser = useSelector((state) => state.user.currentUser);
 
 	return (
 		<Router>
@@ -28,12 +29,14 @@ const AppRouter = (props) => {
 			<div
 				class={
 					"w-full h-full " +
-					(loginToken === "login" ? "flex flex-row px-0 lg:px-36" : "")
+					(loginToken === "login" && currentUser
+						? "flex flex-row px-0 lg:px-36"
+						: "")
 				}
 			>
-				{loginToken === "login" && <Leftbar />}
+				{loginToken === "login" && currentUser && <Leftbar />}
 				<Switch>
-					{loginToken === "login" ? (
+					{loginToken === "login" && currentUser ? (
 						<>
 							<Route exact path="/">
 								<Home />
@@ -64,7 +67,7 @@ const AppRouter = (props) => {
 						</>
 					)}
 				</Switch>
-				{loginToken === "login" && <Rightbar />}
+				{loginToken === "login" && currentUser && <Rightbar />}
 			</div>
 		</Router>
 	);
