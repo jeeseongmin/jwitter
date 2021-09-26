@@ -84,17 +84,17 @@ const Profile = ({ match }) => {
 						<div class="w-full flex flex-col relative">
 							<div class="h-48 w-full ">
 								<img
-									src={bgimg}
+									src={info.bgURL ? info.bgURL : bgimg}
 									alt="bgimg"
 									class="w-full h-full object-cover"
 								/>
 							</div>
 							{uid === currentUser.uid ? (
-								<div
-									onClick={editModalOpen}
-									class="h-16 w-full flex flex-row-reverse items-center pr-4"
-								>
-									<div class="cursor-pointer font-bold text-base border transition delay-50 duration-300 border-gray-300 text-gray-600 rounded-full flex justify-center items-center px-4 py-2 hover:bg-gray-200">
+								<div class="h-16 w-full flex flex-row-reverse items-center pr-4">
+									<div
+										onClick={editModalOpen}
+										class="cursor-pointer font-bold text-base border transition delay-50 duration-300 border-gray-300 text-gray-600 rounded-full flex justify-center items-center px-4 py-2 hover:bg-gray-200"
+									>
 										Edit Profile
 									</div>
 								</div>
@@ -116,7 +116,7 @@ const Profile = ({ match }) => {
 						<div class="w-full flex flex-col pl-4 pr-4 mb-4">
 							<h1 class="font-bold text-xl">{info.displayName}</h1>
 							<p class="text-gray-400 mb-2">@{info.email.split("@")[0]}</p>
-							<p class="py-8 px-4 text-sm text-gray-500 border-t border-b border-gray-200">
+							<p class="py-8 px-2 text-sm text-gray-800 border-t border-b border-gray-200">
 								{info.description === ""
 									? "소개글이 없습니다."
 									: info.description}

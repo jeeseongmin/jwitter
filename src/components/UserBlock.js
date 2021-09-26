@@ -1,30 +1,10 @@
 import MuiAlert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
-import Modal from "@mui/material/Modal";
 import Skeleton from "@mui/material/Skeleton";
-import Snackbar from "@mui/material/Snackbar";
-import EditJweet from "components/EditJweet";
-import ImageModal from "components/ImageModal";
-import ReplyFactory from "components/ReplyFactory";
-import { deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
-import { db, storage } from "mybase";
 import React, { useEffect, useRef, useState } from "react";
-import {
-	AiOutlineHeart,
-	AiOutlineRetweet,
-	AiTwotoneDelete,
-	AiTwotoneHeart,
-} from "react-icons/ai";
-import { BsChat } from "react-icons/bs";
-import { GrClose } from "react-icons/gr";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { MdBookmark, MdBookmarkBorder } from "react-icons/md";
-import { RiEdit2Line } from "react-icons/ri";
 // import firebase from "firebase/compat/app";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { setCurrentUser } from "reducers/user";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;

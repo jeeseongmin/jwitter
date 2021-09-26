@@ -18,9 +18,20 @@ import { setCurrentUser, setLoginToken } from "reducers/user";
 import { CgList, CgMoreO } from "react-icons/cg";
 import { HiOutlineFire, HiFire } from "react-icons/hi";
 import { HiOutlineHashtag, HiHashtag } from "react-icons/hi";
+import Switch from "@mui/material/Switch";
+import useLocalStorage from "components/useLocalStorage";
 
 const Leftbar = () => {
 	const dispatch = useDispatch();
+
+	// const [isDark, setIsDark] = useState(localStorage.theme === "dark");
+
+	// const toggleMode = async () => {
+	// 	// console.log(localStorage.theme);
+	// 	await setIsDark(!isDark);
+	// 	localStorage.setItem("theme", isDark ? "light" : "dark");
+	// };
+
 	const [selected, setSelected] = useState(1);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const history = useHistory();
@@ -46,6 +57,10 @@ const Leftbar = () => {
 	const toggleProfile = () => setProfile(!profile);
 	const profileRef = useRef();
 
+	const [more, setMore] = useState(false);
+	const toggleMore = () => setMore(!more);
+	const moreRef = useRef();
+
 	const discardCheck = () => {
 		handleCheckOpen();
 	};
@@ -70,6 +85,20 @@ const Leftbar = () => {
 	}, [profile]);
 
 	useEffect(() => {
+		if (!more) return;
+		function handleClick(e) {
+			if (moreRef.current === null) {
+				return;
+			} else if (!moreRef.current.contains(e.target)) {
+				setMore(false);
+			}
+		}
+		window.addEventListener("click", handleClick);
+
+		return () => window.removeEventListener("click", handleClick);
+	}, [more]);
+
+	useEffect(() => {
 		if (window.location.href.includes("explore")) {
 			setSelected(2);
 		} else if (window.location.href.includes("bookmark")) {
@@ -92,6 +121,9 @@ const Leftbar = () => {
 				uid: "",
 				displayName: "",
 				email: "",
+				bookmark: [],
+				description: "",
+				bgURL: "",
 			})
 		);
 		history.push("/");
@@ -102,18 +134,45 @@ const Leftbar = () => {
 		setSelected(num);
 	};
 
+	// useEffect(() => {
+	// 	setIsDark(localStorage.theme === "dark");
+	// 	console.log("theme", window.localStorage.theme);
+	// 	var currentTheme = localStorage.getItem("theme");
+	// 	console.log("currentTheme", currentTheme);
+
+	// 	if (currentTheme !== null) {
+	// 		// $('html').addClass('dark');
+	// 		document.getElementById("html").classList.add("dark");
+	// 		console.log("1");
+	// 	} else if (currentTheme === "dark") {
+	// 		document.getElementById("html").classList.replace("light", "dark");
+	// 	} else {
+	// 		// $('html').removeClass('dark');
+	// 		console.log("2");
+	// 		document.getElementById("html").classList.replace("dark", "light");
+	// 	}
+	// }, [localStorage.getItem("theme")]);
+
 	return (
 		<>
-			<div class="select-none w-64 pt-4 pr-4 h-full flex flex-col border-r border-gray-200 justify-between fixed">
+			<div class="select-none w-64 pt-4 pr-4 h-full flex flex-col border-r border-gray-200 justify-between fixed dark:text-white">
 				<div class="flex flex-col">
-					<Link class="h-16 mb-4" to="/" onClick={() => setSelected(1)}>
-						<img
-							src={logo}
-							// onClick={() => history.push("/home")}
-							class="h-full px-4 py-3 object-cover hover:bg-purple-200 rounded-full cursor-pointer transition delay-50 duration-300 "
-							alt="logo"
-						/>
-					</Link>
+					<div class="flex flex-row justify-between items-center">
+						<Link class="h-16 mb-4" to="/" onClick={() => setSelected(1)}>
+							<img
+								src={logo}
+								// onClick={() => history.push("/home")}
+								class="h-full px-4 py-3 object-cover hover:bg-purple-200 hover:dark:bg-none rounded-full cursor-pointer transition delay-50 duration-300 "
+								alt="logo"
+							/>
+						</Link>
+						{/* <Switch
+							checked={isDark}
+							onChange={toggleMode}
+							aria-label="Switch demo"
+							color={"warning"}
+						/> */}
+					</div>
 					<div class="flex flex-col w-full ">
 						{/* 기본 트윗 홈 */}
 						<div class="w-auto flex flex-row items-center">
@@ -211,15 +270,28 @@ const Leftbar = () => {
 								Notifications
 							</div>
 						</div>
-
-						{/* <div class="cursor-pointer w-auto flex flex-row items-center">
-							<div class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300">
-								<CgList size={32} class="mr-4" /> Lists
-							</div>
-						</div> */}
-						<div class="cursor-pointer w-auto flex flex-row items-center">
-							<div class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300">
+						<div
+							ref={moreRef}
+							class="relative cursor-pointer w-auto flex flex-row items-center"
+						>
+							<div
+								// onClick={toggleMore}
+								class=" pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
+							>
 								<CgMoreO size={32} class="mr-4" /> more
+							</div>
+							<div
+								class={
+									"absolute w-48 h-auto left-0 bottom-12 border shadow-lg rounded-sm border-gray-200 bg-white " +
+									(more ? "block" : "hidden")
+								}
+							>
+								<div class="flex flex-row items-center px-2 py-2">
+									<div class="flex justify-center items-center">
+										<CgMoreO size={20} class="mr-4" />
+									</div>
+									<p class="text-sm h-full flex items-center">Display</p>
+								</div>
 							</div>
 						</div>
 						<div

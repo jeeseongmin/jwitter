@@ -1,4 +1,4 @@
-import AppRouter from "components/Router";
+import AppRouter from "routes/Router";
 import React from "react";
 
 function App() {

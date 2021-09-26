@@ -23,7 +23,11 @@ const initialState = {
 		uid: "",
 		photoURL: "",
 		displayName: "",
+		bookmark: [],
+		description: [],
 		email: "",
+		bgURL: "",
+		mode: "",
 	},
 	mode: "white",
 };

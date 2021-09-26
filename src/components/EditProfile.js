@@ -48,16 +48,26 @@ const EditProfile = ({
 		description: currentUser.description,
 	});
 	const fileRef = useRef();
+	const bgRef = useRef();
 	const textareaRef = useRef();
 	const [focused, setFocused] = useState("");
 
 	const [attachment, setAttachment] = useState(currentUser.photoURL);
+	const [bg, setBg] = useState(currentUser.bgURL ? currentUser.bgURL : bgimg);
 
 	const onFileChange = (e) => {
 		const theFile = e.target.files[0];
 		const reader = new FileReader();
 		reader.onloadend = (finishedEvent) => {
 			setAttachment(finishedEvent.currentTarget.result);
+		};
+		reader.readAsDataURL(theFile);
+	};
+	const onBgChange = (e) => {
+		const theFile = e.target.files[0];
+		const reader = new FileReader();
+		reader.onloadend = (finishedEvent) => {
+			setBg(finishedEvent.currentTarget.result);
 		};
 		reader.readAsDataURL(theFile);
 	};
@@ -84,6 +94,7 @@ const EditProfile = ({
 					? "https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6"
 					: attachment,
 			description: info.description,
+			bgURL: bg,
 		});
 		await dispatch(
 			setCurrentUser({
@@ -96,6 +107,7 @@ const EditProfile = ({
 				displayName: info.displayName,
 				bookmark: currentUser.bookmark,
 				description: info.description,
+				bgURL: bg,
 			})
 		);
 	};
@@ -139,12 +151,17 @@ const EditProfile = ({
 							</div>
 						</div>
 						<div class="w-full flex flex-col relative">
-							<div class="h-36 w-full bg-purple-100">
-								<img
-									src={bgimg}
-									alt="bgimg"
-									class="w-full h-full object-cover"
-								/>
+							<div class="relative h-36 w-full bg-purple-100">
+								<img src={bg} alt="bgimg" class="w-full h-full object-cover" />
+								<div
+									onClick={() => bgRef.current.click()}
+									class="cursor-pointer absolute p-1 top-0 w-full h-full object-cover"
+								>
+									<div class="w-full h-full object-cover opacity-20 bg-black flex justify-center items-center"></div>
+									<div class="w-full h-full absolute top-0 left-0 flex justify-center text-white items-center opacity-70">
+										<MdCameraEnhance size={24} />
+									</div>
+								</div>
 							</div>
 							<div class="h-16 w-full flex flex-row-reverse items-center pr-4">
 								<div class="cursor-pointer font-bold text-base flex justify-center items-center px-4 py-2"></div>
@@ -247,6 +264,13 @@ const EditProfile = ({
 							accept="image/*"
 							class="hidden"
 							onChange={onFileChange}
+						/>
+						<input
+							ref={bgRef}
+							type="file"
+							accept="image/*"
+							class="hidden"
+							onChange={onBgChange}
 						/>
 					</form>
 				</div>

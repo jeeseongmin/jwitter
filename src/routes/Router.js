@@ -1,36 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
 	HashRouter as Router,
+	Redirect,
 	Route,
 	Switch,
-	Redirect,
 } from "react-router-dom";
-import Home from "routes/Home";
-import Profile from "routes/Profile";
-import Navigation from "components/Navigation";
-import Login from "routes/Login";
-import Leftbar from "routes/Leftbar";
-import Rightbar from "routes/Rightbar";
 import Bookmark from "routes/Bookmark";
-import Popular from "routes/Popular";
 import Explore from "routes/Explore";
-import { useDispatch, useSelector } from "react-redux";
-import { setCurrentUser } from "reducers/user";
+import Home from "routes/Home";
 import JweetDetail from "routes/JweetDetail";
-import ExploreJweets from "components/ExploreJweets";
-import ExploreUsers from "components/ExploreUsers";
+import Leftbar from "routes/Leftbar";
+import Login from "routes/Login";
+import Popular from "routes/Popular";
+import Profile from "routes/Profile";
+import Rightbar from "routes/Rightbar";
 
 const AppRouter = (props) => {
 	const isLoggedIn = props.isLoggedIn;
 	const loginToken = useSelector((state) => state.user.loginToken);
 	const currentUser = useSelector((state) => state.user.currentUser);
 
+	useEffect(() => {
+		// console.log("localStorage Mode", window.localStorage.getItem("theme"));
+		// if (window.localStorage.getItem("theme") === null) {
+		// 	window.localStorage.setItem("theme", "light");
+		// }
+		// window.localStorage.setItem("count", JSON.stringify(count));
+	}, []);
 	return (
 		<Router>
 			{/* {isLoggedIn && <Navigation userObj={userObj} />} */}
 			<div
 				class={
-					"w-full h-full " +
+					"w-full h-full bg-white transition delay-75 duration-300 dark:bg-black " +
 					(loginToken === "login" && currentUser
 						? "flex flex-row px-0 lg:px-36"
 						: "")

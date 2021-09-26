@@ -11,6 +11,7 @@ import { db, app, auth } from "mybase";
 import { doc, getDoc, addDoc, collection, setDoc } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser, setLoginToken } from "reducers/user";
+import bgimg from "image/bgimg.jpg";
 
 const AuthForm = ({ isLogin }) => {
 	const dispatch = useDispatch();
@@ -74,6 +75,7 @@ const AuthForm = ({ isLogin }) => {
 								displayName: displayName[0],
 								bookmark: [],
 								description: "",
+								bgURL: bgimg,
 							})
 						);
 						await setDoc(doc(usersRef, auth.currentUser.uid), {
@@ -83,6 +85,7 @@ const AuthForm = ({ isLogin }) => {
 							displayName: displayName[0],
 							bookmark: [],
 							description: "",
+							bgURL: bgimg,
 						});
 					}
 				});

@@ -15,6 +15,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setCurrentUser, setLoginToken } from "reducers/user";
+import bgimg from "image/bgimg.jpg";
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -72,6 +73,7 @@ const Login = () => {
 									displayName: user.displayName,
 									bookmark: [],
 									description: "",
+									bgURL: user.bgURL ? user.bgURL : bgimg,
 								})
 							);
 							console.log("No such document!");
@@ -82,6 +84,7 @@ const Login = () => {
 								displayName: user.displayName,
 								bookmark: [],
 								description: "",
+								bgURL: user.bgURL ? user.bgURL : bgimg,
 							});
 						}
 					});
@@ -122,17 +125,19 @@ const Login = () => {
 									displayName: user.displayName,
 									bookmark: [],
 									description: "",
+									bgURL: user.bgURL ? user.bgURL : bgimg,
 								})
 							);
 							const usersRef = collection(db, "users");
 							setDoc(doc(usersRef, user.uid), {
-								profileURL: user.photoURL
+								photoURL: user.photoURL
 									? user.photoURL
 									: "https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
 								email: user.email,
 								displayName: user.displayName,
 								bookmark: [],
 								description: "",
+								bgURL: user.bgURL ? user.bgURL : bgimg,
 							});
 						}
 					});
