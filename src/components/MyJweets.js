@@ -66,6 +66,7 @@ const MyJweets = ({ match }) => {
 				});
 			});
 			setMyJweets(cp);
+			setLoading(true);
 		});
 	}, [uid]);
 

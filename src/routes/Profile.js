@@ -34,9 +34,6 @@ const Profile = ({ match }) => {
 	const [editState, setEditState] = useState(false);
 	const toggleEditState = () => setEditState(!editState);
 	const currentUser = useSelector((state) => state.user.currentUser);
-	const [selected, setSelected] = useState(1);
-	const fileRef = useRef();
-	const [attachment, setAttachment] = useState(currentUser.photoURL);
 
 	const [editModal, setEditModal] = useState(false);
 	const editModalOpen = () => setEditModal(true);
@@ -63,7 +60,6 @@ const Profile = ({ match }) => {
 	};
 
 	useEffect(() => {
-		setSelected(1);
 		getMyInfo();
 		getJweets();
 	}, [uid, editState]);
@@ -75,7 +71,7 @@ const Profile = ({ match }) => {
 					<div class="flex-1 flex flex-col pl-64">
 						<div class="h-16 w-full px-2 py-2 flex flex-row items-center border-b border-gray-200">
 							<div
-								onClick={() => history.push("/home")}
+								onClick={() => history.goBack()}
 								class="mr-4 cursor-pointer p-2 rounded-full hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								<IoArrowBackOutline size={20} />
@@ -117,7 +113,7 @@ const Profile = ({ match }) => {
 								</div>
 							</div>
 						</div>
-						<div class="w-full flex flex-col pl-4 mb-4">
+						<div class="w-full flex flex-col pl-4 pr-4 mb-4">
 							<h1 class="font-bold text-xl">{info.displayName}</h1>
 							<p class="text-gray-400 mb-2">@{info.email.split("@")[0]}</p>
 							<p class="py-8 px-4 text-sm text-gray-500 border-t border-b border-gray-200">

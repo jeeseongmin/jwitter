@@ -242,7 +242,7 @@ const JweetBlock = (props) => {
 										@{creatorInfo.email ? creatorInfo.email.split("@")[0] : ""}
 									</p>
 								</div>
-								{
+								{props.type !== "explore" ? (
 									<div
 										ref={funcRef}
 										id="except"
@@ -281,7 +281,9 @@ const JweetBlock = (props) => {
 											</div>
 										)}
 									</div>
-								}
+								) : (
+									""
+								)}
 							</div>
 						) : (
 							<Skeleton width="100%">
@@ -302,7 +304,7 @@ const JweetBlock = (props) => {
 											onClick={handlePhotoOpen}
 											ref={exceptRef}
 											src={jweet.attachmentUrl}
-											class="w-full object-cover rounded-xl border border-gray-200 shadow-lg"
+											class="max-h-60 object-cover rounded-xl border border-gray-200 shadow-lg"
 											alt="attachment"
 										/>
 									</div>
@@ -314,7 +316,7 @@ const JweetBlock = (props) => {
 							</Skeleton>
 						)}
 
-						{loading ? (
+						{loading && props.type !== "explore" ? (
 							<div id="except" class="w-full flex flex-row items-center mt-4 ">
 								<div
 									onClick={handleReplyOpen}
@@ -385,10 +387,12 @@ const JweetBlock = (props) => {
 									</div>
 								</div>
 							</div>
-						) : (
+						) : props.type !== "explore" ? (
 							<Skeleton width="100%">
 								<div class="w-full h-12  resize-none outline-none cursor-pointer bg-transparent whitespace-pre	"></div>
 							</Skeleton>
+						) : (
+							""
 						)}
 					</div>
 				</>

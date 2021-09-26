@@ -14,11 +14,17 @@ import { useSelector } from "react-redux";
 import JweetBlock from "components/JweetBlock";
 import { HiOutlineHashtag, HiHashtag } from "react-icons/hi";
 import { GrFormRefresh } from "react-icons/gr";
+import { Link, Route, Switch } from "react-router-dom";
+import ExploreJweets from "components/ExploreJweets";
+import ExploreUsers from "components/ExploreUsers";
+
 const Popular = () => {
 	const [loading, setLoading] = useState(false);
 	const [filteredJweets, setFilteredJweets] = useState([]);
+	const [filteredUsers, setFilteredUsers] = useState([]);
 	const [randomList, setRandomList] = useState([]);
 	const currentUser = useSelector((state) => state.user.currentUser);
+	const [selected, setSelected] = useState(1);
 	function shuffle(array) {
 		for (let index = array.length - 1; index > 0; index--) {
 			// 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
@@ -32,24 +38,35 @@ const Popular = () => {
 
 	useEffect(() => {
 		onSnapshot(query(collection(db, "jweets")), async (snapshot) => {
-			const myJweetArray = snapshot.docs.map((doc) => ({
+			const userArray = snapshot.docs.map((doc) => ({
 				id: doc.id,
 				...doc.data(),
 			}));
-			const _randomList = Array.from(
-				{ length: myJweetArray.length },
-				(v, i) => i
-			);
+			const _randomList = Array.from({ length: userArray.length }, (v, i) => i);
 			shuffle(_randomList);
 			const _randomArray = await _randomList.map((element, index) => {
-				return myJweetArray[element];
+				return userArray[element];
 			});
 			setFilteredJweets(_randomArray);
 			setLoading(true);
 		});
+
+		onSnapshot(query(collection(db, "users")), async (snapshot) => {
+			const userArray = snapshot.docs.map((doc) => ({
+				id: doc.id,
+				...doc.data(),
+			}));
+			const _randomList = Array.from({ length: userArray.length }, (v, i) => i);
+			shuffle(_randomList);
+			const _randomArray = await _randomList.map((element, index) => {
+				return userArray[element];
+			});
+			setFilteredUsers(_randomArray);
+			setLoading(true);
+		});
 	}, []);
 
-	const refresh = async () => {
+	const refreshJweets = async () => {
 		setLoading(false);
 		const _randomList = Array.from(
 			{ length: filteredJweets.length },
@@ -62,10 +79,28 @@ const Popular = () => {
 		setFilteredJweets(_randomArray);
 		setLoading(true);
 	};
+	const refreshUsers = async () => {
+		setLoading(false);
+		const _randomList = Array.from(
+			{ length: filteredUsers.length },
+			(v, i) => i
+		);
+		shuffle(_randomList);
+		const _randomArray = await _randomList.map((element, index) => {
+			return filteredUsers[element];
+		});
+		setFilteredUsers(_randomArray);
+		setLoading(true);
+	};
 
 	useEffect(() => {
 		return () => setLoading(false); // cleanup function을 이용
 	}, []);
+
+	const onSelected = (num) => {
+		window.scrollTo(0, 0);
+		setSelected(num);
+	};
 
 	return (
 		<>
@@ -75,35 +110,56 @@ const Popular = () => {
 						<div class="font-bold text-xl flex flex-row items-center">
 							<HiHashtag class="text-purple-700 mr-1" /> Explore
 						</div>
-						<div class="text-xs">Jweets are randomly selected</div>
+						{selected === 1 && (
+							<div class="text-xs">Jweets are randomly selected</div>
+						)}
+						{selected === 2 && (
+							<div class="text-xs">Users are randomly selected</div>
+						)}
 					</div>
 					<div
-						onClick={refresh}
+						onClick={selected === 1 ? refreshJweets : refreshUsers}
 						class="p-2 rounded-full hover:bg-gray-100 cursor-pointer"
 					>
 						<GrFormRefresh size={28} />
 					</div>
 				</div>
-				<div>
-					{filteredJweets.length !== 0 ? (
-						filteredJweets.map((jweet, index) => {
-							return <JweetBlock key={jweet.id} jweet={jweet} />;
-						})
-					) : loading ? (
-						<div class="w-full flex flex-col justify-center items-center mt-8">
-							<div class="w-2/3 font-bold text-2xl">
-								You haven’t added any Jweets to your Bookmarks yet
-							</div>
-							<div class="w-2/3 text-gray-500">
-								When you do, they’ll show up here.
-							</div>
-						</div>
-					) : (
-						<div class="py-4 w-full flex justify-center">
-							<CircularProgress />
-						</div>
-					)}
+				<div class="w-full flex flex-row ">
+					<Link
+						to={"/explore/jweets"}
+						onClick={() => onSelected(1)}
+						class="w-1/2 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
+					>
+						<span
+							class={
+								"py-3 " + (selected === 1 ? "border-b-4 border-purple-500" : "")
+							}
+						>
+							Jweets
+						</span>
+					</Link>
+					<Link
+						to={"/explore/users"}
+						onClick={() => onSelected(2)}
+						class="w-1/2 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
+					>
+						<span
+							class={
+								"py-3 " + (selected === 2 ? "border-b-4 border-purple-500" : "")
+							}
+						>
+							Users
+						</span>
+					</Link>
 				</div>
+				<Switch>
+					<Route path="/explore/jweets">
+						<ExploreJweets filteredJweets={filteredJweets} />
+					</Route>
+					<Route path="/explore/users">
+						<ExploreUsers filteredUsers={filteredUsers} />
+					</Route>
+				</Switch>
 			</div>
 		</>
 	);

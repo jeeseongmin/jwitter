@@ -17,7 +17,9 @@ import Explore from "routes/Explore";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "reducers/user";
 import JweetDetail from "routes/JweetDetail";
-// eslint-disable-next-line import/no-anonymous-default-export
+import ExploreJweets from "components/ExploreJweets";
+import ExploreUsers from "components/ExploreUsers";
+
 const AppRouter = (props) => {
 	const isLoggedIn = props.isLoggedIn;
 	const loginToken = useSelector((state) => state.user.loginToken);
@@ -44,7 +46,7 @@ const AppRouter = (props) => {
 							<Route exact path="/bookmark">
 								<Bookmark />
 							</Route>
-							<Route exact path="/explore">
+							<Route exact path="/explore/:type">
 								<Explore />
 							</Route>
 							<Route exact path="/popular">

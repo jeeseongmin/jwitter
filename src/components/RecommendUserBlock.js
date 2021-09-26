@@ -87,7 +87,7 @@ const RecommendUserBlock = () => {
 			<div class="select-none py-3 border border-gray-100 bg-gray-100 w-full h-auto mt-2 rounded-xl">
 				<div class="px-4 flex flex-row justify-between items-center">
 					<p class="text-lg mb-2">
-						<b>Who to Follow</b>
+						<b>You might like</b>
 					</p>
 					<div
 						onClick={toggleRefresh}

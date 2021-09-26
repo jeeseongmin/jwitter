@@ -97,6 +97,11 @@ const Leftbar = () => {
 		history.push("/");
 	};
 
+	const onSelected = (num) => {
+		window.scrollTo(0, 0);
+		setSelected(num);
+	};
+
 	return (
 		<>
 			<div class="select-none w-64 pt-4 pr-4 h-full flex flex-col border-r border-gray-200 justify-between fixed">
@@ -114,7 +119,7 @@ const Leftbar = () => {
 						<div class="w-auto flex flex-row items-center">
 							<Link
 								to="/"
-								onClick={() => setSelected(1)}
+								onClick={() => onSelected(1)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								{selected === 1 ? (
@@ -132,8 +137,8 @@ const Leftbar = () => {
 
 						<div class="w-auto flex flex-row items-center">
 							<Link
-								to={"/explore"}
-								onClick={() => setSelected(2)}
+								to={"/explore/jweets"}
+								onClick={() => onSelected(2)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								{selected === 2 ? (
@@ -150,7 +155,7 @@ const Leftbar = () => {
 						<div class="w-auto flex flex-row items-center">
 							<Link
 								to={"/bookmark"}
-								onClick={() => setSelected(3)}
+								onClick={() => onSelected(3)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								{selected === 3 ? (
@@ -167,7 +172,7 @@ const Leftbar = () => {
 						<div class="w-auto flex flex-row items-center">
 							<Link
 								to={"/popular"}
-								onClick={() => setSelected(4)}
+								onClick={() => onSelected(4)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								{selected === 4 ? (
@@ -184,7 +189,7 @@ const Leftbar = () => {
 						<div class="w-auto flex flex-row items-center">
 							<Link
 								to={"/profile/jweet/" + currentUser.uid}
-								onClick={() => setSelected(5)}
+								onClick={() => onSelected(5)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-4 hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								{selected === 5 ? (
