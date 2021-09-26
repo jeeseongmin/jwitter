@@ -28,6 +28,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import MuiAlert from "@mui/material/Alert";
 import ImageModal from "components/ImageModal";
+import ReplyFactory from "components/ReplyFactory";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -51,6 +52,13 @@ const JweetBlock = (props) => {
 	const handleJweetOpen = () => setJweetOpen(true);
 	const handleJweetClose = () => {
 		setJweetOpen(false);
+	};
+
+	// jweet 모달
+	const [replyOpen, setReplyOpen] = useState(false);
+	const handleReplyOpen = () => setReplyOpen(true);
+	const handleReplyClose = () => {
+		setReplyOpen(false);
 	};
 
 	const [checkOpen, setCheckOpen] = useState(false);
@@ -195,6 +203,7 @@ const JweetBlock = (props) => {
 			e.target.innerText !== "Delete Jweet" &&
 			!photoOpen &&
 			!jweetOpen &&
+			!replyOpen &&
 			!checkOpen
 		) {
 			history.push("/jweet/" + jweet.id);
@@ -204,7 +213,7 @@ const JweetBlock = (props) => {
 	return (
 		<div
 			onClick={goJweet}
-			class="w-full select-none z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4 border-r border-l border-b border-gray-200"
+			class="w-full select-none z-30 cursor-pointer hover:bg-gray-100 transition delay-50 duration-300 flex flex-row px-2 pt-2 pb-4  border-b border-gray-200"
 		>
 			<>
 				{loading ? (
@@ -294,6 +303,7 @@ const JweetBlock = (props) => {
 							)}
 							<div id="except" class="w-full flex flex-row items-center mt-4 ">
 								<div
+									onClick={handleReplyOpen}
 									ref={replyRef}
 									id="except"
 									class="w-1/4 flex flex-row items-center transition delay-50 duration-300 text-gray-400 hover:text-purple-500"
@@ -305,7 +315,7 @@ const JweetBlock = (props) => {
 										<BsChat size={16} />
 									</div>
 									<p id="except" class="text-sm flex flex-row items-center">
-										0
+										{jweet.reply.length}
 									</p>
 								</div>
 								<div
@@ -323,8 +333,6 @@ const JweetBlock = (props) => {
 										0
 									</p>
 								</div>
-								{/* AiOutlineHeart,
-	AiTwotoneHeart, */}
 								<div
 									onClick={toggleLike}
 									ref={likeRef}
@@ -370,6 +378,33 @@ const JweetBlock = (props) => {
 						<CircularProgress />
 					</div>
 				)}
+				<Modal
+					open={replyOpen}
+					ref={modalRef}
+					onClose={handleReplyClose}
+					aria-labelledby="modal-modal-title"
+					aria-describedby="modal-modal-description"
+				>
+					<div class="outline-none absolute border border-white top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/4 origin-center w-1/3 h-auto pt-2 pb-3 bg-white rounded-2xl flex flex-col justify-start items-start">
+						{" "}
+						<div
+							onClick={handleReplyClose}
+							class="w-full cursor-pointer flex justify-start items-center pb-1 border-b border-gray-200"
+						>
+							<GrClose
+								size={38}
+								class="ml-2 p-2 hover:bg-gray-200 rounded-full"
+							/>
+						</div>
+						<div class="w-full">
+							<ReplyFactory
+								id={jweet.id}
+								isModal={true}
+								handleReplyClose={handleReplyClose}
+							/>
+						</div>
+					</div>
+				</Modal>
 				<Modal
 					open={jweetOpen}
 					ref={modalRef}

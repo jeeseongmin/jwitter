@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import MuiAlert from "@mui/material/Alert";
 import Modal from "@mui/material/Modal";
+import Snackbar from "@mui/material/Snackbar";
 import EditJweet from "components/EditJweet";
+import ImageModal from "components/ImageModal";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { db, storage } from "mybase";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	AiOutlineHeart,
 	AiOutlineRetweet,
@@ -13,36 +16,27 @@ import {
 } from "react-icons/ai";
 import { BsChat } from "react-icons/bs";
 import { GrClose } from "react-icons/gr";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { MdBookmark, MdBookmarkBorder } from "react-icons/md";
+import { RiEdit2Line } from "react-icons/ri";
 // import firebase from "firebase/compat/app";
 import { useDispatch, useSelector } from "react-redux";
-
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { RiEdit2Line } from "react-icons/ri";
 import { Link, useHistory } from "react-router-dom";
-import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
 import { setCurrentUser } from "reducers/user";
-
-import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import MuiAlert from "@mui/material/Alert";
-import ImageModal from "components/ImageModal";
-import ReplyBlock from "components/ReplyBlock";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 const DetailBlock = (props) => {
 	const jweet = props.jweet;
-	console.log("DetailBlock", jweet);
+	const uid = props.id;
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(false);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const funcRef = useRef();
 	const [func, setFunc] = useState(false);
-	const [like, setLike] = useState(false);
+	const [like, setLike] = useState(jweet.like.includes(currentUser.uid));
 	const [bookmark, setBookmark] = useState(false);
 
 	const [creatorInfo, setCreatorInfo] = useState({});
@@ -103,15 +97,12 @@ const DetailBlock = (props) => {
 	}, [func]);
 
 	useEffect(() => {
-		setLike(jweet.like.includes(currentUser.uid));
-		setBookmark(currentUser.bookmark.includes(jweet.id));
 		const docRef = doc(db, "users", jweet.creatorId);
 		getDoc(docRef).then((snap) => {
 			if (snap.exists()) {
 				setCreatorInfo(snap.data());
 				setLoading(true);
 			} else {
-				// doc.data() will be undefined in this case
 				console.log("No such document!");
 			}
 		});
@@ -148,9 +139,13 @@ const DetailBlock = (props) => {
 		}
 	};
 
+	useEffect(() => {
+		setLike(jweet.like.includes(currentUser.uid));
+		setBookmark(currentUser.bookmark.includes(jweet.id));
+	}, [uid]);
+
 	const toggleLike = async () => {
 		likeClick();
-		console.log("jweets.like", jweet.like);
 		if (jweet.like.includes(currentUser.uid)) {
 			setLike(false);
 			const cp = [...jweet.like];
@@ -260,7 +255,7 @@ const DetailBlock = (props) => {
 									<span class="text-gray-500 ml-1">Rejweets</span>
 								</div>
 								<div class="mr-8">
-									<b>{0} </b>
+									<b>{jweet.reply.length} </b>
 									<span class="text-gray-500 ml-1">Quote Jweets</span>
 								</div>
 								<div class="mr-8">

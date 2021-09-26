@@ -73,8 +73,7 @@ const MyJweets = ({ match }) => {
 						You don’t have any Jweet yet
 					</div>
 					<div class="w-2/3 text-gray-500">
-						Tap the heart on any Jweet to show it some love. When you do, it’ll
-						show up here.
+						Write a Jweet. When you do, it’ll show up here.
 					</div>
 				</div>
 			) : (

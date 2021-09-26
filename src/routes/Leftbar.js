@@ -15,6 +15,9 @@ import { GrClose } from "react-icons/gr";
 import JweetFactory from "components/JweetFactory";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser, setLoginToken } from "reducers/user";
+import { CgList, CgMoreO } from "react-icons/cg";
+import { HiOutlineFire, HiFire } from "react-icons/hi";
+import { HiOutlineHashtag, HiHashtag } from "react-icons/hi";
 
 const Leftbar = () => {
 	const dispatch = useDispatch();
@@ -67,12 +70,15 @@ const Leftbar = () => {
 	}, [profile]);
 
 	useEffect(() => {
-		if (window.location.href.includes("notification")) {
+		console.log("변했다!");
+		if (window.location.href.includes("explore")) {
 			setSelected(2);
 		} else if (window.location.href.includes("bookmark")) {
 			setSelected(3);
-		} else if (window.location.href.includes("profile")) {
+		} else if (window.location.href.includes("popular")) {
 			setSelected(4);
+		} else if (window.location.href.includes("profile")) {
+			setSelected(5);
 		} else {
 			setSelected(1);
 		}
@@ -91,6 +97,7 @@ const Leftbar = () => {
 		);
 		history.push("/");
 	};
+
 	return (
 		<>
 			<div class="select-none w-64 pt-4 pr-4 h-full flex flex-col border-r border-gray-200 justify-between fixed">
@@ -123,28 +130,27 @@ const Leftbar = () => {
 								)}
 							</Link>
 						</div>
+
 						<div class="w-auto flex flex-row items-center">
 							<Link
-								to="/notification"
+								to={"/explore"}
 								onClick={() => setSelected(2)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								{selected === 2 ? (
 									<>
-										<IoNotificationsSharp size={32} class="mr-4" />{" "}
-										<b>Notifications</b>
+										<HiHashtag size={32} class="mr-4" /> <b>Explore</b>
 									</>
 								) : (
 									<>
-										<IoNotificationsOutline size={32} class="mr-4" />
-										Notifications
+										<HiOutlineHashtag size={32} class="mr-4" /> Explore
 									</>
 								)}
 							</Link>
 						</div>
 						<div class="w-auto flex flex-row items-center">
 							<Link
-								to="/bookmark"
+								to={"/bookmark"}
 								onClick={() => setSelected(3)}
 								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
@@ -161,11 +167,28 @@ const Leftbar = () => {
 						</div>
 						<div class="w-auto flex flex-row items-center">
 							<Link
-								to={"/profile/jweet/" + currentUser.uid}
+								to={"/popular"}
 								onClick={() => setSelected(4)}
-								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-4 hover:bg-gray-200 transition delay-50 duration-300"
+								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								{selected === 4 ? (
+									<>
+										<HiFire size={32} class="mr-4" /> <b>Popular</b>
+									</>
+								) : (
+									<>
+										<HiOutlineFire size={32} class="mr-4" /> Popular
+									</>
+								)}
+							</Link>
+						</div>
+						<div class="w-auto flex flex-row items-center">
+							<Link
+								to={"/profile/jweet/" + currentUser.uid}
+								onClick={() => setSelected(5)}
+								class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-4 hover:bg-gray-200 transition delay-50 duration-300"
+							>
+								{selected === 5 ? (
 									<>
 										<BsPersonFill size={32} class="mr-4" /> <b>Profile</b>
 									</>
@@ -175,6 +198,25 @@ const Leftbar = () => {
 									</>
 								)}
 							</Link>
+						</div>
+
+						<div class="w-full border-b border-gray-200 mb-2"></div>
+						<div class="cursor-pointer w-auto flex flex-row items-center">
+							<div class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300">
+								<IoNotificationsOutline size={32} class="mr-4" />
+								Notifications
+							</div>
+						</div>
+
+						{/* <div class="cursor-pointer w-auto flex flex-row items-center">
+							<div class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300">
+								<CgList size={32} class="mr-4" /> Lists
+							</div>
+						</div> */}
+						<div class="cursor-pointer w-auto flex flex-row items-center">
+							<div class="pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300">
+								<CgMoreO size={32} class="mr-4" /> more
+							</div>
 						</div>
 						<div
 							onClick={handleJweetOpen}
@@ -305,25 +347,6 @@ const Leftbar = () => {
 							handleJweetClose={handleJweetClose}
 						/>
 					</div>
-					{/* <div class="flex flex-col px-4">
-						<h1 class="text-xl font-bold mb-2">Log out of Jwitter?</h1>
-						<p class="text-left pb-8">
-							You can always log back in at any time. If you just want to switch
-							accounts, you can do that by adding an existing account.{" "}
-						</p>
-						<div
-							onClick={onLogOutClick}
-							class="cursor-pointer w-full flex py-3 justify-center items-center rounded-full bg-purple-300 text-white font-bold mb-4"
-						>
-							Log out
-						</div>
-						<div
-							onClick={handleProfileClose}
-							class="cursor-pointer w-full flex py-3 justify-center items-center rounded-full border border-purple-300 text-purple-500 font-bold"
-						>
-							Cancel
-						</div>
-					</div> */}
 				</div>
 			</Modal>
 			<Modal

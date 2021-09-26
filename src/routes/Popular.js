@@ -12,15 +12,13 @@ import { db, firebase } from "mybase";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import JweetBlock from "components/JweetBlock";
+import { HiOutlineFire, HiFire } from "react-icons/hi";
 
-const Bookmark = () => {
+const Popular = () => {
 	const [loading, setLoading] = useState(false);
 	const [info, setInfo] = useState({});
 	const [filteredJweets, setFilteredJweets] = useState([]);
 	const currentUser = useSelector((state) => state.user.currentUser);
-	const [bookmarkList, setBookmarkList] = useState([]);
-	// const uid = match.params.id;
-	const [selected, setSelected] = useState(1);
 
 	const getMyInfo = async () => {
 		const docRef = await doc(db, "users", currentUser.uid);
@@ -38,20 +36,20 @@ const Bookmark = () => {
 	useEffect(() => {
 		onSnapshot(
 			query(collection(db, "jweets"), orderBy("createdAt", "desc")),
-			(snapshot) => {
+			async (snapshot) => {
 				const myJweetArray = snapshot.docs.map((doc) => ({
 					id: doc.id,
 					...doc.data(),
 				}));
-				const _myJweet = myJweetArray.filter(function (element, index) {
-					return currentUser.bookmark.includes(element.id);
+				await myJweetArray.sort(function (a, b) {
+					return b.like.length - a.like.length;
 				});
-				setFilteredJweets(_myJweet);
+				setFilteredJweets(myJweetArray);
 				setLoading(true);
 			}
 		);
 		console.log(filteredJweets);
-	}, [currentUser.bookmark]);
+	}, []);
 
 	useEffect(() => {
 		getMyInfo();
@@ -64,10 +62,10 @@ const Bookmark = () => {
 			<div class="flex-1 flex flex-col pl-64">
 				<div class="min-h-16 w-full px-2 py-2 flex flex-row items-center border-b border-gray-200">
 					<div class="flex flex-col pl-2">
-						<div class="font-bold text-xl">Bookmarks</div>
-						<div class="text-xs">
-							{info.email ? "@" + info.email.split("@")[0] : ""}
+						<div class="font-bold text-xl flex flex-row items-center">
+							<HiFire class="text-red-500 mr-1" /> Popular
 						</div>
+						<div class="text-xs">It's sorted based on likes</div>
 					</div>
 				</div>
 				<div>
@@ -95,4 +93,4 @@ const Bookmark = () => {
 	);
 };
 
-export default Bookmark;
+export default Popular;

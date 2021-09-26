@@ -1,5 +1,6 @@
 export const SET_LOGIN_TOKEN = "SET_LOGIN_TOKEN";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
+export const SET_MODE = "SET_MODE";
 
 export const setLoginToken = (loginToken) => ({
 	type: SET_LOGIN_TOKEN,
@@ -11,6 +12,11 @@ export const setCurrentUser = (currentUser) => ({
 	payload: currentUser,
 });
 
+export const setMode = (mode) => ({
+	type: SET_MODE,
+	payload: mode,
+});
+
 const initialState = {
 	loginToken: "logout",
 	currentUser: {
@@ -19,6 +25,7 @@ const initialState = {
 		displayName: "",
 		email: "",
 	},
+	mode: "white",
 };
 
 const user = (state = initialState, action) => {
@@ -33,6 +40,12 @@ const user = (state = initialState, action) => {
 			return {
 				...state,
 				currentUser: action.payload,
+			};
+		}
+		case SET_MODE: {
+			return {
+				...state,
+				mode: action.payload,
 			};
 		}
 

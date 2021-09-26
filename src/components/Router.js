@@ -12,6 +12,8 @@ import Login from "routes/Login";
 import Leftbar from "routes/Leftbar";
 import Rightbar from "routes/Rightbar";
 import Bookmark from "routes/Bookmark";
+import Popular from "routes/Popular";
+import Explore from "routes/Explore";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "reducers/user";
 import JweetDetail from "routes/JweetDetail";
@@ -38,6 +40,12 @@ const AppRouter = (props) => {
 							</Route>
 							<Route exact path="/bookmark">
 								<Bookmark />
+							</Route>
+							<Route exact path="/explore">
+								<Explore />
+							</Route>
+							<Route exact path="/popular">
+								<Popular />
 							</Route>
 							<Route exact path="/home">
 								<Home />

@@ -1,14 +1,14 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import Picker from "emoji-picker-react";
 import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { db, storage } from "mybase";
-import { v4 as uuidv4 } from "uuid";
-import { IoImageOutline } from "react-icons/io5";
-import Picker from "emoji-picker-react";
-import { GrEmoji } from "react-icons/gr";
-import { MdCancel } from "react-icons/md";
 import defaultImg from "image/defaultImg.jpg";
-import { useDispatch, useSelector } from "react-redux";
+import { db, storage } from "mybase";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { GrEmoji } from "react-icons/gr";
+import { IoImageOutline } from "react-icons/io5";
+import { MdCancel } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
 const JweetFactory = ({ isModal, handleJweetClose }) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
@@ -19,9 +19,10 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 	const textareaRef = useRef();
 	const fileRef = useRef();
 	const emojiRef = useRef();
-	const [chosenEmoji, setChosenEmoji] = useState(null);
 	const [emojiClick, setEmojiClick] = useState(false);
-	const toggleEmoji = () => setEmojiClick(!emojiClick);
+	const toggleEmoji = () => {
+		setEmojiClick(!emojiClick);
+	};
 
 	const onEmojiClick = (event, emojiObject) => {
 		// setChosenEmoji(emojiObject);
@@ -97,6 +98,7 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 			if (emojiRef.current === null) {
 				return;
 			} else if (!emojiRef.current.contains(e.target)) {
+				console.log("check??");
 				setEmojiClick(false);
 			}
 		}
@@ -152,7 +154,7 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 						placeholder="What's happening?"
 						onInput={handleResizeHeight}
 						class={
-							"w-full py-3 resize-none h-10 scroll leading-7 outline-none text-lg text-purple-300 focus:text-purple-500 " +
+							"w-full py-3 resize-none h-14 scroll leading-7 outline-none text-lg text-purple-300 focus:text-purple-500 " +
 							(over ? "overflow-y-scroll" : "overflow-hidden")
 						}
 					/>
@@ -181,17 +183,23 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 						>
 							<IoImageOutline size={20} />
 						</div>
-						<div
-							onClick={toggleEmoji}
-							class="p-2 transition delay-50 duration-300 hover:bg-purple-100 rounded-full blur-md cursor-pointer"
-						>
-							<GrEmoji size={20} />
-						</div>
-						{emojiClick && (
-							<div ref={emojiRef} class="absolute top-10">
+						<div ref={emojiRef}>
+							<div
+								onClick={toggleEmoji}
+								class="p-2 transition delay-50 duration-300 hover:bg-purple-100 rounded-full blur-md cursor-pointer"
+							>
+								<GrEmoji size={20} />
+							</div>
+
+							<div
+								class={
+									"absolute top-10 select-none " +
+									(emojiClick ? "block" : "hidden")
+								}
+							>
 								<Picker onEmojiClick={onEmojiClick} />
 							</div>
-						)}
+						</div>
 					</div>
 					{/* 우측 submit */}
 					<div>
