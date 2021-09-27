@@ -35,8 +35,8 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 		let attachmentUrl = "";
 
 		const text = jweet;
-		if (text === "") {
-			alert("글자를 입력해주세요");
+		if (text === "" && attachment === "") {
+			alert("글자 혹은 이미지를 추가해주세요");
 		} else {
 			if (attachment !== "") {
 				const attachmentRef = ref(storage, `${currentUser.uid}/${uuidv4()}`);
@@ -53,6 +53,7 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 				creatorId: currentUser.uid,
 				like: [],
 				reply: [],
+				rejweet: [],
 				attachmentUrl,
 			};
 			setJweet("");
@@ -62,7 +63,7 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 				handleJweetClose();
 			}
 			try {
-				await addDoc(collection(db, "jweets"), _jweet);
+				const docInfo = await addDoc(collection(db, "jweets"), _jweet);
 			} catch (error) {
 				console.log(error);
 			}
@@ -98,7 +99,6 @@ const JweetFactory = ({ isModal, handleJweetClose }) => {
 			if (emojiRef.current === null) {
 				return;
 			} else if (!emojiRef.current.contains(e.target)) {
-				console.log("check??");
 				setEmojiClick(false);
 			}
 		}

@@ -11,7 +11,6 @@ import { db } from "mybase";
 import React, { useEffect, useState } from "react";
 import { MdSettings } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentUser } from "reducers/user";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const Home = () => {

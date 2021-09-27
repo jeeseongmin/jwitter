@@ -32,7 +32,6 @@ const AuthForm = ({ isLogin }) => {
 		try {
 			let data;
 			if (isLogin) {
-				console.log(auth, info.email, info.password);
 				// Log In
 				data = await signInWithEmailAndPassword(
 					auth,
@@ -42,12 +41,14 @@ const AuthForm = ({ isLogin }) => {
 					const docRef = doc(db, "users", auth.currentUser.uid);
 					getDoc(docRef).then(async (snap) => {
 						if (snap.exists()) {
-							console.log("Document data:", snap.data());
 							await dispatch(setLoginToken("login"));
 							await dispatch(
 								setCurrentUser({
 									...snap.data(),
 									uid: auth.currentUser.uid,
+									follower: snap.data().follower ? snap.data().follower : [],
+									following: snap.data().following ? snap.data().following : [],
+									rejweet: snap.data().rejweet ? snap.data().rejweet : [],
 								})
 							);
 						} else {
@@ -74,6 +75,9 @@ const AuthForm = ({ isLogin }) => {
 								email: auth.currentUser.email,
 								displayName: displayName[0],
 								bookmark: [],
+								follower: [],
+								following: [],
+								rejweet: [],
 								description: "",
 								bgURL: bgimg,
 							})
@@ -84,6 +88,9 @@ const AuthForm = ({ isLogin }) => {
 							email: auth.currentUser.email,
 							displayName: displayName[0],
 							bookmark: [],
+							follower: [],
+							following: [],
+							rejweet: [],
 							description: "",
 							bgURL: bgimg,
 						});

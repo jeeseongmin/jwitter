@@ -24,6 +24,7 @@ import { GrClose } from "react-icons/gr";
 import { MdCameraEnhance } from "react-icons/md";
 import EditProfile from "components/EditProfile";
 import bgimg from "image/bgimg.jpg";
+import ReJweets from "components/ReJweets";
 
 const Profile = ({ match }) => {
 	const uid = match.params.id;
@@ -31,6 +32,7 @@ const Profile = ({ match }) => {
 	const history = useHistory();
 	const [info, setInfo] = useState({});
 	const [myJweets, setMyJweets] = useState([]);
+	const [reJweets, setReJweets] = useState([]);
 	const [editState, setEditState] = useState(false);
 	const toggleEditState = () => setEditState(!editState);
 	const currentUser = useSelector((state) => state.user.currentUser);
@@ -125,12 +127,12 @@ const Profile = ({ match }) => {
 						<div class="w-full flex flex-row ">
 							<Link
 								to={"/profile/jweet/" + uid}
-								class="w-1/2 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
+								class="w-1/3 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								<span
 									class={
 										"py-3 " +
-										(window.location.href.includes("jweet")
+										(window.location.href.includes("/jweet")
 											? "border-b-4 border-purple-500"
 											: "")
 									}
@@ -140,12 +142,12 @@ const Profile = ({ match }) => {
 							</Link>
 							<Link
 								to={"/profile/like/" + uid}
-								class="w-1/2 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
+								class="w-1/3 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
 							>
 								<span
 									class={
 										"py-3 " +
-										(window.location.href.includes("like")
+										(window.location.href.includes("/like")
 											? "border-b-4 border-purple-500"
 											: "")
 									}
@@ -153,10 +155,26 @@ const Profile = ({ match }) => {
 									Likes
 								</span>
 							</Link>
+							<Link
+								to={"/profile/rejweet/" + uid}
+								class="w-1/3 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
+							>
+								<span
+									class={
+										"py-3 " +
+										(window.location.href.includes("/rejweet")
+											? "border-b-4 border-purple-500"
+											: "")
+									}
+								>
+									Rejweets
+								</span>
+							</Link>
 						</div>
 						<Switch>
 							<Route path="/profile/jweet/:id" component={MyJweets} />
 							<Route path="/profile/like/:id" component={LikeJweets} />
+							<Route path="/profile/rejweet/:id" component={ReJweets} />
 						</Switch>
 					</div>
 				</>

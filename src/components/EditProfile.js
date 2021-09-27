@@ -105,8 +105,11 @@ const EditProfile = ({
 						: attachment,
 				email: currentUser.email,
 				displayName: info.displayName,
-				bookmark: currentUser.bookmark,
 				description: info.description,
+				bookmark: currentUser.bookmark,
+				follower: currentUser.follower,
+				following: currentUser.following,
+				rejweet: currentUser.rejweet,
 				bgURL: bg,
 			})
 		);

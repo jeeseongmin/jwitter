@@ -55,12 +55,14 @@ const Login = () => {
 					const docRef = doc(db, "users", user.uid);
 					getDoc(docRef).then(async (snap) => {
 						if (snap.exists()) {
-							console.log("Document data:", snap.data());
 							await dispatch(setLoginToken("login"));
 							await dispatch(
 								setCurrentUser({
 									...snap.data(),
 									uid: user.uid,
+									rejweet: user.rejweet ? user.rejweet : [],
+									follower: user.follower ? user.follower : [],
+									follwing: user.following ? user.following : [],
 								})
 							);
 						} else {
@@ -71,8 +73,11 @@ const Login = () => {
 									photoURL: user.photoURL,
 									email: user.email,
 									displayName: user.displayName,
-									bookmark: [],
 									description: "",
+									bookmark: [],
+									follower: [],
+									following: [],
+									rejweet: [],
 									bgURL: user.bgURL ? user.bgURL : bgimg,
 								})
 							);
@@ -81,8 +86,14 @@ const Login = () => {
 							await setDoc(doc(usersRef, user.uid), {
 								photoURL: user.photoURL,
 								email: user.email,
-								displayName: user.displayName,
+								displayName:
+									user.displayName === ""
+										? user.email.split("@")[0]
+										: user.displayName,
 								bookmark: [],
+								follower: [],
+								following: [],
+								rejweet: [],
 								description: "",
 								bgURL: user.bgURL ? user.bgURL : bgimg,
 							});
@@ -103,8 +114,6 @@ const Login = () => {
 					const docRef = doc(db, "users", user.uid);
 					getDoc(docRef).then(async (snap) => {
 						if (snap.exists()) {
-							// console.log("Document data:", snap.data());
-							console.log("Document data:", snap.data());
 							await dispatch(setLoginToken("login"));
 							await dispatch(
 								setCurrentUser({
@@ -123,8 +132,11 @@ const Login = () => {
 										: "https://firebasestorage.googleapis.com/v0/b/jwitter-e0584.appspot.com/o/default-profile-pic-e1513291410505.jpg?alt=media&token=824bfe06-5db1-4f18-9e7e-d2b11e3303a6",
 									email: user.email,
 									displayName: user.displayName,
-									bookmark: [],
 									description: "",
+									bookmark: [],
+									follower: [],
+									following: [],
+									rejweet: [],
 									bgURL: user.bgURL ? user.bgURL : bgimg,
 								})
 							);
@@ -136,6 +148,9 @@ const Login = () => {
 								email: user.email,
 								displayName: user.displayName,
 								bookmark: [],
+								follower: [],
+								following: [],
+								rejweet: [],
 								description: "",
 								bgURL: user.bgURL ? user.bgURL : bgimg,
 							});

@@ -17,6 +17,7 @@ import ImageModal from "components/ImageModal";
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
 const EditJweet = ({ _jweet, handleJweetClose }) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const [jweet, setJweet] = useState(_jweet.text);
@@ -36,6 +37,9 @@ const EditJweet = ({ _jweet, handleJweetClose }) => {
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		handleJweetClose();
+		if (jweet === "" || attachment === "") {
+		}
+
 		await updateDoc(doc(db, "jweets", _jweet.id), {
 			text: jweet,
 			attachmentUrl: attachment === null ? "" : attachment,

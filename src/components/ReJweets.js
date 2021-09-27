@@ -15,35 +15,51 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "mybase";
 
-const MyJweets = ({ match }) => {
+const ReJweets = ({ match }) => {
 	const uid = match.params.id;
 	const currentUser = useSelector((state) => state.user.currentUser);
-	const [myJweets, setMyJweets] = useState([]);
+	const [rejweets, setRejweets] = useState([]);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		const q = query(
-			collection(db, "jweets"),
-			orderBy("createdAt", "desc"),
-			where("creatorId", "==", uid)
-		);
-		onSnapshot(q, (querySnapshot) => {
-			const cp = [];
-			querySnapshot.forEach((doc) => {
-				cp.push({
+		// const q = query(
+		// 	collection(db, "jweets"),
+		// 	orderBy("createdAt", "desc"),
+		// 	where("rejweet", "array-contains", uid)
+		// );
+		// onSnapshot(q, (querySnapshot) => {
+		// 	const cp = [];
+		// 	querySnapshot.forEach((doc) => {
+		// 		cp.push({
+		// 			id: doc.id,
+		// 			...doc.data(),
+		// 		});
+		// 	});
+		// 	setRejweets(cp);
+		// 	setLoading(true);
+		// });
+
+		onSnapshot(
+			query(
+				collection(db, "jweets"),
+				where("rejweet", "array-contains", uid),
+				orderBy("createdAt", "desc")
+			),
+			(snapshot) => {
+				const reJweets = snapshot.docs.map((doc) => ({
 					id: doc.id,
 					...doc.data(),
-				});
-			});
-			setMyJweets(cp);
-			setLoading(true);
-		});
+				}));
+				setRejweets(reJweets);
+				setLoading(true);
+			}
+		);
 	}, [uid]);
 
 	return (
 		<div>
-			{myJweets.length !== 0 ? (
-				myJweets.map((jweet, index) => {
+			{rejweets.length !== 0 ? (
+				rejweets.map((jweet, index) => {
 					return (
 						<JweetBlock
 							key={jweet.id}
@@ -56,10 +72,10 @@ const MyJweets = ({ match }) => {
 			) : loading ? (
 				<div class="flex flex-col justify-center items-center mt-16">
 					<div class="w-2/3 font-bold text-2xl">
-						You don’t have any Jweet yet
+						You don’t have any reJweet yet
 					</div>
 					<div class="w-2/3 text-gray-500">
-						Write a Jweet. When you do, it’ll show up here.
+						Try a reJweet for any jweet. When you do, it’ll show up here.
 					</div>
 				</div>
 			) : (
@@ -71,4 +87,4 @@ const MyJweets = ({ match }) => {
 	);
 };
 
-export default MyJweets;
+export default ReJweets;

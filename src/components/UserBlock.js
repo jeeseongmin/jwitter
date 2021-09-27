@@ -14,11 +14,6 @@ const UserBlock = (props) => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(false);
-	const currentUser = useSelector((state) => state.user.currentUser);
-	const funcRef = useRef();
-	const [func, setFunc] = useState(false);
-	const [like, setLike] = useState(false);
-	const [bookmark, setBookmark] = useState(false);
 
 	useEffect(() => {
 		if (user) setLoading(true);
@@ -54,9 +49,11 @@ const UserBlock = (props) => {
 								<p class="text-gray-500">
 									@{user.email ? user.email.split("@")[0] : ""}
 								</p>
-								<div class="max-w-lg md:max-w-sm xl:max-w-xl text-md">
-									<p class="w-full truncate">{user.description}</p>
-								</div>
+								{user.description !== "" && (
+									<div class="max-w-lg md:max-w-sm xl:max-w-xl text-md">
+										<p class="w-full truncate">{user.description}</p>
+									</div>
+								)}
 							</div>
 						</div>
 					) : (

@@ -88,8 +88,8 @@ const ReplyFactory = ({ id, isModal, handleReplyClose }) => {
 		let attachmentUrl = "";
 
 		const text = replyText;
-		if (text === "") {
-			alert("글자를 입력해주세요");
+		if (text === "" && attachment === "") {
+			alert("글자 혹은 사진을 추가해주세요");
 		} else {
 			if (attachment !== "") {
 				const attachmentRef = ref(storage, `${currentUser.uid}/${uuidv4()}`);

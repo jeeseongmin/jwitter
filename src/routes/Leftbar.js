@@ -121,8 +121,11 @@ const Leftbar = () => {
 				uid: "",
 				displayName: "",
 				email: "",
-				bookmark: [],
 				description: "",
+				bookmark: [],
+				follower: [],
+				following: [],
+				rejweet: [],
 				bgURL: "",
 			})
 		);

@@ -52,7 +52,6 @@ const Rightbar = () => {
 	}, []);
 
 	const getFiltered = async () => {
-		console.log(users, jweets);
 		const _filteredUsers = await users.filter(function (element, index) {
 			return (
 				element.displayName.includes(search) ||
@@ -65,7 +64,6 @@ const Rightbar = () => {
 			return element.text.includes(search) || search === "all";
 		});
 		await setFilteredJweets(_filteredJweets);
-		console.log(filteredUsers, filteredJweets);
 	};
 
 	useEffect(() => {
@@ -86,7 +84,6 @@ const Rightbar = () => {
 	const clearText = (e) => {
 		setSearch("");
 		setFocus(false);
-		console.log("clear", search);
 	};
 
 	useEffect(() => {
