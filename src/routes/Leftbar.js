@@ -1,50 +1,41 @@
-import React, { useState, useEffect, useRef } from "react";
-import logo from "image/logo.png";
-import defaultImg from "image/defaultImg.jpg";
-import { Link, useHistory } from "react-router-dom";
-import { AiFillHome, AiOutlineHome } from "react-icons/ai";
-import { IoNotificationsOutline, IoNotificationsSharp } from "react-icons/io5";
-import { updateProfile } from "firebase/auth";
-import { MdBookmarkBorder, MdBookmark } from "react-icons/md";
-import { BsPerson, BsPersonFill } from "react-icons/bs";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { BiCheck } from "react-icons/bi";
-import { auth, db } from "mybase";
 import Modal from "@mui/material/Modal";
-import { GrClose } from "react-icons/gr";
-import JweetFactory from "components/JweetFactory";
+import CreateJweetModal from "components/modal/CreateJweetModal";
+import defaultImg from "image/defaultImg.jpg";
+import logo from "image/logo.png";
+import { auth } from "mybase";
+import React, { useEffect, useRef, useState } from "react";
+import { AiFillHome, AiOutlineHome } from "react-icons/ai";
+import { BiCheck } from "react-icons/bi";
+import { BsPerson, BsPersonFill } from "react-icons/bs";
+import { CgMoreO } from "react-icons/cg";
+import {
+	HiFire,
+	HiHashtag,
+	HiOutlineDotsHorizontal,
+	HiOutlineFire,
+	HiOutlineHashtag,
+} from "react-icons/hi";
+import { IoNotificationsOutline } from "react-icons/io5";
+import { MdBookmark, MdBookmarkBorder } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
 import { setCurrentUser, setLoginToken } from "reducers/user";
-import { CgList, CgMoreO } from "react-icons/cg";
-import { HiOutlineFire, HiFire } from "react-icons/hi";
-import { HiOutlineHashtag, HiHashtag } from "react-icons/hi";
-import Switch from "@mui/material/Switch";
-import useLocalStorage from "components/useLocalStorage";
-
 const Leftbar = () => {
 	const dispatch = useDispatch();
-
-	// const [isDark, setIsDark] = useState(localStorage.theme === "dark");
-
-	// const toggleMode = async () => {
-	// 	// console.log(localStorage.theme);
-	// 	await setIsDark(!isDark);
-	// 	localStorage.setItem("theme", isDark ? "light" : "dark");
-	// };
 
 	const [selected, setSelected] = useState(1);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const history = useHistory();
 	// 프로필 모달
-	const [profileOpen, setProfileOpen] = useState(false);
-	const handleProfileOpen = () => setProfileOpen(true);
-	const handleProfileClose = () => setProfileOpen(false);
+	const [logoutOpen, setLogoutOpen] = useState(false);
+	const handleLogoutOpen = () => setLogoutOpen(true);
+	const handleLogoutClose = () => setLogoutOpen(false);
 
 	// jweet 모달
-	const [jweetOpen, setJweetOpen] = useState(false);
-	const handleJweetOpen = () => setJweetOpen(true);
-	const handleJweetClose = () => {
-		setJweetOpen(false);
+	const [createOpen, setCreateOpen] = useState(false);
+	const handleCreateOpen = () => setCreateOpen(true);
+	const handleCreateClose = () => {
+		setCreateOpen(false);
 	};
 
 	const [checkOpen, setCheckOpen] = useState(false);
@@ -57,16 +48,12 @@ const Leftbar = () => {
 	const toggleProfile = () => setProfile(!profile);
 	const profileRef = useRef();
 
-	const [more, setMore] = useState(false);
-	const toggleMore = () => setMore(!more);
-	const moreRef = useRef();
-
 	const discardCheck = () => {
 		handleCheckOpen();
 	};
 
 	const discardThread = () => {
-		handleJweetClose();
+		handleCreateClose();
 		handleCheckClose();
 	};
 
@@ -83,20 +70,6 @@ const Leftbar = () => {
 
 		return () => window.removeEventListener("click", handleClick);
 	}, [profile]);
-
-	useEffect(() => {
-		if (!more) return;
-		function handleClick(e) {
-			if (moreRef.current === null) {
-				return;
-			} else if (!moreRef.current.contains(e.target)) {
-				setMore(false);
-			}
-		}
-		window.addEventListener("click", handleClick);
-
-		return () => window.removeEventListener("click", handleClick);
-	}, [more]);
 
 	useEffect(() => {
 		if (window.location.href.includes("explore")) {
@@ -136,25 +109,6 @@ const Leftbar = () => {
 		window.scrollTo(0, 0);
 		setSelected(num);
 	};
-
-	// useEffect(() => {
-	// 	setIsDark(localStorage.theme === "dark");
-	// 	console.log("theme", window.localStorage.theme);
-	// 	var currentTheme = localStorage.getItem("theme");
-	// 	console.log("currentTheme", currentTheme);
-
-	// 	if (currentTheme !== null) {
-	// 		// $('html').addClass('dark');
-	// 		document.getElementById("html").classList.add("dark");
-	// 		console.log("1");
-	// 	} else if (currentTheme === "dark") {
-	// 		document.getElementById("html").classList.replace("light", "dark");
-	// 	} else {
-	// 		// $('html').removeClass('dark');
-	// 		console.log("2");
-	// 		document.getElementById("html").classList.replace("dark", "light");
-	// 	}
-	// }, [localStorage.getItem("theme")]);
 
 	return (
 		<>
@@ -273,32 +227,13 @@ const Leftbar = () => {
 								Notifications
 							</div>
 						</div>
-						<div
-							ref={moreRef}
-							class="relative cursor-pointer w-auto flex flex-row items-center"
-						>
-							<div
-								// onClick={toggleMore}
-								class=" pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300"
-							>
+						<div class="relative cursor-pointer w-auto flex flex-row items-center">
+							<div class=" pl-3 pr-5 py-3 rounded-full flex flex-row text-xl mb-2 hover:bg-gray-200 transition delay-50 duration-300">
 								<CgMoreO size={32} class="mr-4" /> more
-							</div>
-							<div
-								class={
-									"absolute w-48 h-auto left-0 bottom-12 border shadow-lg rounded-sm border-gray-200 bg-white " +
-									(more ? "block" : "hidden")
-								}
-							>
-								<div class="flex flex-row items-center px-2 py-2">
-									<div class="flex justify-center items-center">
-										<CgMoreO size={20} class="mr-4" />
-									</div>
-									<p class="text-sm h-full flex items-center">Display</p>
-								</div>
 							</div>
 						</div>
 						<div
-							onClick={handleJweetOpen}
+							onClick={handleCreateOpen}
 							class="w-full rounded-full text-white font-bold bg-purple-400 flex justify-center py-3 hover:bg-purple-600 transition delay-50 duration-300 cursor-pointer"
 						>
 							Jweet
@@ -337,7 +272,7 @@ const Leftbar = () => {
 									</div>
 								</div>
 								<div
-									onClick={handleProfileOpen}
+									onClick={handleLogoutOpen}
 									class="cursor-pointer px-4 py-4 hover:bg-gray-100 transition delay-50 duration-300"
 								>
 									Log out @{currentUser.displayName}
@@ -373,8 +308,8 @@ const Leftbar = () => {
 				</div>
 			</div>
 			<Modal
-				open={profileOpen}
-				onClose={handleProfileClose}
+				open={logoutOpen}
+				onClose={handleLogoutClose}
 				aria-labelledby="modal-modal-title"
 				aria-describedby="modal-modal-description"
 			>
@@ -394,67 +329,21 @@ const Leftbar = () => {
 						Log out
 					</div>
 					<div
-						onClick={handleProfileClose}
+						onClick={handleLogoutClose}
 						class="cursor-pointer w-full flex py-3 justify-center items-center rounded-full border border-purple-300 text-purple-500 font-bold"
 					>
 						Cancel
 					</div>
 				</div>
 			</Modal>
-
-			<Modal
-				open={jweetOpen}
-				onClose={discardCheck}
-				aria-labelledby="modal-modal-title"
-				aria-describedby="modal-modal-description"
-			>
-				<div class="outline-none absolute border border-white top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/4 origin-center w-1/3 h-auto pt-2 pb-3 bg-white rounded-2xl flex flex-col justify-start items-start">
-					{" "}
-					<div
-						onClick={discardCheck}
-						class="w-full cursor-pointer flex justify-start items-center pb-1 border-b border-gray-200"
-					>
-						<GrClose
-							size={38}
-							class="ml-2 p-2 hover:bg-gray-200 rounded-full"
-						/>
-					</div>
-					<div class="w-full">
-						<JweetFactory
-							currentUser={currentUser}
-							isModal={true}
-							handleJweetClose={handleJweetClose}
-						/>
-					</div>
-				</div>
-			</Modal>
-			<Modal
-				open={checkOpen}
-				onClose={handleCheckClose}
-				aria-labelledby="modal-modal-title"
-				aria-describedby="modal-modal-description"
-			>
-				<div class="outline-none absolute border border-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 origin-center w-96 h-auto px-4 py-8 bg-white rounded-2xl flex flex-col justify-start items-start">
-					<div class="flex flex-col px-4">
-						<h1 class="text-xl font-bold mb-2">Discard Thread?</h1>
-						<p class="text-left pb-8">
-							This can’t be undone and you’ll lose your draft.
-						</p>
-						<div
-							onClick={discardThread}
-							class="cursor-pointer w-full flex py-3 justify-center items-center rounded-full bg-red-500 hover:bg-red-600 transition delay-50 duration-300 text-white font-bold mb-4"
-						>
-							Discard
-						</div>
-						<div
-							onClick={handleCheckClose}
-							class="cursor-pointer w-full flex py-3 justify-center items-center rounded-full border border-purple-300 text-purple-500 transition delay-50 duration-300 font-bold hover:bg-gray-200"
-						>
-							Cancel
-						</div>
-					</div>
-				</div>
-			</Modal>
+			<CreateJweetModal
+				createOpen={createOpen}
+				discardCheck={discardCheck}
+				handleCreateClose={handleCreateClose}
+				checkOpen={checkOpen}
+				handleCheckClose={handleCheckClose}
+				discardThread={discardThread}
+			/>
 		</>
 	);
 };

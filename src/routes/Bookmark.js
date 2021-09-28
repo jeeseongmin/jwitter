@@ -1,5 +1,6 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
-import JweetBlock from "components/JweetBlock";
+import LoadingBox from "components/box/LoadingBox";
+
+import JweetBox from "components/box/JweetBox";
 import {
 	collection,
 	doc,
@@ -50,9 +51,11 @@ const Bookmark = () => {
 	useEffect(() => {
 		getMyInfo();
 	}, []);
+
 	useEffect(() => {
 		return () => setLoading(false); // cleanup function을 이용
 	}, []);
+
 	return (
 		<>
 			<div class="flex-1 flex flex-col pl-64">
@@ -67,7 +70,7 @@ const Bookmark = () => {
 				<div>
 					{filteredJweets.length !== 0 ? (
 						filteredJweets.map((jweet, index) => {
-							return <JweetBlock key={jweet.id} jweet={jweet} />;
+							return <JweetBox key={jweet.id} jweet={jweet} />;
 						})
 					) : loading ? (
 						<div class="w-full flex flex-col justify-center items-center mt-8">
@@ -79,9 +82,7 @@ const Bookmark = () => {
 							</div>
 						</div>
 					) : (
-						<div class="py-4 w-full flex justify-center">
-							<CircularProgress />
-						</div>
+						<LoadingBox />
 					)}
 				</div>
 			</div>

@@ -1,17 +1,11 @@
-import JweetBlock from "components/JweetBlock";
-import JweetFactory from "components/JweetFactory";
-import {
-	collection,
-	onSnapshot,
-	orderBy,
-	query,
-	where,
-} from "firebase/firestore";
+import JweetBox from "components/box/JweetBox";
+import CreateJweetBox from "components/box/CreateJweetBox";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "mybase";
 import React, { useEffect, useState } from "react";
 import { MdSettings } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { useSelector } from "react-redux";
+import LoadingBox from "components/box/LoadingBox";
 
 const Home = () => {
 	const [loading, setLoading] = useState(false);
@@ -33,18 +27,6 @@ const Home = () => {
 				setLoading(true);
 			}
 		);
-
-		// const q = query(collection(db, "jweets"), orderBy("createdAt", "desc"));
-		// onSnapshot(q, (querySnapshot) => {
-		// 	const cp = [];
-		// 	querySnapshot.forEach((doc) => {
-		// 		cp.push({
-		// 			id: doc.id,
-		// 			...doc.data(),
-		// 		});
-		// 	});
-		// 	setJweets(cp);
-		// });
 	}, []);
 
 	return (
@@ -55,20 +37,18 @@ const Home = () => {
 					<MdSettings size={24} class="cursor-pointer" />
 				</div>
 			</div>
-			<JweetFactory isModal={false} />
+			<CreateJweetBox isModal={false} />
 			<div>
 				{jweets.length !== 0 ? (
 					jweets.map((jweet, index) => {
-						return <JweetBlock key={jweet.id} jweet={jweet} id={jweet.id} />;
+						return <JweetBox key={jweet.id} jweet={jweet} id={jweet.id} />;
 					})
 				) : loading ? (
 					<div class="w-full flex-1 flex justify-center items-center mt-8">
 						등록된 Jweet이 없습니다.
 					</div>
 				) : (
-					<div class="py-4 w-full flex justify-center">
-						<CircularProgress />
-					</div>
+					<LoadingBox />
 				)}
 			</div>
 		</div>

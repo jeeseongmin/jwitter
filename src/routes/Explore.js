@@ -1,29 +1,16 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
-import {
-	collection,
-	doc,
-	getDoc,
-	onSnapshot,
-	orderBy,
-	query,
-	where,
-} from "firebase/firestore";
-import { db, firebase } from "mybase";
+import ExploreJweets from "components/container/ExploreJweets";
+import ExploreUsers from "components/container/ExploreUsers";
+import { collection, onSnapshot, query } from "firebase/firestore";
+import { db } from "mybase";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import JweetBlock from "components/JweetBlock";
-import { HiOutlineHashtag, HiHashtag } from "react-icons/hi";
 import { GrFormRefresh } from "react-icons/gr";
+import { HiHashtag } from "react-icons/hi";
 import { Link, Route, Switch } from "react-router-dom";
-import ExploreJweets from "components/ExploreJweets";
-import ExploreUsers from "components/ExploreUsers";
 
-const Popular = () => {
+const Explore = () => {
 	const [loading, setLoading] = useState(false);
 	const [filteredJweets, setFilteredJweets] = useState([]);
 	const [filteredUsers, setFilteredUsers] = useState([]);
-	const [randomList, setRandomList] = useState([]);
-	const currentUser = useSelector((state) => state.user.currentUser);
 	const [selected, setSelected] = useState(1);
 	function shuffle(array) {
 		for (let index = array.length - 1; index > 0; index--) {
@@ -170,4 +157,4 @@ const Popular = () => {
 	);
 };
 
-export default Popular;
+export default Explore;

@@ -1,14 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { PersistGate } from "redux-persist/integration/react";
+import configureStore from "./app/store";
 import "./index.css";
 import App from "./routes/App";
-import firebase from "./mybase";
-import { BrowserRouter } from "react-router-dom";
 
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-// import { persistStore } from "redux-persist";
-import configureStore from "./app/store";
 const { store, persistor } = configureStore();
 
 ReactDOM.render(

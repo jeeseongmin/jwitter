@@ -1,30 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
-import { auth, db } from "mybase";
-import { useHistory, Switch, Route, Link } from "react-router-dom";
-import { updateProfile } from "firebase/auth";
-import {
-	getDocs,
-	query,
-	collection,
-	where,
-	doc,
-	orderBy,
-	limit,
-	onSnapshot,
-	getDoc,
-} from "firebase/firestore";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { IoArrowBackOutline } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
-import JweetBlock from "components/JweetBlock";
-import LikeJweets from "components/LikeJweets";
-import MyJweets from "components/MyJweets";
-import Modal from "@mui/material/Modal";
-import { GrClose } from "react-icons/gr";
-import { MdCameraEnhance } from "react-icons/md";
-import EditProfile from "components/EditProfile";
+import UpdateProfileModal from "components/modal/UpdateProfileModal";
+import LikeJweets from "components/container/LikeJweets";
+import MyJweets from "components/container/MyJweets";
+import ReJweets from "components/container/ReJweets";
+import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import bgimg from "image/bgimg.jpg";
-import ReJweets from "components/ReJweets";
+import { db } from "mybase";
+import React, { useEffect, useState } from "react";
+import { IoArrowBackOutline } from "react-icons/io5";
+import { useSelector } from "react-redux";
+import { Link, Route, Switch, useHistory } from "react-router-dom";
+import LoadingBox from "components/box/LoadingBox";
 
 const Profile = ({ match }) => {
 	const uid = match.params.id;
@@ -32,15 +17,14 @@ const Profile = ({ match }) => {
 	const history = useHistory();
 	const [info, setInfo] = useState({});
 	const [myJweets, setMyJweets] = useState([]);
-	const [reJweets, setReJweets] = useState([]);
-	const [editState, setEditState] = useState(false);
-	const toggleEditState = () => setEditState(!editState);
+	const [updateState, setUpdateState] = useState(false);
+	const toggleUpdateState = () => setUpdateState(!updateState);
 	const currentUser = useSelector((state) => state.user.currentUser);
 
-	const [editModal, setEditModal] = useState(false);
-	const editModalOpen = () => setEditModal(true);
-	const editModalClose = () => {
-		setEditModal(false);
+	const [updateModal, setUpdateModal] = useState(false);
+	const updateModalOpen = () => setUpdateModal(true);
+	const updateModalClose = () => {
+		setUpdateModal(false);
 	};
 
 	const getMyInfo = async () => {
@@ -64,7 +48,7 @@ const Profile = ({ match }) => {
 	useEffect(() => {
 		getMyInfo();
 		getJweets();
-	}, [uid, editState]);
+	}, [uid, updateState]);
 
 	return (
 		<>
@@ -94,10 +78,10 @@ const Profile = ({ match }) => {
 							{uid === currentUser.uid ? (
 								<div class="h-16 w-full flex flex-row-reverse items-center pr-4">
 									<div
-										onClick={editModalOpen}
+										onClick={updateModalOpen}
 										class="cursor-pointer font-bold text-base border transition delay-50 duration-300 border-gray-300 text-gray-600 rounded-full flex justify-center items-center px-4 py-2 hover:bg-gray-200"
 									>
-										Edit Profile
+										Update Profile
 									</div>
 								</div>
 							) : (
@@ -179,15 +163,13 @@ const Profile = ({ match }) => {
 					</div>
 				</>
 			) : (
-				<div class="pl-64 h-full py-4 flex-1 flex flex-row justify-center items-center">
-					<CircularProgress />
-				</div>
+				<LoadingBox />
 			)}
-			<EditProfile
-				editModal={editModal}
-				editModalOpen={editModalOpen}
-				editModalClose={editModalClose}
-				toggleEditState={toggleEditState}
+			<UpdateProfileModal
+				updateModal={updateModal}
+				updateModalOpen={updateModalOpen}
+				updateModalClose={updateModalClose}
+				toggleUpdateState={toggleUpdateState}
 			/>
 		</>
 	);
