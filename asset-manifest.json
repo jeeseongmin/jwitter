@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/jwitter/static/css/main.5c334dc4.chunk.css",
-    "main.js": "/jwitter/static/js/main.12657668.chunk.js",
-    "main.js.map": "/jwitter/static/js/main.12657668.chunk.js.map",
+    "main.js": "/jwitter/static/js/main.74215acb.chunk.js",
+    "main.js.map": "/jwitter/static/js/main.74215acb.chunk.js.map",
     "runtime-main.js": "/jwitter/static/js/runtime-main.1b8691e4.js",
     "runtime-main.js.map": "/jwitter/static/js/runtime-main.1b8691e4.js.map",
-    "static/js/2.271d15a4.chunk.js": "/jwitter/static/js/2.271d15a4.chunk.js",
-    "static/js/2.271d15a4.chunk.js.map": "/jwitter/static/js/2.271d15a4.chunk.js.map",
+    "static/js/2.6115d31a.chunk.js": "/jwitter/static/js/2.6115d31a.chunk.js",
+    "static/js/2.6115d31a.chunk.js.map": "/jwitter/static/js/2.6115d31a.chunk.js.map",
     "index.html": "/jwitter/index.html",
     "static/css/main.5c334dc4.chunk.css.map": "/jwitter/static/css/main.5c334dc4.chunk.css.map",
-    "static/js/2.271d15a4.chunk.js.LICENSE.txt": "/jwitter/static/js/2.271d15a4.chunk.js.LICENSE.txt",
+    "static/js/2.6115d31a.chunk.js.LICENSE.txt": "/jwitter/static/js/2.6115d31a.chunk.js.LICENSE.txt",
     "static/media/background.294149b7.jpg": "/jwitter/static/media/background.294149b7.jpg",
     "static/media/bgimg.b52d269e.jpg": "/jwitter/static/media/bgimg.b52d269e.jpg",
     "static/media/logo.5c22847b.png": "/jwitter/static/media/logo.5c22847b.png"
   },
   "entrypoints": [
     "static/js/runtime-main.1b8691e4.js",
-    "static/js/2.271d15a4.chunk.js",
+    "static/js/2.6115d31a.chunk.js",
     "static/css/main.5c334dc4.chunk.css",
-    "static/js/main.12657668.chunk.js"
+    "static/js/main.74215acb.chunk.js"
   ]
 }
