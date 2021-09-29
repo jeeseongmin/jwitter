@@ -1,32 +1,23 @@
-import MuiAlert from "@mui/material/Alert";
 import LoadingBox from "components/box/LoadingBox";
 import BookmarkButton from "components/button/BookmarkButton";
+import DeleteButton from "components/button/DeleteButton";
 import LikeButton from "components/button/LikeButton";
 import RejweetButton from "components/button/RejweetButton";
 import ReplyButton from "components/button/ReplyButton";
+import UpdateButton from "components/button/UpdateButton";
 import DeleteJweetModal from "components/modal/DeleteJweetModal";
 import ImageModal from "components/modal/ImageModal";
 import UpdateJweetModal from "components/modal/UpdateJweetModal";
-import { deleteDoc, doc, onSnapshot } from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
-import { db, storage } from "mybase";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "mybase";
 import React, { useEffect, useRef, useState } from "react";
-import { AiTwotoneDelete } from "react-icons/ai";
 import { FaRetweet } from "react-icons/fa";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { RiEdit2Line } from "react-icons/ri";
-// import firebase from "firebase/compat/app";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
-import UpdateButton from "components/button/UpdateButton";
-import DeleteButton from "components/button/DeleteButton";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 const DetailJweetBox = (props) => {
 	const jweet = props.jweet;
-	const uid = props.id;
 	const [loading, setLoading] = useState(false);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const funcRef = useRef();
@@ -71,7 +62,7 @@ const DetailJweetBox = (props) => {
 			setCreatorInfo(doc.data());
 			setLoading(true);
 		});
-	}, [uid]);
+	}, [jweet.creatorId]);
 
 	const [photoOpen, setPhotoOpen] = useState(false);
 	const handlePhotoOpen = () => setPhotoOpen(true);

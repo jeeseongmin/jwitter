@@ -13,7 +13,7 @@ const RecommendUserBox = ({ user }) => {
 
 	useEffect(() => {
 		if (user) setLoading(true);
-	}, []);
+	}, [user]);
 	return (
 		<div
 			onClick={goPage}

@@ -11,7 +11,7 @@ const RegisterContainer = ({ handleOpen, toggleLogin }) => {
 			</h1>
 			<GoogleButton isLogin={false} />
 			<GithubButton isLogin={false} />
-			<EmailButton handleOpen={handleOpen} />
+			<EmailButton handleOpen={handleOpen} isLogin={false} />
 			<h1 class="w-full md:w-1/2 mb-4">
 				By signing up, you agree to the{" "}
 				<span class="text-blue-600">Terms of Service</span> and{" "}

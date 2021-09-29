@@ -1,3 +1,4 @@
+import MenuButton from "components/button/MenuButton";
 import ExploreJweets from "components/container/ExploreJweets";
 import ExploreUsers from "components/container/ExploreUsers";
 import { collection, onSnapshot, query } from "firebase/firestore";
@@ -5,13 +6,18 @@ import { db } from "mybase";
 import React, { useEffect, useState } from "react";
 import { GrFormRefresh } from "react-icons/gr";
 import { HiHashtag } from "react-icons/hi";
-import { Link, Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 
 const Explore = () => {
+	const location = useLocation();
 	const [loading, setLoading] = useState(false);
 	const [filteredJweets, setFilteredJweets] = useState([]);
 	const [filteredUsers, setFilteredUsers] = useState([]);
 	const [selected, setSelected] = useState(1);
+
+	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
 	function shuffle(array) {
 		for (let index = array.length - 1; index > 0; index--) {
 			// 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
@@ -81,13 +87,9 @@ const Explore = () => {
 	};
 
 	useEffect(() => {
-		return () => setLoading(false); // cleanup function을 이용
-	}, []);
-
-	useEffect(() => {
-		if (window.location.href.includes("jweets")) setSelected(1);
+		if (location.pathname.includes("jweets")) setSelected(1);
 		else setSelected(2);
-	}, [window.location.href]);
+	}, [location.pathname]);
 
 	const onSelected = (num) => {
 		window.scrollTo(0, 0);
@@ -102,10 +104,10 @@ const Explore = () => {
 						<div class="font-bold text-xl flex flex-row items-center">
 							<HiHashtag class="text-purple-700 mr-1" /> Explore
 						</div>
-						{(selected === 1 || window.location.href.includes("jweets")) && (
+						{selected === 1 && (
 							<div class="text-xs">Jweets are randomly selected</div>
 						)}
-						{(selected === 2 || window.location.href.includes("users")) && (
+						{selected === 2 && (
 							<div class="text-xs">Users are randomly selected</div>
 						)}
 					</div>
@@ -117,32 +119,22 @@ const Explore = () => {
 					</div>
 				</div>
 				<div class="w-full flex flex-row ">
-					<Link
-						to={"/explore/jweets"}
-						onClick={() => onSelected(1)}
-						class="w-1/2 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
-					>
-						<span
-							class={
-								"py-3 " + (selected === 1 ? "border-b-4 border-purple-500" : "")
-							}
-						>
-							Jweets
-						</span>
-					</Link>
-					<Link
-						to={"/explore/users"}
-						onClick={() => onSelected(2)}
-						class="w-1/2 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
-					>
-						<span
-							class={
-								"py-3 " + (selected === 2 ? "border-b-4 border-purple-500" : "")
-							}
-						>
-							Users
-						</span>
-					</Link>
+					<MenuButton
+						url={"/explore/jweets"}
+						onSelected={onSelected}
+						selected={selected}
+						num={1}
+						width={"w-1/2"}
+						text={"Jweets"}
+					/>
+					<MenuButton
+						url={"/explore/users"}
+						onSelected={onSelected}
+						selected={selected}
+						num={2}
+						width={"w-1/2"}
+						text={"Users"}
+					/>
 				</div>
 				<Switch>
 					<Route path="/explore/jweets">

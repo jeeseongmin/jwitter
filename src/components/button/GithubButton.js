@@ -15,8 +15,7 @@ const GithubButton = ({ isLogin }) => {
 		provider = new GithubAuthProvider();
 		await signInWithPopup(auth, provider)
 			.then((result) => {
-				const credential = GithubAuthProvider.credentialFromResult(result);
-				const token = credential.accessToken;
+				GithubAuthProvider.credentialFromResult(result);
 				user = result.user;
 
 				const docRef = doc(db, "users", user.uid);
@@ -32,6 +31,7 @@ const GithubButton = ({ isLogin }) => {
 								follwing: user.following ? user.following : [],
 							})
 						);
+						sessionStorage.setItem("loginToken", true);
 					} else {
 						console.log("No such document!");
 						dispatch(setLoginToken("login"));
@@ -65,6 +65,7 @@ const GithubButton = ({ isLogin }) => {
 							description: "",
 							bgURL: user.bgURL ? user.bgURL : bgimg,
 						});
+						sessionStorage.setItem("loginToken", true);
 					}
 				});
 			})

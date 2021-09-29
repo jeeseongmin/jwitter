@@ -17,12 +17,13 @@ import {
 } from "react-icons/hi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { MdBookmark, MdBookmarkBorder } from "react-icons/md";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
 import { setCurrentUser, setLoginToken } from "reducers/user";
 const Leftbar = () => {
+	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
-
+	const location = useLocation();
 	const [selected, setSelected] = useState(1);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const [photoURL, setPhotoURL] = useState(currentUser.photoURL);
@@ -60,7 +61,9 @@ const Leftbar = () => {
 		handleCreateClose();
 		handleCheckClose();
 	};
-
+	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
 	useEffect(() => {
 		if (!profile) return;
 		function handleClick(e) {
@@ -76,21 +79,22 @@ const Leftbar = () => {
 	}, [profile]);
 
 	useEffect(() => {
-		if (window.location.href.includes("explore")) {
+		if (location.pathname.includes("explore")) {
 			setSelected(2);
-		} else if (window.location.href.includes("bookmark")) {
+		} else if (location.pathname.includes("bookmark")) {
 			setSelected(3);
-		} else if (window.location.href.includes("popular")) {
+		} else if (location.pathname.includes("popular")) {
 			setSelected(4);
-		} else if (window.location.href.includes("profile")) {
+		} else if (location.pathname.includes("profile")) {
 			setSelected(5);
 		} else {
 			setSelected(1);
 		}
-	}, [window.location.href]);
+	}, [location.pathname]);
 
 	const onLogOutClick = () => {
 		auth.signOut();
+		sessionStorage.setItem("loginToken", false);
 		dispatch(setLoginToken("logout"));
 		dispatch(
 			setCurrentUser({

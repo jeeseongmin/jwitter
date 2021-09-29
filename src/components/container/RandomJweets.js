@@ -31,7 +31,7 @@ const RandomJweets = ({
 				setLoading(true);
 			}
 		);
-	}, [type]);
+	}, [type, setType]);
 
 	function shuffle(array) {
 		for (let index = array.length - 1; index > 0; index--) {

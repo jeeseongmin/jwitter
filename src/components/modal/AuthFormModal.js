@@ -26,35 +26,35 @@ const AuthForm = ({ isLogin }) => {
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			let data;
 			if (isLogin) {
 				// Log In
-				data = await signInWithEmailAndPassword(
-					auth,
-					info.email,
-					info.password
-				).then(() => {
-					const docRef = doc(db, "users", auth.currentUser.uid);
-					getDoc(docRef).then(async (snap) => {
-						if (snap.exists()) {
-							await dispatch(setLoginToken("login"));
-							await dispatch(
-								setCurrentUser({
-									...snap.data(),
-									uid: auth.currentUser.uid,
-									follower: snap.data().follower ? snap.data().follower : [],
-									following: snap.data().following ? snap.data().following : [],
-									rejweet: snap.data().rejweet ? snap.data().rejweet : [],
-								})
-							);
-						} else {
-							console.log("error");
-						}
-					});
-				});
+				await signInWithEmailAndPassword(auth, info.email, info.password).then(
+					() => {
+						const docRef = doc(db, "users", auth.currentUser.uid);
+						getDoc(docRef).then(async (snap) => {
+							if (snap.exists()) {
+								await dispatch(setLoginToken("login"));
+								await dispatch(
+									setCurrentUser({
+										...snap.data(),
+										uid: auth.currentUser.uid,
+										follower: snap.data().follower ? snap.data().follower : [],
+										following: snap.data().following
+											? snap.data().following
+											: [],
+										rejweet: snap.data().rejweet ? snap.data().rejweet : [],
+									})
+								);
+								sessionStorage.setItem("loginToken", true);
+							} else {
+								console.log("error");
+							}
+						});
+					}
+				);
 			} else {
 				// create account
-				data = await createUserWithEmailAndPassword(
+				await createUserWithEmailAndPassword(
 					auth,
 					info.email,
 					info.password

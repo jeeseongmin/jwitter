@@ -1,9 +1,8 @@
 import MuiAlert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
-import Modal from "@mui/material/Modal";
 import Skeleton from "@mui/material/Skeleton";
 import Snackbar from "@mui/material/Snackbar";
-import UpdateReplyBox from "components/box/UpdateReplyBox";
+import UpdateReplyModal from "components/modal/UpdateReplyModal";
 import DeleteButton from "components/button/DeleteButton";
 import UpdateButton from "components/button/UpdateButton";
 import DeleteReplyModal from "components/modal/DeleteReplyModal";
@@ -12,7 +11,6 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "mybase";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
-import { GrClose } from "react-icons/gr";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -78,7 +76,7 @@ const ReplyBox = ({ reply }) => {
 				console.log("No such document!");
 			}
 		});
-	}, []);
+	}, [reply, currentUser]);
 
 	const toggleLike = async () => {
 		likeClick();
@@ -228,33 +226,11 @@ const ReplyBox = ({ reply }) => {
 						</Skeleton>
 					)}
 				</div>
-				<Modal
-					open={replyOpen}
-					onClose={handleReplyClose}
-					aria-labelledby="modal-modal-title"
-					aria-describedby="modal-modal-description"
-				>
-					<div class="outline-none absolute border border-white top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/4 origin-center w-1/3 h-auto pt-2 pb-3 bg-white rounded-2xl flex flex-col justify-start items-start">
-						{" "}
-						<div
-							onClick={handleReplyClose}
-							class="w-full cursor-pointer flex justify-start items-center pb-1 border-b border-gray-200"
-						>
-							<GrClose
-								size={38}
-								class="ml-2 p-2 hover:bg-gray-200 rounded-full"
-							/>
-						</div>
-						<div class="w-full">
-							<UpdateReplyBox
-								currentUser={currentUser}
-								isModal={true}
-								_reply={reply}
-								handleReplyClose={handleReplyClose}
-							/>
-						</div>
-					</div>
-				</Modal>
+				<UpdateReplyModal
+					reply={reply}
+					replyOpen={replyOpen}
+					handleReplyClose={handleReplyClose}
+				/>
 				<DeleteReplyModal
 					reply={reply}
 					deleteOpen={deleteOpen}

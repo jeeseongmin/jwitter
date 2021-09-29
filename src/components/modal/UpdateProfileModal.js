@@ -35,6 +35,15 @@ const UpdateProfileModal = ({
 	const [attachment, setAttachment] = useState(currentUser.photoURL);
 	const [bg, setBg] = useState(currentUser.bgURL ? currentUser.bgURL : bgimg);
 
+	useEffect(() => {
+		setInfo({
+			displayName: currentUser.displayName,
+			email: currentUser.email,
+			photoURL: currentUser.photoURL,
+			description: currentUser.description,
+		});
+	}, [updateModal, currentUser]);
+
 	const onFileChange = (e) => {
 		const theFile = e.target.files[0];
 		const reader = new FileReader();
@@ -54,7 +63,7 @@ const UpdateProfileModal = ({
 
 	useEffect(() => {
 		setAttachment(currentUser.photoURL);
-	}, []);
+	}, [currentUser.photoURL]);
 
 	const onChangeInfo = (e, type) => {
 		const cp = { ...info };
@@ -113,7 +122,7 @@ const UpdateProfileModal = ({
 				aria-labelledby="modal-modal-title"
 				aria-describedby="modal-modal-description"
 			>
-				<div class="select-none outline-none absolute border border-white top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/4 origin-center w-1/3 h-auto pt-2 pb-3 bg-white rounded-2xl flex flex-col justify-start items-start">
+				<div class="w-2/3 lg:w-1/2 select-none outline-none absolute border border-white top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/4 origin-center h-auto pt-2 pb-3 bg-white rounded-2xl flex flex-col justify-start items-start">
 					{" "}
 					<form onSubmit={onSubmit} class="w-full flex flex-col">
 						<div class="h-full w-full flex justify-between items-center pb-1 ">

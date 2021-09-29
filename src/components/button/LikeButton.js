@@ -23,7 +23,7 @@ const LikeButton = ({ jweet, likeRef, isDetail }) => {
 	};
 	useEffect(() => {
 		setLike(jweet.like.includes(currentUser.uid));
-	}, []);
+	}, [currentUser.uid, jweet.like]);
 
 	const toggleLike = async () => {
 		likeClick();

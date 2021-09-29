@@ -10,7 +10,7 @@ const RecommendJweet = ({ jweet, users }) => {
 			return element.id === jweet.creatorId;
 		});
 		setFilteredUser(_filteredUser);
-	}, []);
+	}, [users, jweet]);
 
 	const goPage = () => {
 		history.push("/jweet/" + jweet.id);

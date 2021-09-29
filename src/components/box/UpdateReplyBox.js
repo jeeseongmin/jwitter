@@ -1,5 +1,3 @@
-import MuiAlert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
 import Picker from "emoji-picker-react";
 import { doc, updateDoc } from "firebase/firestore";
 import defaultImg from "image/defaultImg.jpg";
@@ -10,11 +8,8 @@ import { IoImageOutline } from "react-icons/io5";
 import { MdCancel } from "react-icons/md";
 import { useSelector } from "react-redux";
 
-const UpdateReply = ({ _reply, handleReplyClose }) => {
+const UpdateReplyBox = ({ _reply, handleReplyClose }) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
-	const Alert = React.forwardRef(function Alert(props, ref) {
-		return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-	});
 	const [reply, setReply] = useState(_reply.text);
 	const [attachment, setAttachment] = useState(_reply.attachmentUrl);
 	const textareaRef = useRef();
@@ -83,18 +78,7 @@ const UpdateReply = ({ _reply, handleReplyClose }) => {
 		}
 		textareaRef.current.style.height = "40px";
 		textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
-	});
-
-	const [editSnack, setEditSnack] = useState();
-	const editClick = () => setEditSnack(true);
-	const editClose = (e, reason) => {
-		if (reason === "clickaway") {
-			return;
-		}
-
-		setEditSnack(false);
-	};
-
+	}, []);
 	return (
 		<>
 			<div class="flex flex-row px-2 pt-2 border-b border-gray-200">
@@ -173,19 +157,8 @@ const UpdateReply = ({ _reply, handleReplyClose }) => {
 					/>
 				</form>
 			</div>
-			<Snackbar open={editSnack} autoHideDuration={2000} onClose={editClose}>
-				<Alert
-					onClose={editClose}
-					severity="success"
-					color="error"
-					variant="filled"
-					sx={{ width: "100%" }}
-				>
-					{editSnack ? "좋아요!" : "좋아요 취소!"}
-				</Alert>
-			</Snackbar>
 		</>
 	);
 };
 
-export default UpdateReply;
+export default UpdateReplyBox;

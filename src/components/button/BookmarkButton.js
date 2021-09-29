@@ -30,7 +30,7 @@ const BookmarkButton = ({ jweet, bookmarkRef, isDetail }) => {
 
 	useEffect(() => {
 		setBookmark(currentUser.bookmark.includes(jweet.id));
-	}, []);
+	}, [currentUser.bookmark, jweet.id]);
 
 	const toggleBookmark = async () => {
 		bookmarkClick();

@@ -134,7 +134,7 @@ const CreateJweetBox = ({ isModal, handleJweetClose }) => {
 			textareaRef.current.style.height =
 				textareaRef.current.scrollHeight + "px";
 		}
-	}, []);
+	}, [jweet]);
 
 	return (
 		<div

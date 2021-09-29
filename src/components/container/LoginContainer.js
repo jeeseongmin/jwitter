@@ -9,7 +9,7 @@ const loginContainer = ({ handleOpen, toggleLogin }) => {
 			<h1 class="text-xl md:text-3xl font-bold mb-8">Jwitter 로그인하기</h1>
 			<GoogleButton isLogin={true} />
 			<GithubButton isLogin={true} />
-			<EmailButton handleOpen={handleOpen} />
+			<EmailButton handleOpen={handleOpen} isLogin={true} />
 
 			<h1>
 				계정이 없으신가요?{" "}

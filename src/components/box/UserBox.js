@@ -1,19 +1,16 @@
-import MuiAlert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import Skeleton from "@mui/material/Skeleton";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 const UserBox = (props) => {
 	const user = props.user;
 	const history = useHistory();
-	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		if (user) setLoading(true);
-	}, []);
+	}, [user]);
 
 	const goUser = () => {
 		history.push("/profile/jweet/" + user.id);

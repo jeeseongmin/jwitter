@@ -1,25 +1,48 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
 	HashRouter as Router,
 	Redirect,
 	Route,
 	Switch,
 } from "react-router-dom";
+import { setCurrentUser, setLoginToken } from "reducers/user";
 import Bookmark from "routes/Bookmark";
+import Detail from "routes/Detail";
 import Explore from "routes/Explore";
 import Home from "routes/Home";
-import Detail from "routes/Detail";
 import Leftbar from "routes/Leftbar";
 import Login from "routes/Login";
 import Popular from "routes/Popular";
 import Profile from "routes/Profile";
 import Rightbar from "routes/Rightbar";
 
-const AppRouter = (props) => {
+const AppRouter = () => {
+	const dispatch = useDispatch();
 	const loginToken = useSelector((state) => state.user.loginToken);
 	const currentUser = useSelector((state) => state.user.currentUser);
 
+	useEffect(() => {
+		let loginToken = sessionStorage.getItem("loginToken");
+		if (loginToken === null || !loginToken) {
+			dispatch(setLoginToken("logout"));
+			dispatch(
+				setCurrentUser({
+					photoURL: "",
+					uid: "",
+					displayName: "",
+					email: "",
+					description: "",
+					bookmark: [],
+					follower: [],
+					following: [],
+					rejweet: [],
+					bgURL: "",
+				})
+			);
+			console.log("정보 없음!");
+		} else console.log("정보 있음!");
+	}, []);
 	return (
 		<Router>
 			<div

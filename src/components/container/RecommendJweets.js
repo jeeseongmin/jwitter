@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 const RecommendJweets = () => {
 	const history = useHistory();
 	const [show, setShow] = useState(5);
+	const [loading, setLoading] = useState(false);
 	// reply 모달
 	const [users, setUsers] = useState([]);
 	const [modalOpen, setModalOpen] = useState(false);
@@ -16,7 +17,9 @@ const RecommendJweets = () => {
 		setModalOpen(false);
 	};
 	const [type, setType] = useState("");
-
+	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
 	const toggleType = () => {
 		setShow(5);
 		if (type === "like") setType("random");

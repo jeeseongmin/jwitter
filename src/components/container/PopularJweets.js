@@ -63,7 +63,7 @@ const PopularJweets = ({
 											users={users}
 										/>
 									);
-								}
+								} else return <div key={element.id}></div>;
 							})}
 						</div>
 						{likeList.length >= 5 && (

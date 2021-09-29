@@ -73,7 +73,7 @@ const JweetBox = (props) => {
 			setCreatorInfo(doc.data());
 			setLoading(true);
 		});
-	}, []);
+	}, [jweet]);
 	const exceptRef = useRef();
 	const modalRef = useRef();
 	const profileRef = useRef();

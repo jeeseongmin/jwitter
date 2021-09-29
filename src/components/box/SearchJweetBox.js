@@ -8,7 +8,8 @@ const SearchJweetBlock = ({ jweet, users, setFocus }) => {
 			return element.id === jweet.creatorId;
 		});
 		setFilteredUser(_filteredUser);
-	}, []);
+	}, [jweet, users]);
+
 	return (
 		<Link
 			to={"/jweet/" + jweet.id}

@@ -18,7 +18,9 @@ const RecommendUsers = () => {
 	const showMore = () => {
 		history.push("/explore/users");
 	};
-
+	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
 	useEffect(() => {
 		onSnapshot(query(collection(db, "users")), (snapshot) => {
 			const _user = snapshot.docs.map((doc) => ({
@@ -60,7 +62,7 @@ const RecommendUsers = () => {
 							{users.map((user, index) => {
 								if (index < 5) {
 									return <RecommendUserBox key={user.id} user={user} />;
-								}
+								} else return <div key={user.id}></div>;
 							})}
 						</div>
 						<div class="w-full my-2">

@@ -4,7 +4,6 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "mybase";
 import React, { useEffect, useState } from "react";
 import { AiOutlineRetweet } from "react-icons/ai";
-// import firebase from "firebase/compat/app";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "reducers/user";
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -27,7 +26,7 @@ const RejweetButton = ({ jweet, reJweetRef, isDetail }) => {
 	};
 	useEffect(() => {
 		setRejweet(jweet.rejweet.includes(currentUser.uid));
-	}, []);
+	}, [currentUser.uid, jweet.rejweet]);
 
 	const toggleRejweet = async () => {
 		rejweetClick();

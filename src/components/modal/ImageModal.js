@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
 import Modal from "@mui/material/Modal";
+import React from "react";
 import { IoClose } from "react-icons/io5";
 
 const ImageModal = ({

@@ -1,26 +1,33 @@
-import UpdateProfileModal from "components/modal/UpdateProfileModal";
+import LoadingBox from "components/box/LoadingBox";
+import MenuButton from "components/button/MenuButton";
 import LikeJweets from "components/container/LikeJweets";
 import MyJweets from "components/container/MyJweets";
 import ReJweets from "components/container/ReJweets";
+import UpdateProfileModal from "components/modal/UpdateProfileModal";
 import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import bgimg from "image/bgimg.jpg";
 import { db } from "mybase";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import { Link, Route, Switch, useHistory } from "react-router-dom";
-import LoadingBox from "components/box/LoadingBox";
-
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 const Profile = ({ match }) => {
 	const uid = match.params.id;
 	const [loading, setLoading] = useState(false);
+	const location = useLocation();
 	const history = useHistory();
 	const [info, setInfo] = useState({});
 	const [myJweets, setMyJweets] = useState([]);
 	const [updateState, setUpdateState] = useState(false);
 	const toggleUpdateState = () => setUpdateState(!updateState);
 	const currentUser = useSelector((state) => state.user.currentUser);
-
+	const [selected, setSelected] = useState(1);
+	const onSelected = (num) => {
+		setSelected(num);
+	};
+	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
 	const [updateModal, setUpdateModal] = useState(false);
 	const updateModalOpen = () => setUpdateModal(true);
 	const updateModalClose = () => {
@@ -33,9 +40,17 @@ const Profile = ({ match }) => {
 			setLoading(true);
 		});
 	}, [uid]);
+
 	useEffect(() => {
-		return () => setLoading(false); // cleanup function을 이용
-	}, []);
+		if (location.pathname.includes("/jweet")) {
+			setSelected(1);
+		} else if (location.pathname.includes("/like")) {
+			setSelected(2);
+		} else if (location.pathname.includes("/rejweet")) {
+			setSelected(3);
+		}
+	}, [location.pathname]);
+
 	const getJweets = useCallback(async () => {
 		const q = query(collection(db, "jweets"), where("creatorId", "==", uid));
 		onSnapshot(q, (querySnapshot) => {
@@ -111,51 +126,30 @@ const Profile = ({ match }) => {
 							</p>
 						</div>
 						<div class="w-full flex flex-row ">
-							<Link
-								to={"/profile/jweet/" + uid}
-								class="w-1/3 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
-							>
-								<span
-									class={
-										"py-3 " +
-										(window.location.href.includes("/jweet")
-											? "border-b-4 border-purple-500"
-											: "")
-									}
-								>
-									Jweets
-								</span>
-							</Link>
-							<Link
-								to={"/profile/like/" + uid}
-								class="w-1/3 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
-							>
-								<span
-									class={
-										"py-3 " +
-										(window.location.href.includes("/like")
-											? "border-b-4 border-purple-500"
-											: "")
-									}
-								>
-									Likes
-								</span>
-							</Link>
-							<Link
-								to={"/profile/rejweet/" + uid}
-								class="w-1/3 flex justify-center items-center cursor-pointer font-bold hover:bg-gray-200 transition delay-50 duration-300"
-							>
-								<span
-									class={
-										"py-3 " +
-										(window.location.href.includes("/rejweet")
-											? "border-b-4 border-purple-500"
-											: "")
-									}
-								>
-									Rejweets
-								</span>
-							</Link>
+							<MenuButton
+								url={"/profile/jweet/" + uid}
+								onSelected={onSelected}
+								selected={selected}
+								num={1}
+								width={"w-1/3"}
+								text={"Jweets"}
+							/>
+							<MenuButton
+								url={"/profile/like/" + uid}
+								onSelected={onSelected}
+								selected={selected}
+								num={2}
+								width={"w-1/3"}
+								text={"Likes"}
+							/>
+							<MenuButton
+								url={"/profile/rejweet/" + uid}
+								onSelected={onSelected}
+								selected={selected}
+								num={3}
+								width={"w-1/3"}
+								text={"Rejweets"}
+							/>
 						</div>
 						<Switch>
 							<Route path="/profile/jweet/:id" component={MyJweets} />

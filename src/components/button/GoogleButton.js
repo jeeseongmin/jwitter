@@ -15,8 +15,7 @@ const GoogleButton = ({ isLogin }) => {
 		provider = new GoogleAuthProvider();
 		await signInWithPopup(auth, provider)
 			.then((result) => {
-				const credential = GoogleAuthProvider.credentialFromResult(result);
-				const token = credential.accessToken;
+				GoogleAuthProvider.credentialFromResult(result);
 				user = result.user;
 
 				const docRef = doc(db, "users", user.uid);
@@ -32,7 +31,9 @@ const GoogleButton = ({ isLogin }) => {
 								follwing: user.following ? user.following : [],
 							})
 						);
+						sessionStorage.setItem("loginToken", true);
 					} else {
+						console.log("No such document!");
 						dispatch(setLoginToken("login"));
 						await dispatch(
 							setCurrentUser({
@@ -48,7 +49,6 @@ const GoogleButton = ({ isLogin }) => {
 								bgURL: user.bgURL ? user.bgURL : bgimg,
 							})
 						);
-						console.log("No such document!");
 						const usersRef = await collection(db, "users");
 						await setDoc(doc(usersRef, user.uid), {
 							photoURL: user.photoURL,
@@ -64,6 +64,7 @@ const GoogleButton = ({ isLogin }) => {
 							description: "",
 							bgURL: user.bgURL ? user.bgURL : bgimg,
 						});
+						sessionStorage.setItem("loginToken", true);
 					}
 				});
 			})

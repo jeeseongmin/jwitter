@@ -2,7 +2,7 @@ import SearchJweetBox from "components/box/SearchJweetBox";
 import SearchUserBox from "components/box/SearchUserBox";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "mybase";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FiSearch } from "react-icons/fi";
 import { MdCancel } from "react-icons/md";
 
@@ -35,16 +35,7 @@ const SearchBox = () => {
 		);
 	}, []);
 
-	useEffect(() => {
-		if (search !== "") {
-			getFiltered();
-		} else {
-			setFilteredJweets([]);
-			setFilteredUsers([]);
-		}
-	}, [search]);
-
-	const getFiltered = async () => {
+	const getFiltered = useCallback(async () => {
 		const _filteredUsers = await users.filter(function (element, index) {
 			return (
 				element.displayName.includes(search) ||
@@ -57,7 +48,16 @@ const SearchBox = () => {
 			return element.text.includes(search) || search === "all";
 		});
 		await setFilteredJweets(_filteredJweets);
-	};
+	}, [search, jweets, users]);
+
+	useEffect(() => {
+		if (search !== "") {
+			getFiltered();
+		} else {
+			setFilteredJweets([]);
+			setFilteredUsers([]);
+		}
+	}, [getFiltered, search]);
 
 	const onChange = (e) => {
 		setSearch(e.target.value);

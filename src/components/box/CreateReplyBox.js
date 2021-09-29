@@ -41,9 +41,7 @@ const CreateReplyBox = ({ id, isModal, handleReplyClose }) => {
 	const onChange = (e) => {
 		setReplyText(e.target.value);
 	};
-	useEffect(() => {
-		return () => setLoading(false);
-	}, []);
+
 	useEffect(() => {
 		onSnapshot(doc(db, "jweets", id), (doc) => {
 			setJweet({
@@ -51,7 +49,7 @@ const CreateReplyBox = ({ id, isModal, handleReplyClose }) => {
 				...doc.data(),
 			});
 		});
-	}, []);
+	}, [id]);
 
 	useEffect(() => {
 		if (textareaRef === null || textareaRef.current === null) {
@@ -80,9 +78,6 @@ const CreateReplyBox = ({ id, isModal, handleReplyClose }) => {
 			setAttachment(finishedEvent.currentTarget.result);
 		};
 		reader.readAsDataURL(theFile);
-	};
-	const clearAttachment = () => {
-		setAttachment(null);
 	};
 
 	const onSubmit = async (e) => {
@@ -152,7 +147,7 @@ const CreateReplyBox = ({ id, isModal, handleReplyClose }) => {
 			textareaRef.current.style.height =
 				textareaRef.current.scrollHeight + "px";
 		}
-	});
+	}, []);
 	return (
 		<div
 			class={
