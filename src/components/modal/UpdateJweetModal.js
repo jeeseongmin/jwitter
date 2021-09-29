@@ -5,7 +5,7 @@ import { GrClose } from "react-icons/gr";
 import { useSelector } from "react-redux";
 
 const UpdateJweetModal = ({
-	UpdateOpen,
+	updateOpen,
 	modalRef,
 	handleUpdateClose,
 	jweet,
@@ -14,7 +14,7 @@ const UpdateJweetModal = ({
 
 	return (
 		<Modal
-			open={UpdateOpen}
+			open={updateOpen}
 			onClose={handleUpdateClose}
 			aria-labelledby="modal-modal-title"
 			aria-describedby="modal-modal-description"

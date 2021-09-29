@@ -10,7 +10,7 @@ import {
 	query,
 } from "firebase/firestore";
 import { db } from "mybase";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 
 const Bookmark = () => {
@@ -19,7 +19,7 @@ const Bookmark = () => {
 	const [filteredJweets, setFilteredJweets] = useState([]);
 	const currentUser = useSelector((state) => state.user.currentUser);
 
-	const getMyInfo = async () => {
+	const getMyInfo = useCallback(async () => {
 		const docRef = await doc(db, "users", currentUser.uid);
 		await getDoc(docRef).then((snap) => {
 			if (snap.exists()) {
@@ -29,7 +29,7 @@ const Bookmark = () => {
 				console.log("No such document!");
 			}
 		});
-	};
+	}, [currentUser.uid]);
 
 	useEffect(() => {
 		onSnapshot(
@@ -50,7 +50,7 @@ const Bookmark = () => {
 
 	useEffect(() => {
 		getMyInfo();
-	}, []);
+	}, [getMyInfo]);
 
 	useEffect(() => {
 		return () => setLoading(false); // cleanup function을 이용

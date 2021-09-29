@@ -1,19 +1,15 @@
-import JweetBox from "components/box/JweetBox";
 import CreateJweetBox from "components/box/CreateJweetBox";
+import JweetBox from "components/box/JweetBox";
+import LoadingBox from "components/box/LoadingBox";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "mybase";
 import React, { useEffect, useState } from "react";
 import { MdSettings } from "react-icons/md";
-import { useSelector } from "react-redux";
-import LoadingBox from "components/box/LoadingBox";
 
 const Home = () => {
 	const [loading, setLoading] = useState(false);
-	const currentUser = useSelector((state) => state.user.currentUser);
 
 	const [jweets, setJweets] = useState([]);
-
-	useEffect(() => {}, []);
 
 	useEffect(() => {
 		onSnapshot(
@@ -28,7 +24,9 @@ const Home = () => {
 			}
 		);
 	}, []);
-
+	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
 	return (
 		<div class="flex-1 flex flex-col pl-64">
 			<div class="px-4 py-2 font-bold text-xl flex justify-between items-center border-b border-gray-200">

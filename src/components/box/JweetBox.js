@@ -1,21 +1,22 @@
 import Avatar from "@mui/material/Avatar";
 import Skeleton from "@mui/material/Skeleton";
 import BookmarkButton from "components/button/BookmarkButton";
+import DeleteButton from "components/button/DeleteButton";
 import LikeButton from "components/button/LikeButton";
 import RejweetButton from "components/button/RejweetButton";
 import ReplyButton from "components/button/ReplyButton";
-import ImageModal from "components/modal/ImageModal";
+import UpdateButton from "components/button/UpdateButton";
 import DeleteJweetModal from "components/modal/DeleteJweetModal";
+import ImageModal from "components/modal/ImageModal";
 import UpdateJweetModal from "components/modal/UpdateJweetModal";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "mybase";
 import React, { useEffect, useRef, useState } from "react";
-import { AiTwotoneDelete } from "react-icons/ai";
 import { FaRetweet } from "react-icons/fa";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { RiEdit2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+
 const JweetBox = (props) => {
 	const history = useHistory();
 	const jweet = props.jweet;
@@ -75,7 +76,6 @@ const JweetBox = (props) => {
 	}, []);
 	const exceptRef = useRef();
 	const modalRef = useRef();
-	const dotRef = useRef();
 	const profileRef = useRef();
 	const replyRef = useRef();
 	const reJweetRef = useRef();
@@ -93,7 +93,7 @@ const JweetBox = (props) => {
 			e.target.tagName !== "svg" &&
 			e.target.tagName !== "path" &&
 			e.target.id !== "except" &&
-			e.target.innerText !== "Edit Jweet" &&
+			e.target.innerText !== "Update Jweet" &&
 			e.target.innerText !== "Delete Jweet" &&
 			!e.target.className.includes("MuiBackdrop") &&
 			!photoOpen &&
@@ -172,25 +172,15 @@ const JweetBox = (props) => {
 											size={28}
 										/>
 										{func && (
-											<div
-												ref={dotRef}
-												id="except"
-												class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl"
-											>
-												<div
-													onClick={handleUpdateOpen}
-													class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-t-md"
-												>
-													<RiEdit2Line class="w-12" size={20} />
-													<div class="flex-1">Edit Jweet</div>
-												</div>
-												<div
-													onClick={handleDeleteOpen}
-													class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-b-md"
-												>
-													<AiTwotoneDelete class="w-12" size={20} />
-													<div class="flex-1">Delete Jweet</div>
-												</div>
+											<div class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl">
+												<UpdateButton
+													handleOpen={handleUpdateOpen}
+													text={"Update Jweet"}
+												/>
+												<DeleteButton
+													handleOpen={handleDeleteOpen}
+													text={"Delete Jweet"}
+												/>
 											</div>
 										)}
 									</div>
@@ -267,7 +257,7 @@ const JweetBox = (props) => {
 					<DeleteJweetModal
 						jweet={jweet}
 						deleteOpen={deleteOpen}
-						setDeleteOpen={setDeleteOpen}
+						goBack={false}
 						handleDeleteClose={handleDeleteClose}
 					/>
 

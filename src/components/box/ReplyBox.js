@@ -3,26 +3,17 @@ import Avatar from "@mui/material/Avatar";
 import Modal from "@mui/material/Modal";
 import Skeleton from "@mui/material/Skeleton";
 import Snackbar from "@mui/material/Snackbar";
-import ImageModal from "components/modal/ImageModal";
 import UpdateReplyBox from "components/box/UpdateReplyBox";
-import {
-	deleteDoc,
-	doc,
-	getDoc,
-	onSnapshot,
-	updateDoc,
-} from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
-import { db, storage } from "mybase";
+import DeleteButton from "components/button/DeleteButton";
+import UpdateButton from "components/button/UpdateButton";
+import DeleteReplyModal from "components/modal/DeleteReplyModal";
+import ImageModal from "components/modal/ImageModal";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "mybase";
 import React, { useEffect, useRef, useState } from "react";
-import {
-	AiOutlineHeart,
-	AiTwotoneDelete,
-	AiTwotoneHeart,
-} from "react-icons/ai";
+import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { RiEdit2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -46,10 +37,10 @@ const ReplyBox = ({ reply }) => {
 		setReplyOpen(false);
 	};
 
-	const [checkOpen, setCheckOpen] = useState(false);
-	const handleCheckOpen = () => setCheckOpen(true);
-	const handleCheckClose = () => {
-		setCheckOpen(false);
+	const [deleteOpen, setDeleteOpen] = useState(false);
+	const handleDeleteOpen = () => setDeleteOpen(true);
+	const handleDeleteClose = () => {
+		setDeleteOpen(false);
 	};
 
 	const [likeSnack, setLikeSnack] = useState();
@@ -60,19 +51,6 @@ const ReplyBox = ({ reply }) => {
 		}
 
 		setLikeSnack(false);
-	};
-
-	const onDeleteClick = async () => {
-		await onSnapshot(doc(db, "jweets", reply.parent), async (docu) => {
-			const cp = docu.data().reply;
-			cp.splice(docu.data().reply.indexOf(reply.id), 1);
-			await updateDoc(doc(db, "jweets", reply.parent), {
-				reply: cp,
-			});
-		});
-		await deleteDoc(doc(db, "replies", reply.id));
-		if (reply.attachmentUrl !== "")
-			await deleteObject(ref(storage, reply.attachmentUrl));
 	};
 
 	useEffect(() => {
@@ -97,7 +75,6 @@ const ReplyBox = ({ reply }) => {
 				setCreatorInfo(snap.data());
 				setLoading(true);
 			} else {
-				// doc.data() will be undefined in this case
 				console.log("No such document!");
 			}
 		});
@@ -184,20 +161,14 @@ const ReplyBox = ({ reply }) => {
 											id="except"
 											class="bg-white border border-gray-200 z-40 absolute flex flex-col top-2 right-2 w-60 rounded-md shadow-xl"
 										>
-											<div
-												onClick={handleReplyOpen}
-												class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-t-md"
-											>
-												<RiEdit2Line class="w-12" size={20} />
-												<div class="flex-1">Update Reply</div>
-											</div>
-											<div
-												onClick={handleCheckOpen}
-												class="flex flex-row items-center transition delay-50 duration-300 py-3 hover:bg-gray-100 rounded-b-md"
-											>
-												<AiTwotoneDelete class="w-12" size={20} />
-												<div class="flex-1">Delete Reply</div>
-											</div>
+											<UpdateButton
+												handleOpen={handleReplyOpen}
+												text={"Update Reply"}
+											/>
+											<DeleteButton
+												handleOpen={handleDeleteOpen}
+												text={"Delete Reply"}
+											/>
 										</div>
 									)}
 								</div>
@@ -208,7 +179,6 @@ const ReplyBox = ({ reply }) => {
 							<div class="h-8"></div>
 						</Skeleton>
 					)}
-					{/* <div class="w-full h-auto ">{reply.text}</div> */}
 					{loading ? (
 						<div class="w-full h-auto">
 							<div class="w-full h-auto resize-none outline-none cursor-pointer bg-transparent whitespace-pre	">
@@ -285,35 +255,11 @@ const ReplyBox = ({ reply }) => {
 						</div>
 					</div>
 				</Modal>
-				<Modal
-					open={checkOpen}
-					onClose={handleCheckClose}
-					aria-labelledby="modal-modal-title"
-					aria-describedby="modal-modal-description"
-				>
-					<div class="outline-none absolute border border-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 origin-center w-96 h-auto px-4 py-8 bg-white rounded-2xl flex flex-col justify-start items-start">
-						<div class="flex flex-col px-4">
-							<h1 class="text-xl font-bold mb-2">Delete Reply?</h1>
-							<p class="text-left pb-8">
-								This can’t be undone and it will be removed from your profile,
-								the timeline of any accounts that follow you, and from Jwitter
-								search results.
-							</p>
-							<div
-								onClick={onDeleteClick}
-								class="cursor-pointer w-full flex py-3 justify-center items-center rounded-full bg-red-500 hover:bg-red-600 transition delay-50 duration-300 text-white font-bold mb-4"
-							>
-								Delete
-							</div>
-							<div
-								onClick={handleCheckClose}
-								class="cursor-pointer w-full flex py-3 justify-center items-center rounded-full border border-purple-300 text-purple-500 transition delay-50 duration-300 font-bold hover:bg-gray-200"
-							>
-								Cancel
-							</div>
-						</div>
-					</div>
-				</Modal>
+				<DeleteReplyModal
+					reply={reply}
+					deleteOpen={deleteOpen}
+					handleDeleteClose={handleDeleteClose}
+				/>
 				<Snackbar open={likeSnack} autoHideDuration={2000} onClose={likeClose}>
 					<Alert
 						onClose={likeClose}

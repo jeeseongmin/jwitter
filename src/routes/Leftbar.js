@@ -25,6 +25,10 @@ const Leftbar = () => {
 
 	const [selected, setSelected] = useState(1);
 	const currentUser = useSelector((state) => state.user.currentUser);
+	const [photoURL, setPhotoURL] = useState(currentUser.photoURL);
+	useEffect(() => {
+		setPhotoURL(currentUser.photoURL);
+	}, [currentUser.photoURL]);
 	const history = useHistory();
 	// 프로필 모달
 	const [logoutOpen, setLogoutOpen] = useState(false);
@@ -253,7 +257,7 @@ const Leftbar = () => {
 									<div class="h-full flex flex-row items-center ">
 										<div class="h-full ">
 											<img
-												src={currentUser.photoURL}
+												src={photoURL}
 												class="rounded-full object-cover h-full mr-4"
 												alt="default"
 											/>
@@ -287,7 +291,7 @@ const Leftbar = () => {
 						<div class="h-full flex flex-row items-center">
 							<div class="h-full ">
 								<img
-									src={currentUser.photoURL ? currentUser.photoURL : defaultImg}
+									src={photoURL ? photoURL : defaultImg}
 									class="rounded-full object-cover h-full mr-4"
 									alt="default"
 								/>

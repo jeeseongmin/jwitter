@@ -32,7 +32,6 @@ Following items are core backend technologies used in this project:
 - firebase
 - github deploy
 - gh-pages (for hosting)
-- REST API
 
 ## Data Schema
 

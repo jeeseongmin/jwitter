@@ -1,5 +1,3 @@
-import MuiAlert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
 import Picker from "emoji-picker-react";
 import { doc, updateDoc } from "firebase/firestore";
 import defaultImg from "image/defaultImg.jpg";
@@ -10,11 +8,7 @@ import { IoImageOutline } from "react-icons/io5";
 import { MdCancel } from "react-icons/md";
 import { useSelector } from "react-redux";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-	return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
-const EditJweet = ({ _jweet, handleEditClose }) => {
+const UpdateJweetBox = ({ _jweet, handleUpdateClose }) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const [jweet, setJweet] = useState(_jweet.text);
 	const [attachment, setAttachment] = useState(_jweet.attachmentUrl);
@@ -34,7 +28,7 @@ const EditJweet = ({ _jweet, handleEditClose }) => {
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		handleEditClose();
+		handleUpdateClose();
 		if (jweet === "" || attachment === "") {
 		}
 
@@ -87,17 +81,7 @@ const EditJweet = ({ _jweet, handleEditClose }) => {
 		}
 		textareaRef.current.style.height = "40px";
 		textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
-	});
-
-	const [editSnack, setEditSnack] = useState();
-	const editClick = () => setEditSnack(true);
-	const editClose = (e, reason) => {
-		if (reason === "clickaway") {
-			return;
-		}
-
-		setEditSnack(false);
-	};
+	}, []);
 
 	return (
 		<>
@@ -173,19 +157,8 @@ const EditJweet = ({ _jweet, handleEditClose }) => {
 					/>
 				</form>
 			</div>
-			<Snackbar open={editSnack} autoHideDuration={2000} onClose={editClose}>
-				<Alert
-					onClose={editClose}
-					severity="success"
-					color="error"
-					variant="filled"
-					sx={{ width: "100%" }}
-				>
-					{editSnack ? "좋아요!" : "좋아요 취소!"}
-				</Alert>
-			</Snackbar>
 		</>
 	);
 };
 
-export default EditJweet;
+export default UpdateJweetBox;

@@ -1,24 +1,26 @@
 import Modal from "@mui/material/Modal";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { db, storage } from "mybase";
 import React from "react";
-import { useHistory } from "react-router-dom";
 
-const DeleteJweetModal = ({ jweet, deleteOpen, handleDeleteClose, goBack }) => {
-	const history = useHistory();
+const DeleteReplyModal = ({ reply, deleteOpen, handleDeleteClose }) => {
 	const onDeleteClick = async () => {
-		handleDeleteClose();
-		for (let i = 0; i < jweet.reply; i++) {
-			await deleteDoc(doc(db, "replies", jweet.reply[i]));
+		const docRef = doc(db, "jweets", reply.parent);
+		const docSnap = await getDoc(docRef);
+		if (docSnap.exists()) {
+			const cp = docSnap.data().reply;
+			cp.splice(docSnap.data().reply.indexOf(reply.id), 1);
+			await updateDoc(doc(db, "jweets", reply.parent), {
+				reply: cp,
+			});
 		}
 
-		if (goBack) history.goBack();
-		await deleteDoc(doc(db, "jweets", jweet.id));
-		if (jweet.attachmentUrl !== "") {
-			await deleteObject(ref(storage, jweet.attachmentUrl));
-		}
+		await deleteDoc(doc(db, "replies", reply.id));
+		if (reply.attachmentUrl !== "")
+			await deleteObject(ref(storage, reply.attachmentUrl));
 	};
+
 	return (
 		<Modal
 			open={deleteOpen}
@@ -28,7 +30,7 @@ const DeleteJweetModal = ({ jweet, deleteOpen, handleDeleteClose, goBack }) => {
 		>
 			<div class="outline-none absolute border border-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 origin-center w-96 h-auto px-4 py-8 bg-white rounded-2xl flex flex-col justify-start items-start">
 				<div class="flex flex-col px-4">
-					<h1 class="text-xl font-bold mb-2">Delete Jweet?</h1>
+					<h1 class="text-xl font-bold mb-2">Delete Reply?</h1>
 					<p class="text-left pb-8">
 						This can’t be undone and it will be removed from your profile, the
 						timeline of any accounts that follow you, and from Jwitter search
@@ -52,4 +54,4 @@ const DeleteJweetModal = ({ jweet, deleteOpen, handleDeleteClose, goBack }) => {
 	);
 };
 
-export default DeleteJweetModal;
+export default DeleteReplyModal;

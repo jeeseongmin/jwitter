@@ -150,7 +150,7 @@ const UpdateProfileModal = ({
 								<div class="cursor-pointer font-bold text-base flex justify-center items-center px-4 py-2"></div>
 							</div>
 							<div class="absolute w-28 h-28 left-4 bottom-2 ">
-								<div class="w-28 h-28 border-4 border-white rounded-full">
+								<div class="w-28 h-28 bg-white border-4 border-white rounded-full">
 									<img
 										src={attachment}
 										class="w-28 h-full object-cover rounded-full"

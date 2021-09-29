@@ -11,7 +11,7 @@ import {
 	where,
 } from "firebase/firestore";
 import { db } from "mybase";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -23,8 +23,10 @@ const Detail = ({ match }) => {
 	const [jweet, setJweet] = useState([]);
 	const [replies, setReplies] = useState([]);
 	const currentUser = useSelector((state) => state.user.currentUser);
-
-	const getJweet = async () => {
+	useEffect(() => {
+		return () => setLoading(false);
+	}, []);
+	const getJweet = useCallback(async () => {
 		onSnapshot(doc(db, "jweets", uid), (doc) => {
 			setJweet({
 				id: doc.id,
@@ -32,9 +34,9 @@ const Detail = ({ match }) => {
 			});
 			setLoading(true);
 		});
-	};
+	}, [uid]);
 
-	const getReplies = async () => {
+	const getReplies = useCallback(async () => {
 		onSnapshot(
 			query(
 				collection(db, "replies"),
@@ -50,12 +52,12 @@ const Detail = ({ match }) => {
 				setLoading(true);
 			}
 		);
-	};
+	}, [uid]);
 
 	useEffect(() => {
 		getJweet();
 		getReplies();
-	}, [uid]);
+	}, [getJweet, getReplies]);
 
 	return (
 		<>

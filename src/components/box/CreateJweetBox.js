@@ -70,7 +70,7 @@ const CreateJweetBox = ({ isModal, handleJweetClose }) => {
 				handleJweetClose();
 			}
 			try {
-				const docInfo = await addDoc(collection(db, "jweets"), _jweet);
+				await addDoc(collection(db, "jweets"), _jweet);
 			} catch (error) {
 				console.log(error);
 			}
@@ -134,7 +134,7 @@ const CreateJweetBox = ({ isModal, handleJweetClose }) => {
 			textareaRef.current.style.height =
 				textareaRef.current.scrollHeight + "px";
 		}
-	});
+	}, []);
 
 	return (
 		<div

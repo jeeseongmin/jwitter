@@ -15,7 +15,7 @@ import { IoImageOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-const CreateReply = ({ id, isModal, handleReplyClose }) => {
+const CreateReplyBox = ({ id, isModal, handleReplyClose }) => {
 	const [jweet, setJweet] = useState({});
 	const [replyText, setReplyText] = useState("");
 	const [over, setOver] = useState(false);
@@ -26,7 +26,9 @@ const CreateReply = ({ id, isModal, handleReplyClose }) => {
 	const fileRef = useRef();
 	const [loading, setLoading] = useState(false);
 	const toggleEmoji = () => setEmojiClick(!emojiClick);
-
+	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
 	const onEmojiClick = (event, emojiObject) => {
 		const newText =
 			replyText.slice(0, textareaRef.current.selectionStart) +
@@ -237,4 +239,4 @@ const CreateReply = ({ id, isModal, handleReplyClose }) => {
 	);
 };
 
-export default CreateReply;
+export default CreateReplyBox;

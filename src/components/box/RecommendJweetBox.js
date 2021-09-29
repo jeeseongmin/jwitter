@@ -1,13 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
-import {
-	AiOutlineHeart,
-	AiOutlineRetweet,
-	AiTwotoneDelete,
-	AiTwotoneHeart,
-} from "react-icons/ai";
-import Skeleton from "@mui/material/Skeleton";
-import Avatar from "@mui/material/Avatar";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 const RecommendJweet = ({ jweet, users }) => {
 	const history = useHistory();

@@ -16,7 +16,9 @@ const MyJweets = ({ match }) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const [myJweets, setMyJweets] = useState([]);
 	const [loading, setLoading] = useState(false);
-
+	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
 	useEffect(() => {
 		const q = query(
 			collection(db, "jweets"),

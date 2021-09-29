@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { BsChat } from "react-icons/bs";
 import CreateReplyModal from "components/modal/CreateReplyModal";
+import React from "react";
+import { BsChat } from "react-icons/bs";
 
 const ReplyButton = ({
 	jweet,

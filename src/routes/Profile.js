@@ -5,7 +5,7 @@ import ReJweets from "components/container/ReJweets";
 import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import bgimg from "image/bgimg.jpg";
 import { db } from "mybase";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { Link, Route, Switch, useHistory } from "react-router-dom";
@@ -27,14 +27,16 @@ const Profile = ({ match }) => {
 		setUpdateModal(false);
 	};
 
-	const getMyInfo = async () => {
+	const getInfo = useCallback(async () => {
 		await onSnapshot(doc(db, "users", uid), (doc) => {
 			setInfo(doc.data());
 			setLoading(true);
 		});
-	};
-
-	const getJweets = async () => {
+	}, [uid]);
+	useEffect(() => {
+		return () => setLoading(false); // cleanup function을 이용
+	}, []);
+	const getJweets = useCallback(async () => {
 		const q = query(collection(db, "jweets"), where("creatorId", "==", uid));
 		onSnapshot(q, (querySnapshot) => {
 			const cp = [];
@@ -43,12 +45,12 @@ const Profile = ({ match }) => {
 			});
 			setMyJweets(cp);
 		});
-	};
+	}, [uid]);
 
 	useEffect(() => {
-		getMyInfo();
+		getInfo();
 		getJweets();
-	}, [uid, updateState]);
+	}, [getInfo, getJweets, updateState]);
 
 	return (
 		<>
@@ -90,7 +92,7 @@ const Profile = ({ match }) => {
 								</div>
 							)}
 							<div class="absolute w-32 h-32 left-4 bottom-2">
-								<div class="border-4 border-white rounded-full">
+								<div class="border-4 border-white rounded-full bg-white">
 									<img
 										src={info.photoURL}
 										class="w-full h-32 object-cover rounded-full"
