@@ -14,6 +14,28 @@ Therefore, from now on, each expression will be changed to suit the project name
 - Tweet →Jweet
 - retweet → rejweet
 
+## For Build
+
+1. install gh-pages
+2. update package.json
+
+```
+{
+	"scripts": {
+		"start": your code,
+		"build": your code,
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d build"
+	},
+	...
+	"homepage" : "https://jeeseongmin.github.io/jwitter"
+	...
+}
+```
+
+3. `npm run deploy`
+4. wait and access the url
+
 ## Project Stack
 
 ### Client
